@@ -31,6 +31,7 @@ public class Application {
 
         // Set up routes
         get(Path.Web.NOTIFICATIONS, NotificationController.getAll);
+        get(Path.Web.UPDATE, NotificationController.updateAllNotification);
         get("*", ViewUtil.notFound);
 
         //Set up after-filters (called after each get/post)

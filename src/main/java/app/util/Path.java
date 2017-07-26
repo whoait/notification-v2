@@ -8,6 +8,7 @@ public class Path {
     // the variables from Velocity Templates
     public static class Web {
         @Getter public static final String NOTIFICATIONS = "/notifications/";
+        @Getter public static final String UPDATE = "/update/";
 
     }
 
