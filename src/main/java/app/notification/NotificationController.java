@@ -32,24 +32,27 @@ public class NotificationController {
         return jsonObject.toString();
     };
     public static Route updateAllNotification = (Request request, Response response) -> {
-//        Path source = Paths.get(filePath);
-//        DateFormat df = new SimpleDateFormat("yyyyMMddhhmmss");
-//        String data = df.format(new Date());
-//        File f = new File(filePath);
-//        // rename old file
-//        if (f.exists() && !f.isDirectory()) {
-//            Files.move(source, source.resolveSibling("notification" + "_" + data + ".json"));
-//        }
-//        // write new file
-//        try {
-//            FileWriter file = new FileWriter(filePath);
-//            file.write(request.body());
-//            file.flush();
-//            file.close();
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        String bindVersion = request.queryParams("bvs");
+        String filePath = "D:\\notification\\input\\notification_" + bindVersion + ".json";
+
+        Path source = Paths.get(filePath);
+        DateFormat df = new SimpleDateFormat("yyyyMMddhhmmss");
+        String data = df.format(new Date());
+        File f = new File(filePath);
+        // rename old file
+        if (f.exists() && !f.isDirectory()) {
+            Files.move(source, source.resolveSibling("notification_" + bindVersion + "_" + data + ".json"));
+        }
+        // write new file
+        try {
+            FileWriter file = new FileWriter(filePath);
+            file.write(request.body());
+            file.flush();
+            file.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return "";
     };
