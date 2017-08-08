@@ -19,7 +19,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+
+import static java.nio.file.StandardCopyOption.ATOMIC_MOVE;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -47,33 +49,31 @@ public class NotificationController {
 
         return jsonResult.toString();
     };
-    public static Route updateAllNotification = (Request request, Response response) -> {
 
-        String filePath = "D:\\notification\\input\\notification.json";
+    Path newName(Path oldFile, String newNameString) {
+        // the magic is done by Path.resolve(...)
+        return oldFile.getParent().resolve(newNameString);
+    }
+
+
+    public static Route updateAllNotification = (Request request, Response response) -> {
         DateFormat df = new SimpleDateFormat("yyyyMMddhhmmss");
         String dateStr = df.format(new Date());
-        String filePathNew = "D:\\notification\\input\\notification_" + dateStr + ".json";
 
+        String filePath = "D:\\notification\\input\\notification.json";
+        String filePathTarget = "D:\\notification\\input\\notification_" + dateStr + ".json";
 
-        File f = new File(filePath);
-        //rename old file
-
-
-        String bindVersion = request.queryParams("bvs");
 
         try {
+            FileUtils.moveFile(
+                    FileUtils.getFile(filePath),
+                    FileUtils.getFile(filePathTarget));
+
+            String bindVersion = request.queryParams("bvs");
 
             JSONParser jsonParser = new JSONParser();
-            FileReader reader = new FileReader(filePath);
+            FileReader reader = new FileReader(filePathTarget);
             JSONObject jsonObject = (JSONObject) jsonParser.parse(reader);
-
-            //rename old file
-            Path source = Paths.get("D:\\notification\\input\\");
-            if (f.exists() && !f.isDirectory()) {
-//                f.renameTo(new File(filePathNew));
-                Files.move(source, source.resolveSibling("notification_" + dateStr + ".json"), StandardCopyOption.REPLACE_EXISTING);
-            }
-
             JsonArray jsonArray = new JsonParser().parse(request.queryParams("news")).getAsJsonArray();
 
             if (bindVersion.equals("7")) {
