@@ -22,7 +22,7 @@ public class Application implements SparkApplication {
         port(8080);
         staticFiles.location("/public");
         staticFiles.expireTime(600L);
-        enableDebugScreen();
+//        enableDebugScreen();
 
         // Set up before-filters (called before each get/post)
         before("*", Filters.addTrailingSlashes);
