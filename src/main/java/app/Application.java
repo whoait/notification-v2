@@ -5,18 +5,17 @@ import app.notification.NotificationController;
 import app.util.Filters;
 import app.util.Path;
 import app.util.ViewUtil;
+import spark.servlet.SparkApplication;
 
 import static spark.Spark.*;
 import static spark.debug.DebugScreen.enableDebugScreen;
 
-public class Application {
+public class Application implements SparkApplication {
 
-    // Declare dependencies 12222 3333
     public static ItemNotificationDao itemNotificationDao;
 
-    public static void main(String[] args) {
-
-        // Instantiate your dependencies
+    @Override
+    public void init() {
         itemNotificationDao = new ItemNotificationDao();
 
         // Configure Spark
@@ -37,5 +36,4 @@ public class Application {
         //Set up after-filters (called after each get/post)
         after("*", Filters.addGzipHeader);
     }
-
 }
