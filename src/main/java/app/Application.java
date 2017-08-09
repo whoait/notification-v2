@@ -7,19 +7,19 @@ import app.util.Path;
 import app.util.ViewUtil;
 import spark.servlet.SparkApplication;
 
+import static spark.Spark.get;
+
 import static spark.Spark.*;
-import static spark.debug.DebugScreen.enableDebugScreen;
 
 public class Application implements SparkApplication {
 
     public static ItemNotificationDao itemNotificationDao;
 
-    @Override
     public void init() {
-        itemNotificationDao = new ItemNotificationDao();
+
 
         // Configure Spark
-        port(8080);
+        port(8081);
         staticFiles.location("/public");
         staticFiles.expireTime(600L);
 //        enableDebugScreen();
@@ -28,9 +28,14 @@ public class Application implements SparkApplication {
         before("*", Filters.addTrailingSlashes);
         before("*", Filters.handleLocaleChange);
 
+        itemNotificationDao = new ItemNotificationDao();
         // Set up routes
+        get("/", (request, response) -> {
+            return "Ok, Success";
+        });
         get(Path.Web.NOTIFICATIONS, NotificationController.getAll);
         get(Path.Web.UPDATE, NotificationController.updateAllNotification);
+
         get("*", ViewUtil.notFound);
 
         //Set up after-filters (called after each get/post)

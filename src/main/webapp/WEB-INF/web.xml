@@ -4,6 +4,9 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
          id="bind_notification_server" version="3.0">
     <display-name>bind_notification_server</display-name>
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
     <filter>
         <filter-name>SparkFilter</filter-name>
         <filter-class>spark.servlet.SparkFilter</filter-class>
@@ -12,7 +15,6 @@
             <param-value>app.Application</param-value>
         </init-param>
     </filter>
-
     <filter-mapping>
         <filter-name>SparkFilter</filter-name>
         <url-pattern>/*</url-pattern>
