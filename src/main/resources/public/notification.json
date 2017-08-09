@@ -3,27 +3,13 @@
 		"title": "",
 		"content": ""
 	},
-	"news": [{
-		"title": "Important Notices disk D",
+	"news_7": [{
+		"title": "Important Notices",
 		"list": [{
 			"id": 13,
 			"date": "2016/12/19",
-			"title": "Quick start",
+			"title": "Quick start BiND 7",
 			"modal_link": "https://digitalstage.jp/common/info/20161219/trial.html",
-			"is_show": "true"
-		}, {
-			"id": 8,
-			"date": "2016/12/01",
-			"title": "About blog",
-			"content": "The blog function corresponds to inserting images into the text. In addition, it becomes possible to set the timer with the form function.",
-			"ext_link": "http://dsnews.me/2gmbRrI",
-			"is_show": "true"
-		}, {
-			"id": 6,
-			"date": "2016/11/11",
-			"title": "Smartphone",
-			"content": "The blog function [BiND Press] corresponded to posts from smartphone. * Cooperation with BiND cloud is necessary.",
-			"ext_link": "http://bit.ly/2fuBxAs",
 			"is_show": "true"
 		}]
 	}, {
@@ -35,19 +21,35 @@
 			"content": "<img src='https://module.bindsite.jp/bindcld/sitetheater/images/notification1706-03.png' alt='notification1706-03'>We will introduce the points when making top images preferred by smartphones using BiND's image editing function [SiGN Pro].",
 			"ext_link": "https://bindcamp.digitalstage.jp/?p=8553",
 			"is_show": "true"
-		}, {
-			"id": 28,
-			"date": "2017/5/25",
-			"title": "I tried to verify variously where to set the margin of the Web site.",
-			"content": "<img src='https://module.bindsite.jp/bindcld/sitetheater/images/notification1706-02.png' alt='notification1706-02'>Margin often tends to be complicated due to many items. I tried to find out where to set the best place to manage margins with BiND.",
-			"ext_link": "https://bindcamp.digitalstage.jp/?p=8584",
+		}]
+	}, {
+		"title": "Support information",
+		"list": [{
+			"id": 14,
+			"date": "2016/12/28",
+			"title": "Official guidebook special edition [How to use BiND Press] Notice provided by PDF",
+			"content": "We have prepared the official guidebook special edition [How to use BiND Press (PDF)] for those who have signed more than BiND cloud pro course or more (including BiND 9 special course). Please login to the BiND cloud and download and use it.",
+			"ext_link": "http://dsnews.me/2ipxNkv",
 			"is_show": "true"
-		}, {
-			"id": 27,
-			"date": "2017/5/16",
-			"title": "Card style design made with BiND",
-			"content": "<img src='https://module.bindsite.jp/bindcld/sitetheater/images/notification1706-01.png' alt='notification1706-01'>We will show you how to create a card design that makes full use of the grid style layout by yourself with BiND.",
-			"ext_link": "https://bindcamp.digitalstage.jp/?p=8775",
+		}]
+	}],
+	"news_8": [{
+		"title": "Important Notices",
+		"list": [{
+			"id": 13,
+			"date": "2016/12/19",
+			"title": "Quick start BiND 8",
+			"modal_link": "https://digitalstage.jp/common/info/20161219/trial.html",
+			"is_show": "true"
+		}]
+	}, {
+		"title": "BiND CAMP",
+		"list": [{
+			"id": 29,
+			"date": "2017/5/31",
+			"title": "Make with SiGN",
+			"content": "<img src='https://module.bindsite.jp/bindcld/sitetheater/images/notification1706-03.png' alt='notification1706-03'>We will introduce the points when making top images preferred by smartphones using BiND's image editing function [SiGN Pro].",
+			"ext_link": "https://bindcamp.digitalstage.jp/?p=8553",
 			"is_show": "true"
 		}]
 	}, {
@@ -59,19 +61,35 @@
 			"content": "We have prepared the official guidebook special edition [How to use BiND Press (PDF)] for those who have signed more than BiND cloud pro course or more (including BiND 9 special course). Please login to the BiND cloud and download and use it.",
 			"ext_link": "http://dsnews.me/2ipxNkv",
 			"is_show": "true"
-		}, {
-			"id": 2,
-			"date": "2016/10/27",
-			"title": "Frequently Asked Questions and Problems",
-			"content": "We have summarized the correspondence situation of BiND 9's frequent inquiries and defect contents as confirmed by our company at the moment.",
-			"ext_link": "http://bit.ly/2eErgU1",
+		}]
+	}],
+	"news_9": [{
+		"title": "Important Notices",
+		"list": [{
+			"id": 13,
+			"date": "2016/12/19",
+			"title": "Quick start BiND 9",
+			"modal_link": "https://digitalstage.jp/common/info/20161219/trial.html",
 			"is_show": "true"
-		}, {
-			"id": 3,
-			"date": "2016/10/27",
-			"title": "About backing up site data",
-			"content": "BiND 9 recommends that you periodically back up your site data in order to use it with confidence.",
-			"ext_link": "http://bit.ly/2dVwgTa",
+		}]
+	}, {
+		"title": "BiND CAMP",
+		"list": [{
+			"id": 29,
+			"date": "2017/5/31",
+			"title": "Make with SiGN",
+			"content": "<img src='https://module.bindsite.jp/bindcld/sitetheater/images/notification1706-03.png' alt='notification1706-03'>We will introduce the points when making top images preferred by smartphones using BiND's image editing function [SiGN Pro].",
+			"ext_link": "https://bindcamp.digitalstage.jp/?p=8553",
+			"is_show": "true"
+		}]
+	}, {
+		"title": "Support information",
+		"list": [{
+			"id": 14,
+			"date": "2016/12/28",
+			"title": "Official guidebook special edition [How to use BiND Press] Notice provided by PDF",
+			"content": "We have prepared the official guidebook special edition [How to use BiND Press (PDF)] for those who have signed more than BiND cloud pro course or more (including BiND 9 special course). Please login to the BiND cloud and download and use it.",
+			"ext_link": "http://dsnews.me/2ipxNkv",
 			"is_show": "true"
 		}]
 	}],
