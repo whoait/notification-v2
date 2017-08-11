@@ -5,6 +5,7 @@ import app.notification.NotificationController;
 import app.util.Filters;
 import app.util.Path;
 import app.util.ViewUtil;
+import spark.Spark;
 import spark.servlet.SparkApplication;
 
 import static spark.Spark.get;
@@ -18,12 +19,10 @@ public class Application implements SparkApplication {
     public void init() {
 
 
-        // Configure Spark
         port(8081);
         staticFiles.location("/public");
         staticFiles.expireTime(600L);
 //        enableDebugScreen();
-
         // Set up before-filters (called before each get/post)
         before("*", Filters.addTrailingSlashes);
         before("*", Filters.handleLocaleChange);
@@ -40,5 +39,34 @@ public class Application implements SparkApplication {
 
         //Set up after-filters (called after each get/post)
         after("*", Filters.addGzipHeader);
+
+        before((request,response)->{
+            String method = request.requestMethod();
+            if(method.equals("POST") || method.equals("PUT") || method.equals("DELETE")){
+                String authentication = request.headers("Authentication");
+                if(!"PASSWORD".equals(authentication)){
+                    halt(401, "User Unauthorized");
+                }
+            }
+        });
+
+        options("/*", (request,response)->{
+
+            String accessControlRequestHeaders = request.headers("Access-Control-Request-Headers");
+            if (accessControlRequestHeaders != null) {
+                response.header("Access-Control-Allow-Headers", accessControlRequestHeaders);
+            }
+
+            String accessControlRequestMethod = request.headers("Access-Control-Request-Method");
+            if(accessControlRequestMethod != null){
+                response.header("Access-Control-Allow-Methods", accessControlRequestMethod);
+            }
+
+            return "OK";
+        });
+
+        before((request,response)->{
+            response.header("Access-Control-Allow-Origin", "*");
+        });
     }
 }
