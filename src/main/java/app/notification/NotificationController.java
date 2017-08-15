@@ -17,15 +17,39 @@ import java.nio.file.Path;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by IFV-DS1-TUYENVT on 11/07/2017.
  */
 public class NotificationController {
 
+    public static Route getListGroupByType = (Request request, Response response) -> {
+        List<Object> list = null;
+        try {
+            String type = request.queryParams("type");
+            String filePath = Props.getValue("json.file");
+            FileReader reader = new FileReader(filePath);
+            JSONParser jsonParser = new JSONParser();
+            JSONObject jsonObject = (JSONObject) jsonParser.parse(reader);
+
+            JSONObject jsonResult = new JSONObject();
+
+            list = (List<Object>) jsonObject.get("news");
+
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return list;
+    };
+
+
 
     public static Route getAll = (Request request, Response response) -> {
         try {
+            String version = request.queryParams("version");
+            String type = request.queryParams("type");
             String filePath =  Props.getValue("json.file");
             FileReader reader = new FileReader(filePath);
             JSONParser jsonParser = new JSONParser();
@@ -36,7 +60,6 @@ public class NotificationController {
             jsonResult.put("news_7", jsonObject.get("news_" + 7));
             jsonResult.put("news_8", jsonObject.get("news_" + 8));
             jsonResult.put("news_9", jsonObject.get("news_" + 9));
-//            response.
             return jsonResult.toString();
         } catch (IOException e) {
             e.printStackTrace();

@@ -32,8 +32,10 @@ public class Application implements SparkApplication {
         get("/", (request, response) -> {
             return "Ok, Success";
         });
+
         get(Path.Web.NOTIFICATIONS, NotificationController.getAll);
         get(Path.Web.UPDATE, NotificationController.updateAllNotification);
+        get(Path.Web.LISTGROUP, NotificationController.getListGroupByType);
 
         get("*", ViewUtil.notFound);
 

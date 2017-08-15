@@ -9,6 +9,7 @@ public class Path {
     public static class Web {
         @Getter public static final String NOTIFICATIONS = "/notifications/";
         @Getter public static final String UPDATE = "/update/";
+        @Getter public static final String LISTGROUP = "/getListGroupByVerion/";
 
     }
 

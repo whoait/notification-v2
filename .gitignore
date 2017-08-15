@@ -1,4 +1,4 @@
-.idea/
+.idea
 targer
 node_modules
 .idea\
@@ -6,4 +6,4 @@ node_modules
 idea
 idea/
 idea\
-
+.idea
