@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -25,88 +26,81 @@ import java.util.List;
 public class NotificationController {
 
     public static Route getListGroupByType = (Request request, Response response) -> {
-        List<Object> list = null;
+        List<JSONObject > list = null;
+        List<String> result = new ArrayList<>();
         try {
             String type = request.queryParams("type");
-            String filePath = Props.getValue("json.file");
+            String filePath = Props.getValue("json.file.type." + type);
             FileReader reader = new FileReader(filePath);
             JSONParser jsonParser = new JSONParser();
             JSONObject jsonObject = (JSONObject) jsonParser.parse(reader);
-
-            JSONObject jsonResult = new JSONObject();
-
-            list = (List<Object>) jsonObject.get("news");
-
+            list = (List<JSONObject >) jsonObject.get("news");
+            for (JSONObject obj : list) {
+                result.add(obj.get("version").toString());
+            }
             reader.close();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return list;
+        return result;
     };
 
 
-
-    public static Route getAll = (Request request, Response response) -> {
+    public static Route getListByGroupAndType = (Request request, Response response) -> {
+        List<JSONObject > list = null;
+        String result = null;
         try {
             String version = request.queryParams("version");
             String type = request.queryParams("type");
-            String filePath =  Props.getValue("json.file");
+            String filePath = Props.getValue("json.file.type." + type);
             FileReader reader = new FileReader(filePath);
             JSONParser jsonParser = new JSONParser();
             JSONObject jsonObject = (JSONObject) jsonParser.parse(reader);
+            list = (List<JSONObject >) jsonObject.get("news");
+            for (JSONObject obj : list) {
+                if(obj.get("version").toString().equals(version)){
+                    result =  obj.get("data").toString();
+                }
+            }
             reader.close();
 
-            JSONObject jsonResult = new JSONObject();
-            jsonResult.put("news_7", jsonObject.get("news_" + 7));
-            jsonResult.put("news_8", jsonObject.get("news_" + 8));
-            jsonResult.put("news_9", jsonObject.get("news_" + 9));
-            return jsonResult.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    };
+
+    public static Route updateListByGroupAndType = (Request request, Response response) -> {
+        String version = request.queryParams("version");
+        String type = request.queryParams("type");
+
+        DateFormat df = new SimpleDateFormat("yyyyMMddhhmmss");
+        String dateStr = df.format(new Date());
+        String filePath = Props.getValue("json.file.type." + type);
+
+        String filePathTarget = filePath + "_" + dateStr;
+        try {
+            FileUtils.moveFile(FileUtils.getFile(filePath), FileUtils.getFile(filePathTarget));
+            JSONParser jsonParser = new JSONParser();
+            FileReader reader = new FileReader(filePath);
+            JSONObject jsonSource = (JSONObject) jsonParser.parse(reader);
+            JsonArray jsonArray = new JsonParser().parse(request.queryParams("data")).getAsJsonArray();
+
+            JSONObject jsonData = new JSONObject();
+            jsonData.put("version", version);
+            jsonData.put("data", jsonArray);
+
+            jsonSource.put("news", jsonData);
+            // write new file
+            FileWriter file = new FileWriter(filePath);
+            file.write(jsonSource.toJSONString());
+            file.flush();
+            file.close();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
-    };
-
-    Path newName(Path oldFile, String newNameString) {
-        // the magic is done by Path.resolve(...)
-        return oldFile.getParent().resolve(newNameString);
-    }
-
-
-    public static Route updateAllNotification = (Request request, Response response) -> {
-        DateFormat df = new SimpleDateFormat("yyyyMMddhhmmss");
-        String dateStr = df.format(new Date());
-        String filePath =  Props.getValue("json.file");
-        String filePathTarget =  Props.getValue("json.path") + "notification_" + dateStr + ".json";
-
-
-        try {
-            FileUtils.moveFile(FileUtils.getFile(filePath), FileUtils.getFile(filePathTarget));
-
-            String bindVersion = request.queryParams("bvs");
-
-            JSONParser jsonParser = new JSONParser();
-            FileReader reader = new FileReader(filePathTarget);
-            JSONObject jsonObject = (JSONObject) jsonParser.parse(reader);
-            JsonArray jsonArray = new JsonParser().parse(request.queryParams("news")).getAsJsonArray();
-
-            if (bindVersion.equals("7")) {
-                jsonObject.put("news_7", jsonArray);
-            } else if (bindVersion.equals("8")) {
-                jsonObject.put("news_8", jsonArray);
-            } else if (bindVersion.equals("9")) {
-                jsonObject.put("news_9", jsonArray);
-            }
-
-            // write new file
-            FileWriter file = new FileWriter(filePath);
-            file.write(jsonObject.toJSONString());
-            file.flush();
-            file.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return "";
     };
 }

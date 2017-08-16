@@ -19,7 +19,7 @@ public class Application implements SparkApplication {
     public void init() {
 
 
-        port(8081);
+        port(8080);
         staticFiles.location("/public");
         staticFiles.expireTime(600L);
 //        enableDebugScreen();
@@ -33,9 +33,9 @@ public class Application implements SparkApplication {
             return "Ok, Success";
         });
 
-        get(Path.Web.NOTIFICATIONS, NotificationController.getAll);
-        get(Path.Web.UPDATE, NotificationController.updateAllNotification);
         get(Path.Web.LISTGROUP, NotificationController.getListGroupByType);
+        get(Path.Web.NOTIFICATIONS, NotificationController.getListByGroupAndType);
+        get(Path.Web.UPDATE, NotificationController.updateListByGroupAndType);
 
         get("*", ViewUtil.notFound);
 
