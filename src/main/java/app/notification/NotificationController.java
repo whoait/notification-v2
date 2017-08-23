@@ -24,74 +24,49 @@ import java.util.*;
  */
 public class NotificationController {
 
-    public static Route getListBind = (Request request, Response response) -> {
-        List<String> result = new ArrayList<>();
-        try {
-            String type = request.queryParams("type");
-            String filePath = Props.getValue("json.file.type." + type);
-            FileReader reader = new FileReader(filePath);
-            JSONParser jsonParser = new JSONParser();
-            JSONObject jsonObject = (JSONObject) jsonParser.parse(reader);
-            List<JSONObject> list = (List<JSONObject>) jsonObject.get("news");
-            for (JSONObject obj : list) {
-                result.add(obj.get("version").toString());
-            }
-            reader.close();
-            Gson gson = new Gson();
-            return gson.toJson(result);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    };
+//    public static Route getListBind = (Request request, Response response) -> {
+//        List<String> result = new ArrayList<>();
+//        try {
+//            String type = request.queryParams("type");
+//            String filePath = Props.getValue("json.file.type.1" /*+ type*/);
+//            FileReader reader = new FileReader(filePath);
+//            JSONParser jsonParser = new JSONParser();
+//            JSONObject jsonObject = (JSONObject) jsonParser.parse(reader);
+//            List<JSONObject> list = (List<JSONObject>) jsonObject.get("news");
+//            for (JSONObject obj : list) {
+//                result.add(obj.get("version").toString());
+//            }
+//            reader.close();
+//            Gson gson = new Gson();
+//            return gson.toJson(result);
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    };
 
     public static Route getNotifications = (Request request, Response response) -> {
-        List<JSONObject> list = null;
         try {
-            String version = request.queryParams("bvs");
+            Gson gson = new GsonBuilder().disableHtmlEscaping().create();
+            String productType = request.queryParams("productType");
             String type = request.queryParams("type");
             String filePath = Props.getValue("json.file.type." + type);
             FileReader reader = new FileReader(filePath);
             JSONParser jsonParser = new JSONParser();
-            JSONObject jsonObject = (JSONObject) jsonParser.parse(reader);
-            list = (List<JSONObject>) jsonObject.get("news");
-            for (JSONObject obj : list) {
-                if (obj.get("version").toString().equals(version)) {
-                    list = (List<JSONObject>) obj.get("data");
+            List<JSONObject> listData = (List<JSONObject>) jsonParser.parse(reader);
+            for (JSONObject item : listData) {
+                if (item.get("productType").toString().equals(productType)) {
+                    reader.close();
+                    return gson.toJson(item.get("data"));
                 }
             }
-            List<ItemNotification> result = parseListToRow(list);
-
-            Gson gson = new GsonBuilder().disableHtmlEscaping().create();
-            reader.close();
-            return gson.toJson(result);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
     };
-
-    private static List<ItemNotification> parseListToRow(List<JSONObject> list) {
-        List<ItemNotification> result = new ArrayList<>();
-        for (JSONObject object : list) {
-            List<JSONObject> listChild = (List<JSONObject>) object.get("list");
-            for (JSONObject objChild : listChild) {
-                ItemNotification obj = new ItemNotification();
-                obj.setTitle(object.get("title").toString());
-                obj.setContent(objChild.get("content") != null ? objChild.get("content").toString() : "");
-                obj.setDate(objChild.get("date").toString());
-                obj.setSubtitle(objChild.get("title").toString());
-                obj.setExt_link(objChild.get("ext_link") != null ? objChild.get("ext_link").toString() : objChild.get("modal_link").toString());
-                obj.setId(objChild.get("id").toString());
-                obj.setIs_show(objChild.get("is_show").toString());
-                result.add(obj);
-            }
-
-        }
-        return result;
-    }
 
 
     public static Route update = (Request request, Response response) -> {
@@ -158,7 +133,7 @@ public class NotificationController {
                     }
                 }
                 object.put("title", itemSet);
-                object.put("list",new GsonBuilder().disableHtmlEscaping().create().toJson(list));
+                object.put("list", new GsonBuilder().disableHtmlEscaping().create().toJson(list));
                 listObject.add(object);
             }
             result.put("version", bvs);
