@@ -33,7 +33,7 @@ public class ViewUtil {
 
     public static Route notFound = (Request request, Response response) -> {
         response.status(HttpStatus.NOT_FOUND_404);
-        return render(request, new HashMap<>(), Path.Template.NOT_FOUND);
+        return render(request, new HashMap<>(), "NotFound");
     };
 
     private static VelocityTemplateEngine strictVelocityEngine() {

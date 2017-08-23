@@ -1,9 +1,6 @@
 .idea
-targer
+/targer
 node_modules
-.idea\
-.idea/*
-idea
-idea/
-idea\
-.idea
+/build
+/out
+

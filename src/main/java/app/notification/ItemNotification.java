@@ -6,18 +6,36 @@ import java.util.Date;
  * Created by IFV-DS1-TUYENVT on 11/07/2017.
  */
 public class ItemNotification {
-    public Integer id;
-    public String date;
-    public String title;
-    public String content;
-    public String ext_link;
+    private String title;
+    private String id;
+    private String subtitle;
+    private String date;
+    private String content;
+    private String is_show;
+    private String ext_link;
 
-    public Integer getId() {
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
+    }
+
+    public String getSubtitle() {
+        return subtitle;
+    }
+
+    public void setSubtitle(String subtitle) {
+        this.subtitle = subtitle;
     }
 
     public String getDate() {
@@ -28,14 +46,6 @@ public class ItemNotification {
         this.date = date;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getContent() {
         return content;
     }
@@ -44,19 +54,19 @@ public class ItemNotification {
         this.content = content;
     }
 
+    public String getIs_show() {
+        return is_show;
+    }
+
+    public void setIs_show(String is_show) {
+        this.is_show = is_show;
+    }
+
     public String getExt_link() {
         return ext_link;
     }
 
     public void setExt_link(String ext_link) {
-        this.ext_link = ext_link;
-    }
-
-    public ItemNotification(Integer id, String date, String title, String content, String ext_link) {
-        this.id = id;
-        this.date = date;
-        this.title = title;
-        this.content = content;
         this.ext_link = ext_link;
     }
 
