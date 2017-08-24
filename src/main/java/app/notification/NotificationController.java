@@ -11,9 +11,7 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -23,33 +21,12 @@ import java.util.*;
  */
 public class NotificationController {
 
-//    public static Route getListBind = (Request request, Response response) -> {
-//        List<String> result = new ArrayList<>();
-//        try {
-//            String type = request.queryParams("type");
-//            String filePath = Props.getValue("json.file.type.1" /*+ type*/);
-//            FileReader reader = new FileReader(filePath);
-//            JSONParser jsonParser = new JSONParser();
-//            JSONObject jsonObject = (JSONObject) jsonParser.parse(reader);
-//            List<JSONObject> list = (List<JSONObject>) jsonObject.get("news");
-//            for (JSONObject obj : list) {
-//                result.add(obj.get("version").toString());
-//            }
-//            reader.close();
-//            Gson gson = new Gson();
-//            return gson.toJson(result);
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return null;
-//    };
-
     public static Route getNotifications = (Request request, Response response) -> {
 
         String type = request.queryParams("type");
         String filePath = Props.getValue("json.file.type." + type);
-        FileReader reader = new FileReader(filePath);
+//        FileReader reader = new FileReader(filePath);
+        BufferedReader reader = new BufferedReader(new FileReader(filePath));
         Gson gson = new GsonBuilder().disableHtmlEscaping().create();
         String productType = request.queryParams("productType");
         JSONParser jsonParser = new JSONParser();
@@ -60,7 +37,6 @@ public class NotificationController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 //            List<JSONObject> listData = (List<JSONObject>) jsonParser.parse(reader);
         for (JSONObject item : listData) {
             if (item.get("productType").toString().equals(productType)) {
@@ -78,6 +54,7 @@ public class NotificationController {
         DateFormat df = new SimpleDateFormat("yyyyMMddhhmmss");
         String dateStr = df.format(new Date());
         String filePath = Props.getValue("json.file.type." + type);
+        Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
 //        String filePathTarget = filePath + "_" + dateStr;
         try {
@@ -85,22 +62,21 @@ public class NotificationController {
             List<JSONObject> listInsert = null;
 //            FileUtils.moveFile(FileUtils.getFile(filePath), FileUtils.getFile(filePathTarget));
             JSONParser jsonParser = new JSONParser();
-            FileReader reader = new FileReader(filePath);
-            List<JSONObject> jsonSource = (List<JSONObject>) jsonParser.parse(reader);
-            JSONObject jsonInsert = convert(request, productType);
+            BufferedReader reader = new BufferedReader(new FileReader(filePath));
+            list = (List<JSONObject>) jsonParser.parse(reader);
+            List<JSONObject> jsonInsert = convert(request, productType);
 
-            list = (List<JSONObject>) jsonSource;
+
             for (JSONObject obj : list) {
                 if (obj.get("productType").toString().equals(productType)) {
-                    list.remove(obj);
-                    list.add(jsonInsert);
+                    ((JSONObject) obj.get("data")).put("news", jsonInsert);
                     break;
                 }
             }
-            jsonSource.get(0).put("news", list);
             // write new file
-            FileWriter file = new FileWriter(filePath);
-            file.write(jsonSource.get(0).toJSONString());
+            BufferedWriter file = new BufferedWriter(new FileWriter(filePath));
+            Object[] jsonObjectInsert = list.toArray();
+            file.write(gson.toJson(jsonObjectInsert));
             file.flush();
             file.close();
             reader.close();
@@ -110,10 +86,9 @@ public class NotificationController {
         return null;
     };
 
-    private static JSONObject convert(Request request, String productType) {
+    private static List<JSONObject> convert(Request request, String productType) {
         try {
-            List<JSONObject> listObject = new ArrayList<>();
-            JSONObject result = new JSONObject();
+            List<JSONObject> result = new ArrayList<>();
             ObjectMapper mapper = new ObjectMapper();
             List<ItemNotification> listRequest = mapper.readValue(request.body(),
                     TypeFactory.defaultInstance().constructCollectionType(List.class, ItemNotification.class));
@@ -133,10 +108,9 @@ public class NotificationController {
                     }
                 }
                 object.put("title", itemSet);
-                object.put("list", new GsonBuilder().disableHtmlEscaping().create().toJson(list));
-                listObject.add(object);
+                object.put("list", list);
+                result.add(object);
             }
-            result.put("news", listObject);
             return result;
         } catch (IOException e) {
             e.printStackTrace();
