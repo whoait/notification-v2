@@ -54,7 +54,7 @@ public class NotificationController {
         DateFormat df = new SimpleDateFormat("yyyyMMddhhmmss");
         String dateStr = df.format(new Date());
         String filePath = Props.getValue("json.file.type." + type);
-        Gson gson = new GsonBuilder().disableHtmlEscaping().create();
+        Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
 
 //        String filePathTarget = filePath + "_" + dateStr;
         try {
