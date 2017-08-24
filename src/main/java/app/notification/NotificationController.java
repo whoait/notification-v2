@@ -111,6 +111,7 @@ public class NotificationController {
                             itemNo.setContent(null);
                         }
                         itemNo.setSubtitle(null);
+                        itemNo.setIndex(null);
                         list.add(itemNo);
                     }
                 }

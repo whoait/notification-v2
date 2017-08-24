@@ -14,6 +14,7 @@ public class ItemNotification {
     private String is_show;
     private String ext_link;
     private String modal_link;
+    private String index;
 
     public String getTitle() {
         return title;
@@ -77,5 +78,13 @@ public class ItemNotification {
 
     public void setModal_link(String modal_link) {
         this.modal_link = modal_link;
+    }
+
+    public String getIndex() {
+        return index;
+    }
+
+    public void setIndex(String index) {
+        this.index = index;
     }
 }
