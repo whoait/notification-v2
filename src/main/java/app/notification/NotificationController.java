@@ -104,6 +104,13 @@ public class NotificationController {
                 List<ItemNotification> list = new ArrayList<>();
                 for (ItemNotification itemNo : listRequest) {
                     if (itemNo.getTitle().equals(itemSet)) {
+                        itemNo.setTitle(itemNo.getSubtitle());
+                        if(itemNo.getId().equals("13")){
+                            itemNo.setModal_link(itemNo.getExt_link());
+                            itemNo.setExt_link(null);
+                            itemNo.setContent(null);
+                        }
+                        itemNo.setSubtitle(null);
                         list.add(itemNo);
                     }
                 }

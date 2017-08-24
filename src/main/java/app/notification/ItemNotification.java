@@ -13,6 +13,7 @@ public class ItemNotification {
     private String content;
     private String is_show;
     private String ext_link;
+    private String modal_link;
 
     public String getTitle() {
         return title;
@@ -70,4 +71,11 @@ public class ItemNotification {
         this.ext_link = ext_link;
     }
 
+    public String getModal_link() {
+        return modal_link;
+    }
+
+    public void setModal_link(String modal_link) {
+        this.modal_link = modal_link;
+    }
 }
