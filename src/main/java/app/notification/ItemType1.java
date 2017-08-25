@@ -5,7 +5,7 @@ import java.util.Date;
 /**
  * Created by IFV-DS1-TUYENVT on 11/07/2017.
  */
-public class ItemNotification {
+public class ItemType1 {
     private String title;
     private String id;
     private String subtitle;
