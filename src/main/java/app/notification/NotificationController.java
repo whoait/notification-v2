@@ -63,6 +63,7 @@ public class NotificationController {
 //            FileUtils.moveFile(FileUtils.getFile(filePath), FileUtils.getFile(filePathTarget));
             JSONParser jsonParser = new JSONParser();
             BufferedReader reader = new BufferedReader(new FileReader(filePath));
+
             list = (List<JSONObject>) jsonParser.parse(reader);
             List<JSONObject> jsonInsert;
             if (type.equals("1")) {
@@ -83,6 +84,7 @@ public class NotificationController {
                         break;
                     }
                 }
+
             }
 
 
@@ -93,6 +95,45 @@ public class NotificationController {
             file.flush();
             file.close();
             reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    };
+
+    public static Route updateAd = (Request request, Response response) -> {
+        String productType = request.queryParams("productType");
+        String type = request.queryParams("type");
+
+        DateFormat df = new SimpleDateFormat("yyyyMMddhhmmss");
+        String dateStr = df.format(new Date());
+        String filePath = Props.getValue("json.file.type." + type);
+        Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
+
+        try {
+            List<JSONObject> list = null;
+            JSONParser jsonParser = new JSONParser();
+            BufferedReader reader = new BufferedReader(new FileReader(filePath));
+
+            JSONObject result;
+            result = (JSONObject) jsonParser.parse(request.body().toString());
+            if (type.equals("1")) {
+                for (JSONObject obj : list) {
+                    if (obj.get("productType").toString().equals(productType)) {
+                        ((JSONObject) obj.get("data")).put("ad", result);
+                        break;
+                    }
+                }
+                // write new file
+                BufferedWriter file = new BufferedWriter(new FileWriter(filePath));
+                Object[] jsonObjectInsert = list.toArray();
+                file.write(gson.toJson(jsonObjectInsert));
+                file.flush();
+                file.close();
+                reader.close();
+            }
+
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -148,13 +189,13 @@ public class NotificationController {
                     TypeFactory.defaultInstance().constructCollectionType(List.class, ItemType3.class));
             for (ItemType3 item : listRequest) {
                 JSONObject obj = new JSONObject();
-                obj.put("id",item.getId());
-                obj.put("date",item.getDate());
-                obj.put("title",item.getTitle());
-                obj.put("content",item.getContent());
-                obj.put("thumbnail",item.getThumbnail());
-                obj.put("ext_link",item.getExt_link());
-                obj.put("is_show",item.getIs_show());
+                obj.put("id", item.getId());
+                obj.put("date", item.getDate());
+                obj.put("title", item.getTitle());
+                obj.put("content", item.getContent());
+                obj.put("thumbnail", item.getThumbnail());
+                obj.put("ext_link", item.getExt_link());
+                obj.put("is_show", item.getIs_show());
                 result.add(obj);
             }
             return result;

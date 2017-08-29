@@ -22,5 +22,6 @@ public class Application implements SparkApplication {
 //        get(Path.Web.BINDVERSION, NotificationController.getListBind);
         get(Path.Web.NOTIFICATIONS, NotificationController.getNotifications);
         post(Path.Web.UPDATE, NotificationController.update);
+        post(Path.Web.UPDATE_AD, NotificationController.updateAd);
     }
 }

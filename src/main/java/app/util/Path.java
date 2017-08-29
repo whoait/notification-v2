@@ -14,5 +14,8 @@ public class Path {
         @Getter
         public static final String UPDATE = "/update";
 
+        @Getter
+        public static final String UPDATE_AD = "/updateAd";
+
     }
 }
