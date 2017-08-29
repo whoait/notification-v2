@@ -19,7 +19,6 @@ public class Application implements SparkApplication {
             response.header("Access-Control-Expose-Headers", "Access-Control-Allow-Origin, Access-Control-Allow-Credentials");
             response.header("Access-Control-Allow-Credentials", "true");
         });
-//        get(Path.Web.BINDVERSION, NotificationController.getListBind);
         get(Path.Web.NOTIFICATIONS, NotificationController.getNotifications);
         post(Path.Web.UPDATE, NotificationController.update);
     }

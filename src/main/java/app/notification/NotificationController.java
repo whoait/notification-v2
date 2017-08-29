@@ -25,7 +25,6 @@ public class NotificationController {
 
         String type = request.queryParams("type");
         String filePath = Props.getValue("json.file.type." + type);
-//        FileReader reader = new FileReader(filePath);
         BufferedReader reader = new BufferedReader(new FileReader(filePath));
         Gson gson = new GsonBuilder().disableHtmlEscaping().create();
         String productType = request.queryParams("productType");
@@ -37,7 +36,6 @@ public class NotificationController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-//            List<JSONObject> listData = (List<JSONObject>) jsonParser.parse(reader);
         for (JSONObject item : listData) {
             if (item.get("productType").toString().equals(productType)) {
                 reader.close();
@@ -74,7 +72,13 @@ public class NotificationController {
                     }
                 }
             } else if (type.equals("2")) {
-                jsonInsert = convertType1(request, productType);
+                JSONObject jsonInsert1 = convertType2(request, productType);
+                for (JSONObject obj : list) {
+                    if (obj.get("productType").toString().equals(productType)) {
+                        ((JSONObject) obj).put("data", jsonInsert1);
+                        break;
+                    }
+                }
             } else {
                 jsonInsert = convertType3(request, productType);
                 for (JSONObject obj : list) {
@@ -140,6 +144,24 @@ public class NotificationController {
         return null;
     }
 
+    private static JSONObject convertType2(Request request, String productType) {
+        try {
+            //TODO
+            List<Object> listMs = new ArrayList<>();
+            JSONObject object = new JSONObject();
+            ObjectMapper mapper = new ObjectMapper();
+            List<Object> listRequest = mapper.readValue(request.body(),
+                    TypeFactory.defaultInstance().constructCollectionType(List.class, Object.class));
+            object.put("contents", listRequest);
+            object.put("messages", listMs);
+            return object;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     private static List<JSONObject> convertType3(Request request, String productType) {
         try {
             List<JSONObject> result = new ArrayList<>();
@@ -148,13 +170,13 @@ public class NotificationController {
                     TypeFactory.defaultInstance().constructCollectionType(List.class, ItemType3.class));
             for (ItemType3 item : listRequest) {
                 JSONObject obj = new JSONObject();
-                obj.put("id",item.getId());
-                obj.put("date",item.getDate());
-                obj.put("title",item.getTitle());
-                obj.put("content",item.getContent());
-                obj.put("thumbnail",item.getThumbnail());
-                obj.put("ext_link",item.getExt_link());
-                obj.put("is_show",item.getIs_show());
+                obj.put("id", item.getId());
+                obj.put("date", item.getDate());
+                obj.put("title", item.getTitle());
+                obj.put("content", item.getContent());
+                obj.put("thumbnail", item.getThumbnail());
+                obj.put("ext_link", item.getExt_link());
+                obj.put("is_show", item.getIs_show());
                 result.add(obj);
             }
             return result;
