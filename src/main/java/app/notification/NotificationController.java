@@ -121,6 +121,7 @@ public class NotificationController {
 
             JSONObject result;
             result = (JSONObject) jsonParser.parse(request.body().toString());
+            list = (List<JSONObject>) jsonParser.parse(reader);
             if (type.equals("1")) {
                 for (JSONObject obj : list) {
                     if (obj.get("productType").toString().equals(productType)) {
