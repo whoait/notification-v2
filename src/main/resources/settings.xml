@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
-<properties>
-    <comment>Properties</comment>
-    <entry key="json.file.type.1">D://notification//input//notification.json</entry>
-    <entry key="json.file.type.2">D://notification//input//sitetheater.json</entry>
-    <entry key="json.file.type.3">D://notification//input//push.json</entry>
-    <entry key="json.path">D://notification//input//</entry>
-</properties>
