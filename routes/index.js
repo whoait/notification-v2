@@ -14,6 +14,17 @@ router.get('/', function (req, res, next) {
 //mock data
 var data = datamock;
 router.get("/posts", function (req, res) {
+    res.set(
+        {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Credentials': true,
+            'Access-Control-Allow-Methods': 'POST, GET, PUT, DETETE'
+
+        }
+    );
+
     res.send(data);
 });
 
