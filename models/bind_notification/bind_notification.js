@@ -3,7 +3,6 @@ module.exports = function(sequelize, DataTypes) {
   var bind_notification = sequelize.define('bind_notification', {
     message_type: DataTypes.STRING,
     title: DataTypes.STRING,
-    content: DataTypes.STRING,
   }, {
     underscored: true,
     classMethods: {
