@@ -3,10 +3,12 @@ const router = express.Router();
 const multer = require('multer');
 const upload = multer();
 const datamock = require('./mockdata.json');
+const models = require('../models');
+
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+router.get('/', function (req, res, next) {
+    res.render('index', {title: 'Express'});
 });
 
 //mock data
@@ -16,13 +18,31 @@ router.get("/posts", function (req, res) {
 });
 
 // handle upload file.
-router.post('/upload', upload.single('jsonFile'), function(req, res) {
-    console.log(req.file);
-    console.log(req.body);
-    const data = {
-        message: 'ok'
-    };
-    res.send(data);
+router.post('/upload', upload.single('jsonFile'), function (req, res) {
+    const notificationData = JSON.parse(req.file.buffer.toString());
+    // Check ad element
+    if (notificationData.hasOwnProperty('ad')) {
+        const adElement = notificationData.ad;
+        console.log(adElement);
+
+        new Promise((resolve, reject) => {
+            const item = models.bind_notification_detail.findAll({});
+            resolve(item)
+        }).then((data) => {
+            res.send(data);
+        });
+    }
+});
+
+router.get('/test', (req, res) => {
+    new Promise((resolve, reject) => {
+        const item = models.bind_notification_detail.create({
+            content: 'Test AD'
+        });
+        resolve(item)
+    }).then((data) => {
+        res.send(data);
+    });
 });
 
 module.exports = router;

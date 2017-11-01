@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: function(queryInterface, Sequelize) {
-    return queryInterface.createTable('bind_notification', {
+    return queryInterface.createTable('bind_notifications', {
       uuid: {
         allowNull: false,
         primaryKey: true,
