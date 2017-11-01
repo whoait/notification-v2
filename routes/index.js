@@ -36,9 +36,15 @@ router.post('/upload', upload.single('jsonFile'), function (req, res) {
     if (notificationData.hasOwnProperty('ad')) {
         const adElement = notificationData.ad;
         console.log(adElement);
-
         new Promise((resolve, reject) => {
-            const item = models.bind_notification_detail.findAll({});
+            // find ad element
+            const item = models.bind_notification.find({
+                include: [
+                    {
+                        model: models.bind_notification_detail,
+                    }
+                ]
+            });
             resolve(item)
         }).then((data) => {
             res.send(data);
@@ -48,9 +54,21 @@ router.post('/upload', upload.single('jsonFile'), function (req, res) {
 
 router.get('/test', (req, res) => {
     new Promise((resolve, reject) => {
-        const item = models.bind_notification_detail.create({
-            content: 'Test AD'
-        });
+        const item = models.bind_notification.create(
+            {
+                message_type: 'ad',
+                title: 'Test title',
+                bind_notification_detail: {
+                    content: 'Test content',
+                    is_bind10: true
+                },
+            },
+            {
+                include:
+                    [{
+                        model: models.bind_notification_detail
+                    }]
+            });
         resolve(item)
     }).then((data) => {
         res.send(data);
