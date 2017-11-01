@@ -33450,7 +33450,7 @@ var IndexNotification = function (_Component) {
             return _react2.default.createElement(
                 _adminOnRest.Admin,
                 { title: '\u901A\u77E5\u30A8\u30EA\u30A2\u7BA1\u7406\u30B7\u30B9\u30C6\u30E0', restClient: (0, _restClient2.default)('http://localhost:3000') },
-                _react2.default.createElement(_adminOnRest.Resource, { name: 'posts', options: { label: 'トップページ' }, list: _posts.PostList })
+                _react2.default.createElement(_adminOnRest.Resource, { name: 'posts', options: { label: 'トップページ' }, list: _posts.PostList, create: _posts.PostCreate })
             );
         }
     }]);
@@ -114475,7 +114475,7 @@ exports.default = ActionViewList;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.PostList = undefined;
+exports.PostCreate = exports.PostList = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -114515,6 +114515,19 @@ var PostList = exports.PostList = function PostList(props) {
             _react2.default.createElement(_adminOnRest.DateField, { source: 'end_date', label: '\u7D42\u4E86\u65E5\u6642' }),
             _react2.default.createElement(_adminOnRest.EditButton, { style: { padding: 0 }, label: '\u7DE8\u96C6' }),
             _react2.default.createElement(_adminOnRest.DeleteButton, { style: { padding: 0 }, label: '\u524A\u9664' })
+        )
+    );
+};
+
+var PostCreate = exports.PostCreate = function PostCreate(props) {
+    return _react2.default.createElement(
+        _adminOnRest.Create,
+        props,
+        _react2.default.createElement(
+            _adminOnRest.SimpleForm,
+            null,
+            _react2.default.createElement(_adminOnRest.TextInput, { source: 'title' }),
+            _react2.default.createElement(_adminOnRest.LongTextInput, { source: 'body' })
         )
     );
 };

@@ -17,6 +17,7 @@ import {
     TextField,
     TextInput,
     DeleteButton,
+    Create,
 } from 'admin-on-rest';
 
 import Status from './Status';
@@ -47,4 +48,13 @@ export const PostList = (props) => (
 
         </Datagrid>
     </List>
+);
+
+export const PostCreate = (props) => (
+    <Create {...props}>
+        <SimpleForm>
+            <TextInput source="title" />
+            <LongTextInput source="body" />
+        </SimpleForm>
+    </Create>
 );
