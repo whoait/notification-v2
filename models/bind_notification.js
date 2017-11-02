@@ -8,6 +8,7 @@ module.exports = function (sequelize, DataTypes) {
         },
         message_type: DataTypes.STRING,
         title: DataTypes.STRING,
+        content: DataTypes.STRING,
     }, {
         underscored: true,
         classMethods: {

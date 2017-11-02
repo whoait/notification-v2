@@ -7,7 +7,10 @@ module.exports = function (sequelize, DataTypes) {
             defaultValue: DataTypes.UUIDV4
         },
         parent_id: DataTypes.UUID,
-        id: DataTypes.INTEGER,
+        id: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+        },
         sub_title: DataTypes.STRING,
         start_date: DataTypes.DATE,
         end_date: DataTypes.DATE,

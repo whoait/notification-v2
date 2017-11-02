@@ -19,7 +19,8 @@ module.exports = {
           }
       },
       id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        autoIncrement: true,
       },
       sub_title: {
         type: Sequelize.STRING
