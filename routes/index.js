@@ -29,6 +29,23 @@ router.get("/posts", function (req, res) {
     res.send(data);
 });
 
+router.post("/posts", function (req, res) {
+    console.log(req.body.pictures);
+    res.set(
+        {
+            // 'Accept': 'application/json',
+            // 'Content-Type': 'application/json',
+            // 'Access-Control-Allow-Origin': '*',
+            // 'Access-Control-Allow-Credentials': true,
+            // 'Access-Control-Allow-Methods': 'POST, GET, PUT, DETETE',
+            'x-total-count': 100
+
+        }
+    );
+
+    res.send(data);
+});
+
 // handle upload file.
 router.post('/upload', upload.single('jsonFile'), function (req, res) {
     const notificationData = JSON.parse(req.file.buffer.toString());

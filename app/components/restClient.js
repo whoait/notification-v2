@@ -34,9 +34,6 @@ export default (apiUrl, httpClient = fetchJson) => {
     const convertRESTRequestToHTTP = (type, resource, params) => {
         let url = '';
         const options = {};
-        //debug
-        console.log(type);
-
         switch (type) {
             case GET_LIST: {
                 const { page, perPage } = params.pagination;

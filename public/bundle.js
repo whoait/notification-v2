@@ -33423,13 +33423,17 @@ var _adminOnRest = __webpack_require__(113);
 
 var _posts = __webpack_require__(953);
 
-var _aorLanguageJapanese = __webpack_require__(957);
+var _aorLanguageJapanese = __webpack_require__(959);
 
 var _aorLanguageJapanese2 = _interopRequireDefault(_aorLanguageJapanese);
 
 var _restClient = __webpack_require__(956);
 
 var _restClient2 = _interopRequireDefault(_restClient);
+
+var _addUploadFeature = __webpack_require__(958);
+
+var _addUploadFeature2 = _interopRequireDefault(_addUploadFeature);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -33438,6 +33442,20 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var restClient = (0, _restClient2.default)('');
+var uploadCapableClient = (0, _addUploadFeature2.default)(restClient);
+var delayedRestClient = function delayedRestClient(type, resource, params) {
+    return new Promise(function (resolve) {
+        return setTimeout(function () {
+            return resolve(uploadCapableClient(type, resource, params));
+        }, 1000);
+    });
+};
+
+var messages = {
+    'ja': _aorLanguageJapanese2.default
+};
 
 var IndexNotification = function (_Component) {
     _inherits(IndexNotification, _Component);
@@ -33453,7 +33471,7 @@ var IndexNotification = function (_Component) {
         value: function render() {
             return _react2.default.createElement(
                 _adminOnRest.Admin,
-                { locale: 'ja', title: '\u901A\u77E5\u30A8\u30EA\u30A2\u7BA1\u7406\u30B7\u30B9\u30C6\u30E0', restClient: (0, _restClient2.default)('http://localhost:3000') },
+                { locale: 'ja', messages: messages, title: '\u901A\u77E5\u30A8\u30EA\u30A2\u7BA1\u7406\u30B7\u30B9\u30C6\u30E0', restClient: delayedRestClient },
                 _react2.default.createElement(_adminOnRest.Resource, { name: 'posts', options: { label: 'トップページ' }, list: _posts.PostList, create: _posts.PostCreate })
             );
         }
@@ -114507,7 +114525,8 @@ var PostList = exports.PostList = function PostList(props) {
         _react2.default.createElement(
             _adminOnRest.Datagrid,
             { rowStyle: _rowStyle2.default },
-            _react2.default.createElement(_adminOnRest.TextField, { source: 'title', label: '\u30BF\u30A4\u30C8\u30EB', style: { maxWidth: '18em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } }),
+            _react2.default.createElement(_adminOnRest.TextField, { source: 'title', label: '\u30BF\u30A4\u30C8\u30EB',
+                style: { maxWidth: '18em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } }),
             _react2.default.createElement(_adminOnRest.EditButton, { style: { padding: 0 }, label: '\u30B9\u30C6\u30FC\u30BF\u30B9' }),
             _react2.default.createElement(_adminOnRest.BooleanField, { source: 'is_cld', defaultValue: false, label: 'Cld' }),
             _react2.default.createElement(_adminOnRest.BooleanField, { source: 'is_dlt', defaultValue: true, label: 'Clt' }),
@@ -114527,14 +114546,6 @@ var PostList = exports.PostList = function PostList(props) {
     );
 };
 
-// const choices = [
-//     { id: 123, first_name: 'Leo', last_name: 'Tolstoi' },
-//     { id: 456, first_name: 'Jane', last_name: 'Austen' },
-//     { id: 456, first_name: 'Jane', last_name: 'Austen' },
-//  ];
-var optionRenderer = function optionRenderer(choice) {
-    return choice.first_name + ' ' + choice.last_name;
-};
 var PostCreate = exports.PostCreate = function PostCreate(props) {
     return _react2.default.createElement(
         _adminOnRest.Create,
@@ -114543,11 +114554,11 @@ var PostCreate = exports.PostCreate = function PostCreate(props) {
             _adminOnRest.SimpleForm,
             null,
             _react2.default.createElement(_adminOnRest.TextInput, { source: 'title', label: '\u7BA1\u7406\u30BF\u30A4\u30C8\u30EB' }),
-            _react2.default.createElement(_adminOnRest.CheckboxGroupInput, { source: 'category', label: '\u901A\u77E5\u5BFE\u8C61', choices: [{ id: 'programming', name: 'クラウド' }, { id: 'lifestyle', name: 'クライアント' }, { id: 'photography', name: 'BiND10' }, { id: '1', name: 'BiND10 体験版' }, { id: 'photog2raphy', name: 'BiND9' }, { id: 'phot3ography', name: 'BiND9 体験版' }] }),
-            _react2.default.createElement(_adminOnRest.SelectInput, { source: 'author_id', label: '\u901A\u77E5\u30A8\u30EA\u30A2', choices: [{ id: '1', name: 'サイド' }, { id: '2', name: 'モーダル' }, { id: '3', name: 'ポップアップ' }] }),
-            _react2.default.createElement(_adminOnRest.TextField, { source: '', label: '\u63B2\u8F09\u60C5\u5831', style: { font: 'italic bold 12px/30px Georgia, serif' } }),
-            _react2.default.createElement(_adminOnRest.SelectInput, { source: 'xxxxx', label: '\u30AB\u30C6\u30B4\u30EA', choices: [{ id: '1', name: '重要なお知らせ1' }, { id: '2', name: '重要なお知らせ2' }, { id: '3', name: '重要なお知らせ3' }] }),
-            _react2.default.createElement(_adminOnRest.TextInput, { source: 'title', label: '\u30BF\u30A4\u30C8\u30EB' }),
+            _react2.default.createElement(_adminOnRest.CheckboxGroupInput, { source: 'bindversion', label: '\u901A\u77E5\u5BFE\u8C61', choices: [{ id: 'programming', name: 'クラウド' }, { id: 'lifestyle', name: 'クライアント' }, { id: 'photography', name: 'BiND10' }, { id: '1', name: 'BiND10 体験版' }, { id: 'photog2raphy', name: 'BiND9' }, { id: 'phot3ography', name: 'BiND9 体験版' }] }),
+            _react2.default.createElement(_adminOnRest.SelectInput, { source: 'modal_link', label: '\u901A\u77E5\u30A8\u30EA\u30A2', choices: [{ id: '1x', name: 'サイド' }, { id: '2x', name: 'モーダル' }, { id: '3x', name: 'ポップアップ' }] }),
+            _react2.default.createElement(_adminOnRest.TextField, { source: 'xxxxxx', label: '\u63B2\u8F09\u60C5\u5831', style: { font: 'italic bold 12px/30px Georgia, serif' } }),
+            _react2.default.createElement(_adminOnRest.SelectInput, { source: 'xxxxx', label: '\u30AB\u30C6\u30B4\u30EA', choices: [{ id: '1x', name: '重要なお知らせ1' }, { id: '2x', name: '重要なお知らせ2' }, { id: '3x', name: '重要なお知らせ3' }] }),
+            _react2.default.createElement(_adminOnRest.TextInput, { source: 'ticxcvcxxvtle', label: '\u30BF\u30A4\u30C8\u30EB' }),
             _react2.default.createElement(
                 _adminOnRest.ImageInput,
                 { source: 'pictures', label: '\u753B\u50CF', accept: 'image/*', placeholder: _react2.default.createElement(
@@ -114558,8 +114569,8 @@ var PostCreate = exports.PostCreate = function PostCreate(props) {
                 _react2.default.createElement(_adminOnRest.ImageField, { source: 'src', title: 'title' })
             ),
             _react2.default.createElement(_adminOnRest.LongTextInput, { source: 'body', label: '\u672C\u6587' }),
-            _react2.default.createElement(_adminOnRest.TextInput, { source: 'title', label: '\u30DC\u30BF\u30F3\u30C6\u30AD\u30B9\u30C8' }),
-            _react2.default.createElement(_adminOnRest.TextInput, { source: 'title', label: '\u30EA\u30F3\u30AF URL' }),
+            _react2.default.createElement(_adminOnRest.TextInput, { source: 'titlze', label: '\u30DC\u30BF\u30F3\u30C6\u30AD\u30B9\u30C8' }),
+            _react2.default.createElement(_adminOnRest.TextInput, { source: 'titxle', label: '\u30EA\u30F3\u30AF URL' }),
             _react2.default.createElement(_adminOnRest.SelectInput, { source: 'xxxxxx', label: '\u8868\u793A\u56DE\u6570', choices: [{ id: '1', name: '3 回' }, { id: '2', name: '2 回' }, { id: '3', name: '1 回' }] })
         )
     );
@@ -114666,9 +114677,6 @@ exports.default = function (apiUrl) {
     var convertRESTRequestToHTTP = function convertRESTRequestToHTTP(type, resource, params) {
         var url = '';
         var options = {};
-        //debug
-        console.log(type);
-
         switch (type) {
             case _adminOnRest.GET_LIST:
                 {
@@ -114786,75 +114794,141 @@ exports.default = function (apiUrl) {
 };
 
 /***/ }),
-/* 957 */
+/* 957 */,
+/* 958 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+var convertFileToBase64 = function convertFileToBase64(file) {
+    return new Promise(function (resolve, reject) {
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
+
+        reader.onload = function () {
+            return resolve(reader.result);
+        };
+        reader.onerror = reject;
+    });
+};
+
+var addUploadCapabilities = function addUploadCapabilities(requestHandler) {
+    return function (type, resource, params) {
+
+        if ((type === 'UPDATE' || type === 'CREATE') && resource === 'posts') {
+            console.log(type);
+            console.log(resource);
+            console.log(params);
+            if (params.data.pictures && params.data.pictures.length) {
+                //only freshly dropped pictures are instance of File
+                var formerPictures = params.data.pictures.filter(function (p) {
+                    return !(p instanceof File);
+                });
+                var newPictures = params.data.pictures.filter(function (p) {
+                    return p instanceof File;
+                });
+
+                return Promise.all(newPictures.map(convertFileToBase64)).then(function (base64Pictures) {
+                    return base64Pictures.map(function (picture64) {
+                        return {
+                            src: picture64,
+                            title: '' + params.data.title
+                        };
+                    });
+                }).then(function (transformedNewPictures) {
+                    return requestHandler(type, resource, _extends({}, params, {
+                        data: _extends({}, params.data, {
+                            pictures: [].concat(_toConsumableArray(transformedNewPictures), _toConsumableArray(formerPictures))
+                        })
+                    }));
+                });
+            }
+        }
+
+        return requestHandler(type, resource, params);
+    };
+};
+
+exports.default = addUploadCapabilities;
+
+/***/ }),
+/* 959 */
 /***/ (function(module, exports) {
 
 module.exports = {
-  aor: {
-       action: {
-           delete: 'åé¤',
-           show: 'è¦ã',
-           list: 'ä¸è¦§',
-           save: 'ä¿å­',
-           create: 'ä½æ',
-           edit: 'ç·¨é',
-           cancel: 'ã­ã£ã³ã»ã«',
-           refresh: 'æ´æ°',
-           add_filter: 'ãã£ã«ã¿ã¼ãè¿½å ',
-           remove_filter: 'ãã£ã«ã¿ã¼ãåé¤',
-       },
-       boolean: {
-           true: 'ã¯ã',
-           false: 'ããã',
-       },
-       page: {
-           list: '%{name} ãªã¹ã',
-           edit: '%{name} #%{id}',
-           show: '%{name} #%{id}',
-           create: '%{name} ãä½æ',
-           delete: '%{name} #%{id} ãåé¤',
-           dashboard: 'ããã·ã¥ãã¼ã',
-       },
-       input: {
-           image: {
-               upload_several: 'ã¢ããã­ã¼ããããã¡ã¤ã«ããã­ãããã¾ãã¯é¸æãã¦ãã ãã',
-               upload_single: 'ã¢ããã­ã¼ããããã¡ã¤ã«ããã­ãããã¾ãã¯é¸æãã¦ãã ãã',
-           },
-       },
-       message: {
-           yes: 'ã¯ã',
-           no: 'ããã',
-           are_you_sure: 'æ¬å½ã«ããããã§ãã?',
-           about: 'è©³ç´°',
-       },
-       navigation: {
-           page_out_of_boundaries: 'ç¡å¹ãªãã¼ã¸æå®ã§ã',
-           page_out_from_end: 'ç¡å¹ãªãã¼ã¸æå®ã§ã',
-           page_out_from_begin: 'ç¡å¹ãªãã¼ã¸æå®ã§ã',
-           page_range_info: '%{total} ä»¶ã® %{offsetBegin}-%{offsetEnd}',
-           next: 'æ¬¡ã¸',
-           prev: 'åã¸',
-       },
-       auth: {
-           username: 'ã¦ã¼ã¶ã¼å',
-           password: 'ãã¹ã¯ã¼ã',
-           sign_in: 'ã­ã°ã¤ã³',
-           sign_in_error: 'ã­ã°ã¤ã³ã«å¤±æãã¾ãã',
-           logout: 'ã­ã°ã¢ã¦ã',
-       },
-       notification: {
-           updated: 'æ´æ°ããã¾ãã',
-           created: 'ä½æããã¾ãã',
-           deleted: 'åé¤ããã¾ãã',
-           item_doesnt_exist: 'å­å¨ããªãã¢ã¤ãã ã§ã',
-           http_error: 'ãµã¼ãã¼ã¨ã©ã¼',
-       },
-       validation: {
-           required: 'å¿é ',
-       },
-   },
+    aor: {
+        action: {
+            delete: '削除',
+            show: '見る',
+            list: '一覧',
+            save: '保存',
+            create: '作成',
+            edit: '編集',
+            cancel: 'キャンセル',
+            refresh: '更新',
+            add_filter: 'フィルターを追加',
+            remove_filter: 'フィルターを削除',
+        },
+        boolean: {
+            true: 'はい',
+            false: 'いいえ',
+        },
+        page: {
+            list: '%{name} リスト',
+            edit: '%{name} #%{id}',
+            show: '%{name} #%{id}',
+            create: '%{name} を作成',
+            delete: '%{name} #%{id} を削除',
+            dashboard: 'ダッシュボード',
+        },
+        input: {
+            image: {
+                upload_several: 'アップロードするファイルをドロップ、または選択してください',
+                upload_single: 'アップロードするファイルをドロップ、または選択してください',
+            },
+        },
+        message: {
+            yes: 'はい',
+            no: 'いいえ',
+            are_you_sure: '本当によろしいですか?',
+            about: '詳細',
+        },
+        navigation: {
+            page_out_of_boundaries: '無効なページ指定です',
+            page_out_from_end: '無効なページ指定です',
+            page_out_from_begin: '無効なページ指定です',
+            page_range_info: '%{total} 件の %{offsetBegin}-%{offsetEnd}',
+            next: '次へ',
+            prev: '前へ',
+        },
+        auth: {
+            username: 'ユーザー名',
+            password: 'パスワード',
+            sign_in: 'ログイン',
+            sign_in_error: 'ログインに失敗しました',
+            logout: 'ログアウト',
+        },
+        notification: {
+            updated: '更新されました',
+            created: '作成されました',
+            deleted: '削除されました',
+            item_doesnt_exist: '存在しないアイテムです',
+            http_error: 'サーバーエラー',
+        },
+        validation: {
+            required: '必須',
+        },
+    },
 };
-
 
 /***/ })
 /******/ ]);
