@@ -33423,7 +33423,11 @@ var _adminOnRest = __webpack_require__(113);
 
 var _posts = __webpack_require__(953);
 
-var _restClient = __webpack_require__(955);
+var _aorLanguageJapanese = __webpack_require__(957);
+
+var _aorLanguageJapanese2 = _interopRequireDefault(_aorLanguageJapanese);
+
+var _restClient = __webpack_require__(956);
 
 var _restClient2 = _interopRequireDefault(_restClient);
 
@@ -33449,7 +33453,7 @@ var IndexNotification = function (_Component) {
         value: function render() {
             return _react2.default.createElement(
                 _adminOnRest.Admin,
-                { title: '\u901A\u77E5\u30A8\u30EA\u30A2\u7BA1\u7406\u30B7\u30B9\u30C6\u30E0', restClient: (0, _restClient2.default)('http://localhost:3000') },
+                { locale: 'ja', title: '\u901A\u77E5\u30A8\u30EA\u30A2\u7BA1\u7406\u30B7\u30B9\u30C6\u30E0', restClient: (0, _restClient2.default)('http://localhost:3000') },
                 _react2.default.createElement(_adminOnRest.Resource, { name: 'posts', options: { label: 'トップページ' }, list: _posts.PostList, create: _posts.PostCreate })
             );
         }
@@ -114489,6 +114493,10 @@ var _Status = __webpack_require__(954);
 
 var _Status2 = _interopRequireDefault(_Status);
 
+var _rowStyle = __webpack_require__(955);
+
+var _rowStyle2 = _interopRequireDefault(_rowStyle);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var detailStyle = { display: 'inline-block', verticalAlign: 'top', marginRight: '2em', minWidth: '8em' };
@@ -114498,8 +114506,8 @@ var PostList = exports.PostList = function PostList(props) {
         _extends({}, props, { perPage: 25, title: '\u30C8\u30C3\u30D7\u30DA\u30FC\u30B8' }),
         _react2.default.createElement(
             _adminOnRest.Datagrid,
-            null,
-            _react2.default.createElement(_adminOnRest.TextField, { source: 'title', label: '\u30BF\u30A4\u30C8\u30EB' }),
+            { rowStyle: _rowStyle2.default },
+            _react2.default.createElement(_adminOnRest.TextField, { source: 'title', label: '\u30BF\u30A4\u30C8\u30EB', style: { maxWidth: '18em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } }),
             _react2.default.createElement(_adminOnRest.EditButton, { style: { padding: 0 }, label: '\u30B9\u30C6\u30FC\u30BF\u30B9' }),
             _react2.default.createElement(_adminOnRest.BooleanField, { source: 'is_cld', defaultValue: false, label: 'Cld' }),
             _react2.default.createElement(_adminOnRest.BooleanField, { source: 'is_dlt', defaultValue: true, label: 'Clt' }),
@@ -114519,6 +114527,14 @@ var PostList = exports.PostList = function PostList(props) {
     );
 };
 
+// const choices = [
+//     { id: 123, first_name: 'Leo', last_name: 'Tolstoi' },
+//     { id: 456, first_name: 'Jane', last_name: 'Austen' },
+//     { id: 456, first_name: 'Jane', last_name: 'Austen' },
+//  ];
+var optionRenderer = function optionRenderer(choice) {
+    return choice.first_name + ' ' + choice.last_name;
+};
 var PostCreate = exports.PostCreate = function PostCreate(props) {
     return _react2.default.createElement(
         _adminOnRest.Create,
@@ -114526,8 +114542,25 @@ var PostCreate = exports.PostCreate = function PostCreate(props) {
         _react2.default.createElement(
             _adminOnRest.SimpleForm,
             null,
-            _react2.default.createElement(_adminOnRest.TextInput, { source: 'title' }),
-            _react2.default.createElement(_adminOnRest.LongTextInput, { source: 'body' })
+            _react2.default.createElement(_adminOnRest.TextInput, { source: 'title', label: '\u7BA1\u7406\u30BF\u30A4\u30C8\u30EB' }),
+            _react2.default.createElement(_adminOnRest.CheckboxGroupInput, { source: 'category', label: '\u901A\u77E5\u5BFE\u8C61', choices: [{ id: 'programming', name: 'クラウド' }, { id: 'lifestyle', name: 'クライアント' }, { id: 'photography', name: 'BiND10' }, { id: '1', name: 'BiND10 体験版' }, { id: 'photog2raphy', name: 'BiND9' }, { id: 'phot3ography', name: 'BiND9 体験版' }] }),
+            _react2.default.createElement(_adminOnRest.SelectInput, { source: 'author_id', label: '\u901A\u77E5\u30A8\u30EA\u30A2', choices: [{ id: '1', name: 'サイド' }, { id: '2', name: 'モーダル' }, { id: '3', name: 'ポップアップ' }] }),
+            _react2.default.createElement(_adminOnRest.TextField, { source: '', label: '\u63B2\u8F09\u60C5\u5831', style: { font: 'italic bold 12px/30px Georgia, serif' } }),
+            _react2.default.createElement(_adminOnRest.SelectInput, { source: 'xxxxx', label: '\u30AB\u30C6\u30B4\u30EA', choices: [{ id: '1', name: '重要なお知らせ1' }, { id: '2', name: '重要なお知らせ2' }, { id: '3', name: '重要なお知らせ3' }] }),
+            _react2.default.createElement(_adminOnRest.TextInput, { source: 'title', label: '\u30BF\u30A4\u30C8\u30EB' }),
+            _react2.default.createElement(
+                _adminOnRest.ImageInput,
+                { source: 'pictures', label: '\u753B\u50CF', accept: 'image/*', placeholder: _react2.default.createElement(
+                        'p',
+                        null,
+                        'Drop your file here'
+                    ) },
+                _react2.default.createElement(_adminOnRest.ImageField, { source: 'src', title: 'title' })
+            ),
+            _react2.default.createElement(_adminOnRest.LongTextInput, { source: 'body', label: '\u672C\u6587' }),
+            _react2.default.createElement(_adminOnRest.TextInput, { source: 'title', label: '\u30DC\u30BF\u30F3\u30C6\u30AD\u30B9\u30C8' }),
+            _react2.default.createElement(_adminOnRest.TextInput, { source: 'title', label: '\u30EA\u30F3\u30AF URL' }),
+            _react2.default.createElement(_adminOnRest.SelectInput, { source: 'xxxxxx', label: '\u8868\u793A\u56DE\u6570', choices: [{ id: '1', name: '3 回' }, { id: '2', name: '2 回' }, { id: '3', name: '1 回' }] })
         )
     );
 };
@@ -114569,6 +114602,25 @@ exports.default = Status;
 
 /***/ }),
 /* 955 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var rowStyle = function rowStyle(record) {
+    if (record.uuid === 1) return { backgroundColor: '#dfd' };
+    if (record.uuid === 2) return { backgroundColor: '#ffd' };
+    if (record.uuid === 3) return { backgroundColor: '#fdd' };
+    return {};
+};
+
+exports.default = rowStyle;
+
+/***/ }),
+/* 956 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -114732,6 +114784,77 @@ exports.default = function (apiUrl) {
         });
     };
 };
+
+/***/ }),
+/* 957 */
+/***/ (function(module, exports) {
+
+module.exports = {
+  aor: {
+       action: {
+           delete: 'åé¤',
+           show: 'è¦ã',
+           list: 'ä¸è¦§',
+           save: 'ä¿å­',
+           create: 'ä½æ',
+           edit: 'ç·¨é',
+           cancel: 'ã­ã£ã³ã»ã«',
+           refresh: 'æ´æ°',
+           add_filter: 'ãã£ã«ã¿ã¼ãè¿½å ',
+           remove_filter: 'ãã£ã«ã¿ã¼ãåé¤',
+       },
+       boolean: {
+           true: 'ã¯ã',
+           false: 'ããã',
+       },
+       page: {
+           list: '%{name} ãªã¹ã',
+           edit: '%{name} #%{id}',
+           show: '%{name} #%{id}',
+           create: '%{name} ãä½æ',
+           delete: '%{name} #%{id} ãåé¤',
+           dashboard: 'ããã·ã¥ãã¼ã',
+       },
+       input: {
+           image: {
+               upload_several: 'ã¢ããã­ã¼ããããã¡ã¤ã«ããã­ãããã¾ãã¯é¸æãã¦ãã ãã',
+               upload_single: 'ã¢ããã­ã¼ããããã¡ã¤ã«ããã­ãããã¾ãã¯é¸æãã¦ãã ãã',
+           },
+       },
+       message: {
+           yes: 'ã¯ã',
+           no: 'ããã',
+           are_you_sure: 'æ¬å½ã«ããããã§ãã?',
+           about: 'è©³ç´°',
+       },
+       navigation: {
+           page_out_of_boundaries: 'ç¡å¹ãªãã¼ã¸æå®ã§ã',
+           page_out_from_end: 'ç¡å¹ãªãã¼ã¸æå®ã§ã',
+           page_out_from_begin: 'ç¡å¹ãªãã¼ã¸æå®ã§ã',
+           page_range_info: '%{total} ä»¶ã® %{offsetBegin}-%{offsetEnd}',
+           next: 'æ¬¡ã¸',
+           prev: 'åã¸',
+       },
+       auth: {
+           username: 'ã¦ã¼ã¶ã¼å',
+           password: 'ãã¹ã¯ã¼ã',
+           sign_in: 'ã­ã°ã¤ã³',
+           sign_in_error: 'ã­ã°ã¤ã³ã«å¤±æãã¾ãã',
+           logout: 'ã­ã°ã¢ã¦ã',
+       },
+       notification: {
+           updated: 'æ´æ°ããã¾ãã',
+           created: 'ä½æããã¾ãã',
+           deleted: 'åé¤ããã¾ãã',
+           item_doesnt_exist: 'å­å¨ããªãã¢ã¤ãã ã§ã',
+           http_error: 'ãµã¼ãã¼ã¨ã©ã¼',
+       },
+       validation: {
+           required: 'å¿é ',
+       },
+   },
+};
+
 
 /***/ })
 /******/ ]);
