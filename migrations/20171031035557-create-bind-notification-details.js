@@ -11,7 +11,12 @@ module.exports = {
 
         },
       parent_id: {
-        type: Sequelize.UUID
+        type: Sequelize.UUID,
+          references: {
+              model: "bind_notifications",
+              key: "uuid",
+              as: "parent_id"
+          }
       },
       id: {
         type: Sequelize.INTEGER
@@ -44,6 +49,9 @@ module.exports = {
         type: Sequelize.BOOLEAN
       },
       is_bind11: {
+        type: Sequelize.BOOLEAN
+      },
+      is_bind11T: {
         type: Sequelize.BOOLEAN
       },
       is_bind10: {

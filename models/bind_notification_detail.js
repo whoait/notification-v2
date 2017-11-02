@@ -18,6 +18,7 @@ module.exports = function (sequelize, DataTypes) {
         is_cld: DataTypes.BOOLEAN,
         is_clt: DataTypes.BOOLEAN,
         is_bind11: DataTypes.BOOLEAN,
+        is_bind11T: DataTypes.BOOLEAN,
         is_bind10: DataTypes.BOOLEAN,
         is_bind10T: DataTypes.BOOLEAN,
         is_bind9: DataTypes.BOOLEAN,
@@ -32,6 +33,9 @@ module.exports = function (sequelize, DataTypes) {
         classMethods: {
             associate: function (models) {
                 // associations can be defined here
+                bind_notification_detail.belongsTo(models.bind_notification, {
+                    foreignKey: 'parent_id'
+                })
             }
         }
     });
