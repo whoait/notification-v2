@@ -36,7 +36,7 @@ router.post("/posts", function (req, res) {
 // handle upload notification file.
 router.post('/uploadNotificationFile', function (req, res) {
     const bindVersion = req.body.bindVersion;
-    const notificationData = JSON.parse(base64.decode(req.body.data));
+    const notificationData = JSON.parse(base64.decode(req.body.files[0].src));
     console.log('start');
 
     checkAdElement(notificationData, bindVersion)
@@ -57,7 +57,7 @@ function checkAdElement(notificationData, bindVersion) {
             const adTitle = adElement.title;
             const adContent = adElement.content;
             new Promise((cResolve, cReject) => {
-                const item = models.bind_notification.findAll({
+                const item = models.bind_notification.find({
                     where: {
                         message_type: 'ad',
                         title: adTitle,
@@ -76,10 +76,11 @@ function checkAdElement(notificationData, bindVersion) {
                 cResolve(item);
             }).then((item) => {
                 if (util.isEmpty(item)) {
-                    console.log('start add');
+                    // If ad not existed, add new Ad
                     addNewAd(adTitle, adContent, bindVersion);
                 }
                 else {
+                    // If ad existed, update bind version.
                     updateAdWithBindVersion(item, bindVersion);
                 }
                 resolve();
@@ -91,14 +92,17 @@ function checkAdElement(notificationData, bindVersion) {
     });
 }
 
-function updateAdWithVersion(item, bindVersion) {
+function updateAdWithBindVersion(item, bindVersion) {
+    console.log(`update with bind version ${bindVersion} parent_id = ${item.id}`);
     return new Promise((resolve, reject) => {
         models.bind_notification_detail.update(
             {
                 [bindVersion]: true
             },
             {
-                where: {parent_id: item.parent_id}
+                where: {parent_id: item.id},
+                delete_flag: true,
+                status: appConst.STATUS_PUBLISHING
             }
         );
         resolve();
