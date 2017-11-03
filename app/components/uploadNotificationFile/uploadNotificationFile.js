@@ -54,7 +54,7 @@ export const UploadList = (props) => (
 export const UploadCreate = (props) => (
     <Create {...props}>
         <SimpleForm>
-            <SelectInput source="modal_link" label="通知対象" choices={[
+            <SelectInput source="bindVersion" label="通知対象" choices={[
                 {id: 'is_cld', name: 'クラウド'},
                 {id: 'is_clt', name: 'クライアント'},
                 {id: 'is_bind11', name: 'BiND11'},

@@ -36,8 +36,7 @@ router.post("/posts", function (req, res) {
 // handle upload notification file.
 router.post('/uploadNotificationFile', function (req, res) {
     const bindVersion = req.body.bindVersion;
-    const notificationData = JSON.parse(base64.decode(req.body.files[0].src));
-    console.log('start');
+    const notificationData = JSON.parse(base64.decode(req.body.files[0].src.split(',')[1]));
 
     checkAdElement(notificationData, bindVersion)
         .then(() => {
@@ -93,7 +92,7 @@ function checkAdElement(notificationData, bindVersion) {
 }
 
 function updateAdWithBindVersion(item, bindVersion) {
-    console.log(`update with bind version ${bindVersion} parent_id = ${item.id}`);
+    console.log(`update with bind version ${bindVersion} and parent_id = ${item.id}`);
     return new Promise((resolve, reject) => {
         models.bind_notification_detail.update(
             {
