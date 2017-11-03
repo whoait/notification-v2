@@ -1,9 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const upload = multer();
 const datamock = require('./mockdata.json');
 const models = require('../models');
+const util = require('../util/util');
+const appConst = require('../util/const');
+const base64 = require('base-64');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -12,7 +14,9 @@ router.get('/', function (req, res, next) {
 
 //mock data
 var data = datamock;
-router.get("/posts", function (req, res) {
+
+router.post("/posts", function (req, res) {
+    console.log(req.body.pictures);
     res.set(
         {
             // 'Accept': 'application/json',
@@ -28,132 +32,103 @@ router.get("/posts", function (req, res) {
     res.send(data);
 });
 
-router.get("/posts", function (req, res) {
-    console.log(req.body.pictures);
-    res.set(
-        {
-            'x-total-count': 100
 
+// handle upload notification file.
+router.post('/uploadNotificationFile', function (req, res) {
+    const bindVersion = req.body.bindVersion;
+    const notificationData = JSON.parse(base64.decode(req.body.data));
+    console.log('start');
+
+    checkAdElement(notificationData, bindVersion)
+        .then(() => {
+            console.log('all done');
+            res.send(util.responseSuccess());
+        })
+        .catch(() => {
+            res.send(util.responseInvalidJsonFormat());
+        });
+});
+
+
+function checkAdElement(notificationData, bindVersion) {
+    return new Promise((resolve, reject) => {
+        if (notificationData.hasOwnProperty('ad')) {
+            const adElement = notificationData.ad;
+            const adTitle = adElement.title;
+            const adContent = adElement.content;
+            new Promise((cResolve, cReject) => {
+                const item = models.bind_notification.findAll({
+                    where: {
+                        message_type: 'ad',
+                        title: adTitle,
+                        content: adContent
+                    },
+                    include: [
+                        {
+                            model: models.bind_notification_detail,
+                            where: {
+                                delete_flag: false
+                            }
+                        }
+                    ]
+                });
+                console.log('check done');
+                cResolve(item);
+            }).then((item) => {
+                if (util.isEmpty(item)) {
+                    console.log('start add');
+                    addNewAd(adTitle, adContent, bindVersion);
+                }
+                else {
+                    updateAdWithBindVersion(item, bindVersion);
+                }
+                resolve();
+            });
         }
-    );
-
-    res.send(data);
-});
-
-router.delete("/posts", function (req, res) {
-    console.log(req.body.pictures);
-    res.set(
-        {
-            'x-total-count': 100
-
+        else {
+            reject();
         }
-    );
-
-    res.send(data);
-});
-
-router.post("/posts", function (req, res) {
-    console.log(req.body);
-    res.set(
-        {
-            'x-total-count': 100
-
-        }
-    );
-
-    res.send(data);
-});
-
-// handle upload file.
-router.post('/uploadNotificationFile', upload.single('jsonFile'), function (req, res) {
-    console.log(req.body);
-    // const notificationData = JSON.parse(req.file.buffer.toString());
-    // const bindVersion = req.body.bindVersion;
-    // console.log(bindVersion);
-    // // Check ad element
-    // if (notificationData.hasOwnProperty('ad')) {
-    //     const adElement = notificationData.ad;
-    //     console.log(adElement);
-    //     new Promise((resolve, reject) => {
-    //         // find ad element
-    //         const item = models.bind_notification.findAll({
-    //             where: {
-    //                 message_type: 'ad',
-    //             },
-    //             include: [
-    //                 {
-    //                     model: models.bind_notification_detail,
-    //                     where: {
-    //                         bindVersion: true
-    //                     }
-    //                 }
-    //             ]
-    //         });
-    //         resolve(item)
-    //     }).then((data) => {
-    //         res.send(data);
-    //     });
-    // }
-    res.send(req.body);
-
-});
-
-router.get('/test', (req, res) => {
-    new Promise((resolve, reject) => {
-        const bind_notification = models.bind_notification.create(
-            {
-                message_type: 'news',
-                title: 'News title',
-                bind_notification_detail: {
-                    content: 'Test content',
-                    is_bind10: true
-                },
-            }
-        );
-        resolve(bind_notification);
-    }).then((data) => {
-        const parentId = data.uuid;
-        const bindNotificationDetail = models.bind_notification_detail.create(
-            {
-                parent_id: parentId,
-                id: 44,
-                is_bind10: true
-            }
-        );
-    }).then((data) => {
-        res.send('Ok');
     });
-});
+}
 
-router.get('/test2', (req, res) => {
-    new Promise((resolve, reject) => {
-        const parentId = 'a6c4998e-47d0-43dc-b48a-9671ca5017c9';
-        const bindNotificationDetail = models.bind_notification_detail.create(
+function updateAdWithVersion(item, bindVersion) {
+    return new Promise((resolve, reject) => {
+        models.bind_notification_detail.update(
             {
-                parent_id: parentId,
-                id: 12,
-                is_bind10: true
+                [bindVersion]: true
+            },
+            {
+                where: {parent_id: item.parent_id}
             }
         );
-        resolve(bindNotificationDetail);
-    }).then((data) => {
-        res.send(data);
+        resolve();
     });
-});
+}
 
-router.get('/test3', (req, res) => {
-    new Promise((resolve, reject) => {
-        const parentId = 'a6c4998e-47d0-43dc-b48a-9671ca5017c9';
-        const bindNotificationDetail = models.bind_notification_detail.create(
-            {
-                parent_id: parentId,
-                is_bind10: true
-            }
-        );
-        resolve(bindNotificationDetail);
-    }).then((data) => {
-        res.send(data);
+function addNewAd(adTitle, adContent, bindVersion) {
+    return new Promise((resolve, reject) => {
+        new Promise((cResolve, cReject) => {
+            const bind_notification = models.bind_notification.create(
+                {
+                    message_type: 'ad',
+                    title: adTitle,
+                    content: adContent,
+                }
+            );
+            cResolve(bind_notification);
+        }).then((bind_notification) => {
+            const parentId = bind_notification.id;
+            const bindNotificationDetail = models.bind_notification_detail.create(
+                {
+                    parent_id: parentId,
+                    [bindVersion]: true,
+                    status: appConst.STATUS_PUBLISHING
+                }
+            );
+        }).then(() => {
+            resolve();
+        });
     });
-});
+}
 
 module.exports = router;

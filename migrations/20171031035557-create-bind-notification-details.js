@@ -2,25 +2,20 @@
 module.exports = {
   up: function(queryInterface, Sequelize) {
     return queryInterface.createTable('bind_notification_details', {
-        uuid: {
-            allowNull: false,
-            primaryKey: true,
-            type: Sequelize.UUID,
-            unique: true,
-            defaultValue: Sequelize.UUIDV4,
+      id: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          primaryKey: true,
+          autoIncrement: true
 
-        },
+      },
       parent_id: {
-        type: Sequelize.UUID,
+        type: Sequelize.INTEGER,
           references: {
               model: "bind_notifications",
-              key: "uuid",
+              key: "id",
               as: "parent_id"
           }
-      },
-      id: {
-        type: Sequelize.INTEGER,
-        autoIncrement: true,
       },
       sub_title: {
         type: Sequelize.STRING

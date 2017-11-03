@@ -1,11 +1,6 @@
 'use strict';
 module.exports = function (sequelize, DataTypes) {
     const bind_notification = sequelize.define('bind_notification', {
-        uuid: {
-            type: DataTypes.UUID,
-            primaryKey: true,
-            defaultValue: DataTypes.UUIDV4
-        },
         message_type: DataTypes.STRING,
         title: DataTypes.STRING,
         content: DataTypes.STRING,

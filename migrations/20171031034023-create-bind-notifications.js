@@ -2,12 +2,11 @@
 module.exports = {
   up: function(queryInterface, Sequelize) {
     return queryInterface.createTable('bind_notifications', {
-      uuid: {
+      id: {
+        type: Sequelize.INTEGER,
         allowNull: false,
         primaryKey: true,
-        type: Sequelize.UUID,
-        unique: true,
-        defaultValue: Sequelize.UUIDV4,
+        autoIncrement: true
 
       },
       message_type: {
