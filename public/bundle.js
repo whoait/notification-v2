@@ -33423,11 +33423,11 @@ var _adminOnRest = __webpack_require__(113);
 
 var _posts = __webpack_require__(953);
 
-var _aorLanguageJapanese = __webpack_require__(959);
+var _aorLanguageJapanese = __webpack_require__(956);
 
 var _aorLanguageJapanese2 = _interopRequireDefault(_aorLanguageJapanese);
 
-var _restClient = __webpack_require__(956);
+var _restClient = __webpack_require__(957);
 
 var _restClient2 = _interopRequireDefault(_restClient);
 
@@ -33472,7 +33472,7 @@ var IndexNotification = function (_Component) {
             return _react2.default.createElement(
                 _adminOnRest.Admin,
                 { locale: 'ja', messages: messages, title: '\u901A\u77E5\u30A8\u30EA\u30A2\u7BA1\u7406\u30B7\u30B9\u30C6\u30E0', restClient: delayedRestClient },
-                _react2.default.createElement(_adminOnRest.Resource, { name: 'posts', options: { label: 'トップページ' }, list: _posts.PostList, create: _posts.PostCreate })
+                _react2.default.createElement(_adminOnRest.Resource, { name: 'posts', options: { label: 'トップページ' }, list: _posts.PostList, create: _posts.PostCreate, remove: _adminOnRest.Delete })
             );
         }
     }]);
@@ -114632,6 +114632,77 @@ exports.default = rowStyle;
 
 /***/ }),
 /* 956 */
+/***/ (function(module, exports) {
+
+module.exports = {
+  aor: {
+       action: {
+           delete: '削除',
+           show: '見る',
+           list: '一覧',
+           save: '保存',
+           create: '作成',
+           edit: '編集',
+           cancel: 'キャンセル',
+           refresh: '更新',
+           add_filter: 'フィルターを追加',
+           remove_filter: 'フィルターを削除',
+       },
+       boolean: {
+           true: 'はい',
+           false: 'いいえ',
+       },
+       page: {
+           list: '%{name} リスト',
+           edit: '%{name} #%{id}',
+           show: '%{name} #%{id}',
+           create: '%{name} を作成',
+           delete: '%{name} #%{id} を削除',
+           dashboard: 'ダッシュボード',
+       },
+       input: {
+           image: {
+               upload_several: 'アップロードするファイルをドロップ、または選択してください',
+               upload_single: 'アップロードするファイルをドロップ、または選択してください',
+           },
+       },
+       message: {
+           yes: 'はい',
+           no: 'いいえ',
+           are_you_sure: '本当によろしいですか?',
+           about: '詳細',
+       },
+       navigation: {
+           page_out_of_boundaries: '無効なページ指定です',
+           page_out_from_end: '無効なページ指定です',
+           page_out_from_begin: '無効なページ指定です',
+           page_range_info: '%{total} 件の %{offsetBegin}-%{offsetEnd}',
+           next: '次へ',
+           prev: '前へ',
+       },
+       auth: {
+           username: 'ユーザー名',
+           password: 'パスワード',
+           sign_in: 'ログイン',
+           sign_in_error: 'ログインに失敗しました',
+           logout: 'ログアウト',
+       },
+       notification: {
+           updated: '更新されました',
+           created: '作成されました',
+           deleted: '削除されました',
+           item_doesnt_exist: '存在しないアイテムです',
+           http_error: 'サーバーエラー',
+       },
+       validation: {
+           required: '必須',
+       },
+   },
+};
+
+
+/***/ }),
+/* 957 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -114794,7 +114865,6 @@ exports.default = function (apiUrl) {
 };
 
 /***/ }),
-/* 957 */,
 /* 958 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -114812,7 +114882,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 var convertFileToBase64 = function convertFileToBase64(file) {
     return new Promise(function (resolve, reject) {
         var reader = new FileReader();
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(file.rawFile);
 
         reader.onload = function () {
             return resolve(reader.result);
@@ -114825,16 +114895,13 @@ var addUploadCapabilities = function addUploadCapabilities(requestHandler) {
     return function (type, resource, params) {
 
         if ((type === 'UPDATE' || type === 'CREATE') && resource === 'posts') {
-            console.log(type);
-            console.log(resource);
-            console.log(params);
             if (params.data.pictures && params.data.pictures.length) {
                 //only freshly dropped pictures are instance of File
                 var formerPictures = params.data.pictures.filter(function (p) {
-                    return !(p instanceof File);
+                    return !(p.rawFile instanceof File);
                 });
                 var newPictures = params.data.pictures.filter(function (p) {
-                    return p instanceof File;
+                    return p.rawFile instanceof File;
                 });
 
                 return Promise.all(newPictures.map(convertFileToBase64)).then(function (base64Pictures) {
@@ -114859,76 +114926,6 @@ var addUploadCapabilities = function addUploadCapabilities(requestHandler) {
 };
 
 exports.default = addUploadCapabilities;
-
-/***/ }),
-/* 959 */
-/***/ (function(module, exports) {
-
-module.exports = {
-    aor: {
-        action: {
-            delete: '削除',
-            show: '見る',
-            list: '一覧',
-            save: '保存',
-            create: '作成',
-            edit: '編集',
-            cancel: 'キャンセル',
-            refresh: '更新',
-            add_filter: 'フィルターを追加',
-            remove_filter: 'フィルターを削除',
-        },
-        boolean: {
-            true: 'はい',
-            false: 'いいえ',
-        },
-        page: {
-            list: '%{name} リスト',
-            edit: '%{name} #%{id}',
-            show: '%{name} #%{id}',
-            create: '%{name} を作成',
-            delete: '%{name} #%{id} を削除',
-            dashboard: 'ダッシュボード',
-        },
-        input: {
-            image: {
-                upload_several: 'アップロードするファイルをドロップ、または選択してください',
-                upload_single: 'アップロードするファイルをドロップ、または選択してください',
-            },
-        },
-        message: {
-            yes: 'はい',
-            no: 'いいえ',
-            are_you_sure: '本当によろしいですか?',
-            about: '詳細',
-        },
-        navigation: {
-            page_out_of_boundaries: '無効なページ指定です',
-            page_out_from_end: '無効なページ指定です',
-            page_out_from_begin: '無効なページ指定です',
-            page_range_info: '%{total} 件の %{offsetBegin}-%{offsetEnd}',
-            next: '次へ',
-            prev: '前へ',
-        },
-        auth: {
-            username: 'ユーザー名',
-            password: 'パスワード',
-            sign_in: 'ログイン',
-            sign_in_error: 'ログインに失敗しました',
-            logout: 'ログアウト',
-        },
-        notification: {
-            updated: '更新されました',
-            created: '作成されました',
-            deleted: '削除されました',
-            item_doesnt_exist: '存在しないアイテムです',
-            http_error: 'サーバーエラー',
-        },
-        validation: {
-            required: '必須',
-        },
-    },
-};
 
 /***/ })
 /******/ ]);

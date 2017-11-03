@@ -5,7 +5,6 @@ const upload = multer();
 const datamock = require('./mockdata.json');
 const models = require('../models');
 
-
 /* GET home page. */
 router.get('/', function (req, res, next) {
     res.render('index', {title: 'Express'});
@@ -29,15 +28,34 @@ router.get("/posts", function (req, res) {
     res.send(data);
 });
 
-router.post("/posts", function (req, res) {
+router.get("/posts", function (req, res) {
     console.log(req.body.pictures);
     res.set(
         {
-            // 'Accept': 'application/json',
-            // 'Content-Type': 'application/json',
-            // 'Access-Control-Allow-Origin': '*',
-            // 'Access-Control-Allow-Credentials': true,
-            // 'Access-Control-Allow-Methods': 'POST, GET, PUT, DETETE',
+            'x-total-count': 100
+
+        }
+    );
+
+    res.send(data);
+});
+
+router.delete("/posts", function (req, res) {
+    console.log(req.body.pictures);
+    res.set(
+        {
+            'x-total-count': 100
+
+        }
+    );
+
+    res.send(data);
+});
+
+router.post("/posts", function (req, res) {
+    console.log(req.body);
+    res.set(
+        {
             'x-total-count': 100
 
         }
