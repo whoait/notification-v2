@@ -65,34 +65,37 @@ router.post("/posts", function (req, res) {
 });
 
 // handle upload file.
-router.post('/upload', upload.single('jsonFile'), function (req, res) {
-    const notificationData = JSON.parse(req.file.buffer.toString());
-    const bindVersion = req.body.bindVersion;
-    console.log(bindVersion);
-    // Check ad element
-    if (notificationData.hasOwnProperty('ad')) {
-        const adElement = notificationData.ad;
-        console.log(adElement);
-        new Promise((resolve, reject) => {
-            // find ad element
-            const item = models.bind_notification.findAll({
-                where: {
-                    message_type: 'ad',
-                },
-                include: [
-                    {
-                        model: models.bind_notification_detail,
-                        where: {
-                            bindVersion: true
-                        }
-                    }
-                ]
-            });
-            resolve(item)
-        }).then((data) => {
-            res.send(data);
-        });
-    }
+router.post('/uploadNotificationFile', upload.single('jsonFile'), function (req, res) {
+    console.log(req.body);
+    // const notificationData = JSON.parse(req.file.buffer.toString());
+    // const bindVersion = req.body.bindVersion;
+    // console.log(bindVersion);
+    // // Check ad element
+    // if (notificationData.hasOwnProperty('ad')) {
+    //     const adElement = notificationData.ad;
+    //     console.log(adElement);
+    //     new Promise((resolve, reject) => {
+    //         // find ad element
+    //         const item = models.bind_notification.findAll({
+    //             where: {
+    //                 message_type: 'ad',
+    //             },
+    //             include: [
+    //                 {
+    //                     model: models.bind_notification_detail,
+    //                     where: {
+    //                         bindVersion: true
+    //                     }
+    //                 }
+    //             ]
+    //         });
+    //         resolve(item)
+    //     }).then((data) => {
+    //         res.send(data);
+    //     });
+    // }
+    res.send(req.body);
+
 });
 
 router.get('/test', (req, res) => {
