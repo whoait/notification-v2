@@ -20,6 +20,9 @@ module.exports = {
       sub_title: {
         type: Sequelize.STRING
       },
+      date: {
+        type: Sequelize.STRING
+      },
       start_date: {
         type: Sequelize.DATE
       },
@@ -27,7 +30,7 @@ module.exports = {
         type: Sequelize.DATE
       },
       content: {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT
       },
       ext_link: {
         type: Sequelize.STRING

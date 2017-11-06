@@ -25,10 +25,10 @@ exports.responseSuccess = () => {
   return JSON.stringify(res);
 };
 
-exports.responseInvalidJsonFormat = () => {
+exports.responseError = () => {
     const res = {
         message: "error",
-        content: "Invalid json format"
+        // content: "Invalid json format"
     };
     return JSON.stringify(res);
 };

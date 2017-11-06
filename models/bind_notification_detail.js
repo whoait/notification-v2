@@ -3,9 +3,10 @@ module.exports = function (sequelize, DataTypes) {
     const bind_notification_detail = sequelize.define('bind_notification_detail', {
         parent_id: DataTypes.UUID,
         sub_title: DataTypes.STRING,
+        date: DataTypes.STRING,
         start_date: DataTypes.DATE,
         end_date: DataTypes.DATE,
-        content: DataTypes.STRING,
+        content: DataTypes.TEXT,
         ext_link: DataTypes.STRING,
         modal_link: DataTypes.STRING,
         limit: DataTypes.INTEGER,
