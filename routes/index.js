@@ -5,7 +5,6 @@ const datamock = require('./mockdata.json');
 const models = require('../models');
 const util = require('../util/util');
 const appConst = require('../util/const');
-const base64 = require('base-64');
 const _ = require('underscore');
 
 /* GET home page. */
@@ -37,7 +36,9 @@ router.post("/posts", function (req, res) {
 // handle upload notification file.
 router.post('/uploadNotificationFile', function (req, res) {
     const bindVersion = req.body.bindVersion;
-    const notificationData = JSON.parse(base64.decode(req.body.files[0].src.split(',')[1]));
+    const encodedString = req.body.files[0].src.split(',')[1];
+    const utf8encoded = (new Buffer(encodedString, 'base64')).toString('utf8');
+    const notificationData = JSON.parse(utf8encoded);
 
     const p1 = checkAdElement(notificationData, bindVersion);
     const p2 = checkNewsListElement(notificationData, bindVersion);
@@ -49,6 +50,242 @@ router.post('/uploadNotificationFile', function (req, res) {
         res.send(util.responseError());
     })
 });
+
+router.post('/createNotificationFile', (req, res) => {
+    const bindVersion = 'is_bind10';
+    createNotificationFile(bindVersion).then((data) => {
+        console.log(data);
+        res.send(data);
+    });
+});
+
+function createNotificationFile(bindVersion) {
+    return new Promise((resolve, reject) => {
+        let output = {};
+        buildAdJSONObject(bindVersion).then((data) => {
+            output['ad'] = data;
+            return output;
+        }).then((output) => {
+            buildNewsJSONObject(bindVersion).then((data) => {
+                output['news'] = data;
+                output['schedule'] = [];
+                return output;
+            }).then((output) => {
+                buildPopupJSONObject(bindVersion).then((data) => {
+                    output['popup'] = data;
+                    resolve(JSON.stringify(output));
+                });
+            });
+        });
+    });
+}
+
+function buildAdJSONObject(bindVersion) {
+    return new Promise((resolve, reject) => {
+        new Promise((cResolve, cReject) => {
+            const item = models.bind_notification.find({
+                where: {
+                    message_type: 'ad',
+                },
+                include: [
+                    {
+                        model: models.bind_notification_detail,
+                        where: {
+                            [bindVersion]: true,
+                            delete_flag: false,
+                            status: appConst.STATUS_PUBLISHING
+                        }
+                    }
+                ]
+            });
+            cResolve(item);
+        }).then((item) => {
+            const adObject = {
+                title: item.title,
+                content: item.content
+            };
+            resolve(adObject);
+        });
+    });
+}
+
+function buildNewsJSONObject(bindVersion) {
+    return new Promise((resolve, reject) => {
+        new Promise((cResolve, cReject) => {
+            const newsList = models.bind_notification.findAll({
+                where: {
+                    message_type: 'news',
+                },
+                include: [
+                    {
+                        model: models.bind_notification_detail,
+                        where: {
+                            [bindVersion]: true,
+                            status: appConst.STATUS_PUBLISHING,
+                            delete_flag: false,
+                        }
+                    }
+                ]
+            });
+            cResolve(newsList);
+        }).then((newsList) => {
+            let newsObject = [];
+            const promises = _.map(newsList, (element) => {
+                return new Promise((cResolve, cReject) => {
+                    getElementInNewsList(element.id, bindVersion).then((data) => {
+                        const newsElement = {
+                            title: element.title,
+                            list: data
+                        };
+                        cResolve(newsElement);
+                    });
+                });
+            });
+            Promise.all(promises).then((data) => {
+                newsObject.push(data);
+                resolve(data);
+
+            })
+        })
+    })
+}
+
+function getElementInNewsList(parentId, bindVersion) {
+    return new Promise((resolve, reject) => {
+        new Promise((cResolve, cReject) => {
+            const newsList = models.bind_notification_detail.findAll({
+                where: {
+                    parent_id: parentId,
+                    [bindVersion]: true,
+                    status: appConst.STATUS_PUBLISHING,
+                    delete_flag: false,
+                    limit: null,
+                    $or: [
+                        {
+                            ext_link: {
+                                $ne: null
+                            }
+                        },
+                        {
+                            modal_link: {
+                                $ne: null
+                            }
+                        },
+                    ]
+                }
+            });
+            cResolve(newsList);
+        }).then((newsList) => {
+            let newsListObject = [];
+            const promises = _.map(newsList, (element) => {
+                return new Promise((cResolve, cReject) => {
+                    let cElement = {
+                        id: parseInt(element.id),
+                        date: element.date,
+                        title: element.sub_title,
+                        content: element.content
+                    };
+                    if (!util.isEmpty(element.ext_link) && util.isEmpty(element.limit)) {
+                        cElement.ext_link = element.ext_link;
+                        cResolve(cElement);
+                    }
+                    else if (!util.isEmpty(element.modal_link) && util.isEmpty(element.limit)) {
+                        cElement.modal_link = element.modal_link;
+                        cResolve(cElement);
+                    }
+                    else {
+                        cResolve();
+                    }
+                });
+            });
+            Promise.all(promises).then((data) => {
+                newsListObject.push(data);
+                resolve(newsListObject);
+            })
+        });
+    });
+}
+
+function buildPopupJSONObject(bindVersion) {
+    return new Promise((resolve, reject) =>{
+        new Promise((cResolve, cReject) => {
+            const popupList = models.bind_notification.findAll({
+                where: {
+                    message_type: 'popup',
+                },
+                include: [
+                    {
+                        model: models.bind_notification_detail,
+                        where: {
+                            [bindVersion]: true,
+                            status: appConst.STATUS_PUBLISHING,
+                            delete_flag: false,
+                        }
+                    }
+                ]
+            });
+            cResolve(popupList);
+        }).then((popupList) => {
+            let popupObject = [];
+            const promises = _.map(popupList, (element) => {
+                return new Promise((cResolve, cReject) => {
+                    getElementInPopupList(element.id, bindVersion).then((data) => {
+                        const newsElement = {
+                            list: data
+                        };
+                        cResolve(newsElement);
+                    });
+                });
+            });
+            Promise.all(promises).then((data) => {
+                popupObject.push(data);
+                resolve(data);
+
+            })
+        })
+    });
+}
+
+function getElementInPopupList(parentId, bindVersion) {
+    return new Promise((resolve, reject) => {
+        new Promise((cResolve, cReject) => {
+            const popupList = models.bind_notification_detail.findAll({
+                where: {
+                    parent_id: parentId,
+                    [bindVersion]: true,
+                    status: appConst.STATUS_PUBLISHING,
+                    delete_flag: false,
+                    limit: {
+                        $ne: null
+                    },
+                    ext_link: {
+                        $ne: null
+                    }
+                }
+            });
+            cResolve(popupList);
+        }).then((popupList) => {
+            let popupListObject = [];
+            const promises = _.map(popupList, (element) => {
+                return new Promise((cResolve, cReject) => {
+                    let cElement = {
+                        id: parseInt(element.id),
+                        date: element.date,
+                        title: element.sub_title,
+                        content: element.content,
+                        ext_link: element.ext_link,
+                        limit: element.limit
+                    };
+                    cResolve(cElement);
+                });
+            });
+            Promise.all(promises).then((data) => {
+                popupListObject.push(data);
+                resolve(popupListObject);
+            })
+        });
+    });
+}
 
 function checkNewsListElement(notificationData, bindVersion) {
     return new Promise((resolve, reject) => {
@@ -104,7 +341,7 @@ function checkEachNewsElement(newsElement, bindVersion) {
             }
         }).then((parentId) => {
             console.log(`process check list item in news element with parent id = ${parentId}`);
-            const prommises = _.map(newsElement.list, (element) => {
+            const promises = _.map(newsElement.list, (element) => {
                 return new Promise((cResolve, cReject) => {
                     const bind_notification_detail = models.bind_notification_detail.find({
                         where: {
@@ -125,7 +362,7 @@ function checkEachNewsElement(newsElement, bindVersion) {
                     }
                 });
             });
-            Promise.all(prommises).then(() => {
+            Promise.all(promises).then(() => {
                 resolve();
             });
         });
