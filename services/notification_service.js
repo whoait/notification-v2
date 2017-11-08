@@ -46,10 +46,19 @@ function buildAdJSONObject(bindVersion) {
             });
             cResolve(item);
         }).then((item) => {
-            const adObject = {
-                title: item.title,
-                content: item.content
-            };
+            let adObject = {};
+            if (util.isEmpty(item)) {
+                adObject = {
+                    title: '',
+                    content: ''
+                };
+            }
+            else {
+                adObject = {
+                    title: item.title,
+                    content: item.content
+                };
+            }
             resolve(adObject);
         });
     });
