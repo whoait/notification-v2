@@ -42,7 +42,8 @@ router.post('/uploadNotificationFile', function (req, res) {
 
     const p1 = checkAdElement(notificationData, bindVersion);
     const p2 = checkNewsListElement(notificationData, bindVersion);
-    Promise.all([p1, p2]).then(() => {
+    const p3 = checkPopupListElement(notificationData, bindVersion);
+    Promise.all([p1, p2, p3]).then(() => {
         console.log('ALL DONE');
         res.send(util.responseSuccess());
     }).catch(() => {
@@ -52,7 +53,7 @@ router.post('/uploadNotificationFile', function (req, res) {
 });
 
 router.post('/createNotificationFile', (req, res) => {
-    const bindVersion = 'is_bind10';
+    const bindVersion = req.body.bindVersion;
     createNotificationFile(bindVersion).then((data) => {
         console.log(data);
         res.send(data);
@@ -287,6 +288,171 @@ function getElementInPopupList(parentId, bindVersion) {
     });
 }
 
+function checkPopupListElement(notificationData, bindVersion) {
+    return new Promise((resolve, reject) => {
+        if (notificationData.hasOwnProperty('popup')) {
+            const popupList = notificationData.popup;
+            if (util.isEmpty(popupList)) {
+                resolve();
+            }
+            else {
+                const promises = _.map(popupList, (popup) => {
+                    return checkEachPopupElement(popup, bindVersion);
+                });
+                Promise.all(promises).then(() => {
+                    console.log('all promise done');
+                    resolve();
+                });
+            }
+        }
+        else {
+            resolve();
+        }
+    });
+}
+
+function checkEachPopupElement(newsElement, bindVersion) {
+    return new Promise((resolve, reject) => {
+        new Promise((cResolve, cReject) => {
+            const item = models.bind_notification.find({
+                where: {
+                    message_type: 'popup',
+                },
+                include: [
+                    {
+                        model: models.bind_notification_detail,
+                        where: {
+                            delete_flag: false,
+                            status: appConst.STATUS_PUBLISHING,
+                        }
+                    }
+                ]
+            });
+            cResolve(item);
+        }).then((item) => {
+            if (util.isEmpty(item)) {
+                // If popup not existed, add new popup element
+                return addPopupElement(bindVersion);
+            }
+            else {
+                // If popup existed, update bind version.
+                return updatePopupElementWithBindVersion(item, bindVersion);
+            }
+        }).then((parentId) => {
+            console.log(`process check list item in popup element with parent id = ${parentId}`);
+            const promises = _.map(newsElement.list, (element) => {
+                return new Promise((cResolve, cReject) => {
+                    const bind_notification_detail = models.bind_notification_detail.find({
+                        where: {
+                            parent_id: parentId,
+                            id: element.id,
+                            delete_flag: false,
+                            status: appConst.STATUS_PUBLISHING
+
+                        }
+                    });
+                    cResolve(bind_notification_detail);
+                }).then((bind_notification_detail) => {
+                    if (util.isEmpty(bind_notification_detail)) {
+                        addElementInPopupList(element, parentId, bindVersion);
+                    }
+                    else {
+                        updateElementInPopupListWithBindVersion(bind_notification_detail, bindVersion);
+                    }
+                });
+            });
+            Promise.all(promises).then(() => {
+                resolve();
+            });
+        });
+    });
+}
+
+function addElementInPopupList(element, parentId, bindVersion) {
+    console.log(`add popup element in popup list with  parent_id = ${parentId}`);
+    return new Promise((resolve, reject) => {
+        models.bind_notification_detail.create(
+            {
+                parent_id: parentId,
+                id: element.id,
+                date: element.date,
+                sub_title: element.title,
+                content: element.content,
+                ext_link: element.ext_link,
+                limit: element.limit,
+                [bindVersion]: true,
+                status: appConst.STATUS_PUBLISHING
+            }
+        );
+        resolve();
+    });
+}
+
+function updateElementInPopupListWithBindVersion(element, bindVersion) {
+    console.log(`update element in popup list with bind version ${bindVersion} and parent_id = ${element.parent_id}`);
+    return new Promise((resolve, reject) => {
+        models.bind_notification_detail.update(
+            {
+                [bindVersion]: true
+            },
+            {
+                where: {
+                    id: element.id,
+                    parent_id: element.parent_id,
+                    delete_flag: false,
+                    status: appConst.STATUS_PUBLISHING
+                },
+            }
+        );
+        resolve();
+    });
+}
+
+function addPopupElement(bindVersion) {
+    console.log(`add popup element`);
+    return new Promise((resolve, reject) => {
+        new Promise((cResolve, cReject) => {
+            const bind_notification = models.bind_notification.create(
+                {
+                    message_type: 'popup',
+                }
+            );
+            cResolve(bind_notification);
+        }).then((bind_notification) => {
+            const parentId = bind_notification.id;
+            models.bind_notification_detail.create(
+                {
+                    parent_id: parentId,
+                    [bindVersion]: true,
+                    status: appConst.STATUS_PUBLISHING
+                }
+            );
+            return parentId;
+        }).then((parentId) => {
+            resolve(parentId);
+        });
+    });
+}
+
+function updatePopupElementWithBindVersion(item, bindVersion) {
+    console.log(`update popup element with bind version ${bindVersion} and parent_id = ${item.id}`);
+    return new Promise((resolve, reject) => {
+        models.bind_notification_detail.update(
+            {
+                [bindVersion]: true
+            },
+            {
+                where: {
+                    parent_id: item.id,
+                    delete_flag: false,
+                    status: appConst.STATUS_PUBLISHING
+                },
+            }
+        );
+        resolve(item.id);
+    });
+}
+
 function checkNewsListElement(notificationData, bindVersion) {
     return new Promise((resolve, reject) => {
         if (notificationData.hasOwnProperty('news')) {
@@ -370,7 +536,7 @@ function checkEachNewsElement(newsElement, bindVersion) {
 }
 
 function addElementInNewsList(element, parentId, bindVersion) {
-    console.log(`add new element in news list with  parent_id = ${parentId}`);
+    console.log(`add new element in news list with  parent_id = ${parentId} & id = ${element.id}`);
     return new Promise((resolve, reject) => {
         models.bind_notification_detail.create(
             {
@@ -391,7 +557,7 @@ function addElementInNewsList(element, parentId, bindVersion) {
 }
 
 function updateElementInNewsListWithBindVersion(element, bindVersion) {
-    console.log(`update element in news list with bind version ${bindVersion} and parent_id = ${element.parent_id}`);
+    console.log(`update element in news list with bind version ${bindVersion} & parent_id = ${element.parent_id} & id = ${element.id}`);
     return new Promise((resolve, reject) => {
         models.bind_notification_detail.update(
             {
@@ -411,7 +577,6 @@ function updateElementInNewsListWithBindVersion(element, bindVersion) {
 }
 
 function addNewsElement(newsTitle, bindVersion) {
-    console.log(`add new element`);
     return new Promise((resolve, reject) => {
         new Promise((cResolve, cReject) => {
             const bind_notification = models.bind_notification.create(
@@ -518,7 +683,6 @@ function updateAdWithBindVersion(item, bindVersion) {
 }
 
 function addNewAd(adTitle, adContent, bindVersion) {
-    console.log(`add new ad element `);
     return new Promise((resolve, reject) => {
         new Promise((cResolve, cReject) => {
             const bind_notification = models.bind_notification.create(

@@ -19,6 +19,7 @@ module.exports = function (sequelize, DataTypes) {
         is_bind9: DataTypes.BOOLEAN,
         is_bind9T: DataTypes.BOOLEAN,
         status: DataTypes.INTEGER,
+        display_area: DataTypes.INTEGER,
         delete_flag: {
             type: DataTypes.BOOLEAN,
             defaultValue: false

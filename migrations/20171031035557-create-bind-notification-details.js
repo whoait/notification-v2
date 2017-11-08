@@ -68,6 +68,9 @@ module.exports = {
       status: {
         type: Sequelize.INTEGER
       },
+      display_area: {
+          type: Sequelize.INTEGER
+      },
       delete_flag: {
         type: Sequelize.BOOLEAN
       },
