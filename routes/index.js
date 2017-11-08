@@ -11,7 +11,62 @@ router.get('/', function (req, res, next) {
 });
 
 //mock data
-var data = datamock;
+const data = datamock;
+
+//get list
+router.get("/posts", function (req, res) {
+
+    res.set(
+        {
+            // 'Accept': 'application/json',
+            // 'Content-Type': 'application/json',
+            // 'Access-Control-Allow-Origin': '*',
+            // 'Access-Control-Allow-Credentials': true,
+            // 'Access-Control-Allow-Methods': 'POST, GET, PUT, DETETE',
+            'x-total-count': 100
+
+        }
+    );
+
+    res.send(data);
+});
+//get one
+router.get("/posts/:id", function (req, res) {
+
+    console.log(req.get(':id'));
+    res.set(
+        {
+            // 'Accept': 'application/json',
+            // 'Content-Type': 'application/json',
+            // 'Access-Control-Allow-Origin': '*',
+            // 'Access-Control-Allow-Credentials': true,
+            // 'Access-Control-Allow-Methods': 'POST, GET, PUT, DETETE',
+            'x-total-count': 100
+
+        }
+    );
+
+    res.send(data[0]);
+});
+
+//delete
+router.delete("/posts/:id", function (req, res) {
+
+    console.log(req.get(':id'));
+    res.set(
+        {
+            // 'Accept': 'application/json',
+            // 'Content-Type': 'application/json',
+            // 'Access-Control-Allow-Origin': '*',
+            // 'Access-Control-Allow-Credentials': true,
+            // 'Access-Control-Allow-Methods': 'POST, GET, PUT, DETETE',
+            'x-total-count': 100
+
+        }
+    );
+
+    res.send(data[0]);
+});
 
 router.post("/posts", function (req, res) {
     console.log(req.body.pictures);
@@ -26,7 +81,6 @@ router.post("/posts", function (req, res) {
 
         }
     );
-
     res.send(data);
 });
 

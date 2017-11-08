@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 
 import {simpleRestClient, fetchUtils, jsonServerRestClient, Admin, Resource, Delete} from 'admin-on-rest';
-import {PostList, PostCreate} from './posts/posts';
+import {PostList, PostCreate, PostEdit} from './posts/posts';
 import {UploadCreate, UploadList} from './uploadNotificationFile/uploadNotificationFile';
 import japaneseMessages from 'aor-language-japanese';
 import myApiRestClient from './restClient';
@@ -27,8 +27,10 @@ class IndexNotification extends Component {
     render() {
         return (
             <Admin locale="ja" messages={messages} title="通知エリア管理システム" restClient={delayedRestClient}>
-                <Resource name="posts" options={{label: 'トップページ'}} list={PostList} create={PostCreate} remove={Delete}/>
-                <Resource name="uploadNotificationFile" options={{label: 'アップロードファイルjson'}} list = {UploadList} create={UploadCreate}/>
+                <Resource name="posts" options={{label: 'トップページ'}} list={PostList} create={PostCreate} edit={PostEdit}
+                          remove={Delete} />
+                <Resource name="uploadNotificationFile" options={{label: 'アップロードファイルjson'}} list={UploadList}
+                          create={UploadCreate}/>
             </Admin>
         )
     }
