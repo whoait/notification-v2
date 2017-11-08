@@ -381,7 +381,8 @@ function addElementInPopupList(element, parentId, bindVersion) {
                 ext_link: element.ext_link,
                 limit: element.limit,
                 [bindVersion]: true,
-                status: appConst.STATUS_PUBLISHING
+                status: appConst.STATUS_PUBLISHING,
+                display_area: appConst.DA_POPUP
             }
         );
         resolve();
@@ -424,7 +425,8 @@ function addPopupElement(bindVersion) {
                 {
                     parent_id: parentId,
                     [bindVersion]: true,
-                    status: appConst.STATUS_PUBLISHING
+                    status: appConst.STATUS_PUBLISHING,
+                    display_area: appConst.DA_PARENT
                 }
             );
             return parentId;
@@ -445,7 +447,8 @@ function updatePopupElementWithBindVersion(item, bindVersion) {
                 where: {
                     parent_id: item.id,
                     delete_flag: false,
-                    status: appConst.STATUS_PUBLISHING
+                    status: appConst.STATUS_PUBLISHING,
+                    display_area: appConst.DA_PARENT
                 },
             }
         );
@@ -538,6 +541,14 @@ function checkEachNewsElement(newsElement, bindVersion) {
 function addElementInNewsList(element, parentId, bindVersion) {
     console.log(`add new element in news list with  parent_id = ${parentId} & id = ${element.id}`);
     return new Promise((resolve, reject) => {
+        // check display area of element
+        let displayArea = '';
+        if (!util.isEmpty(element.ext_link)) {
+            displayArea = appConst.DA_SIDE;
+        }
+        else if (!util.isEmpty(element.modal_link)) {
+            displayArea = appConst.DA_MODAL;
+        }
         models.bind_notification_detail.create(
             {
                 parent_id: parentId,
@@ -549,7 +560,8 @@ function addElementInNewsList(element, parentId, bindVersion) {
                 ext_link: element.ext_link,
                 limit: element.limit,
                 [bindVersion]: true,
-                status: appConst.STATUS_PUBLISHING
+                status: appConst.STATUS_PUBLISHING,
+                display_area: displayArea
             }
         );
         resolve();
@@ -592,7 +604,8 @@ function addNewsElement(newsTitle, bindVersion) {
                 {
                     parent_id: parentId,
                     [bindVersion]: true,
-                    status: appConst.STATUS_PUBLISHING
+                    status: appConst.STATUS_PUBLISHING,
+                    display_area: appConst.DA_PARENT
                 }
             );
             return parentId;
@@ -613,7 +626,8 @@ function updateNewsElementWithBindVersion(item, bindVersion) {
                 where: {
                     parent_id: item.id,
                     delete_flag: false,
-                    status: appConst.STATUS_PUBLISHING
+                    status: appConst.STATUS_PUBLISHING,
+                    display_area: appConst.DA_PARENT
                 },
             }
         );
@@ -695,11 +709,12 @@ function addNewAd(adTitle, adContent, bindVersion) {
             cResolve(bind_notification);
         }).then((bind_notification) => {
             const parentId = bind_notification.id;
-            const bindNotificationDetail = models.bind_notification_detail.create(
+            models.bind_notification_detail.create(
                 {
                     parent_id: parentId,
                     [bindVersion]: true,
-                    status: appConst.STATUS_PUBLISHING
+                    status: appConst.STATUS_PUBLISHING,
+                    display_area: appConst.DA_PARENT,
                 }
             );
         }).then(() => {
