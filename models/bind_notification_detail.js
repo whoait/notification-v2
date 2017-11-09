@@ -2,6 +2,7 @@
 module.exports = function (sequelize, DataTypes) {
     const bind_notification_detail = sequelize.define('bind_notification_detail', {
         parent_id: DataTypes.UUID,
+        display_title: DataTypes.STRING,
         sub_title: DataTypes.STRING,
         date: DataTypes.STRING,
         start_date: DataTypes.DATE,

@@ -17,6 +17,9 @@ module.exports = {
               as: "parent_id"
           }
       },
+      display_title: {
+        type: Sequelize.STRING
+      },
       sub_title: {
         type: Sequelize.STRING
       },
