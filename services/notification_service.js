@@ -676,3 +676,17 @@ function addNewAd(adTitle, adContent, bindVersion) {
         });
     });
 }
+
+exports.getAllNotifications = () => {
+    return new Promise((resolve, reject) => {
+        const items = models.bind_notification_detail.findAll({
+            where: {
+                delete_flag: false,
+                display_area: {
+                    $ne: appConst.DA_PARENT
+                }
+            }
+        });
+        resolve(items);
+    });
+};

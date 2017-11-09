@@ -10,14 +10,38 @@ module.exports = function (sequelize, DataTypes) {
         ext_link: DataTypes.STRING,
         modal_link: DataTypes.STRING,
         limit: DataTypes.INTEGER,
-        is_cld: DataTypes.BOOLEAN,
-        is_clt: DataTypes.BOOLEAN,
-        is_bind11: DataTypes.BOOLEAN,
-        is_bind11T: DataTypes.BOOLEAN,
-        is_bind10: DataTypes.BOOLEAN,
-        is_bind10T: DataTypes.BOOLEAN,
-        is_bind9: DataTypes.BOOLEAN,
-        is_bind9T: DataTypes.BOOLEAN,
+        is_cld: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
+        is_clt: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
+        is_bind11: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
+        is_bind11T: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
+        is_bind10: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
+        is_bind10T: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
+        is_bind9: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
+        is_bind9T: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
         status: DataTypes.INTEGER,
         display_area: DataTypes.INTEGER,
         delete_flag: {

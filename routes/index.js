@@ -107,7 +107,15 @@ router.post('/uploadNotificationFile', function (req, res) {
 router.post('/createNotificationFile', (req, res) => {
     const bindVersion = req.body.bindVersion;
     notificationService.createNotificationFile(bindVersion).then((data) => {
-        console.log(data);
+        res.send(data);
+    });
+});
+
+router.get('/getAllNotifications', (req, res) => {
+    notificationService.getAllNotifications().then((data) => {
+        res.set({
+            'x-total-count': data.length
+        });
         res.send(data);
     });
 });
