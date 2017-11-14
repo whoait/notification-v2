@@ -1,10 +1,12 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import {connect} from 'react-redux';
 import {TextField, DeleteButton} from 'admin-on-rest';
+import { ChangeStatusSubmit as changeStatusSubmitAction } from './ChangeStatusAction';
 
 
 class StatusButton extends Component {
@@ -22,8 +24,9 @@ class StatusButton extends Component {
     handleSubmit = () => {
         const valueChoise =  this.refs.valueStatus.getSelectedValue();
 
+        const { ChangeStatusSubmit, record } = this.props;
+        ChangeStatusSubmit(record.id, record, valueChoise);
         console.log(valueChoise);
-
         console.log(this.props);
 
 
@@ -113,4 +116,14 @@ class StatusButton extends Component {
     }
 }
 
-export default StatusButton;
+StatusButton.propTypes = {
+    record: PropTypes.object,
+    valueChoise: PropTypes.object,
+    ChangeStatusSubmit: PropTypes.func,
+
+};
+
+export default connect(null, {
+    ChangeStatusSubmit: changeStatusSubmitAction,
+})(StatusButton);
+
