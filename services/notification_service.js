@@ -707,35 +707,8 @@ exports.findNotificationById = (notificationId) => {
             });
             cResolve(bind_notification_detail);
         }).then((bind_notification_detail) => {
-            let item = {
-                id: bind_notification_detail.id,
-                parent_id: bind_notification_detail.parent_id,
-                display_title: bind_notification_detail.display_title,
-                display_area: bind_notification_detail.display_area,
-                date: bind_notification_detail.date,
-                sub_title: bind_notification_detail.sub_title,
-                ext_link: bind_notification_detail.ext_link,
-                modal_link: bind_notification_detail.modal_link,
-                limit: bind_notification_detail.limit,
-                is_cld: bind_notification_detail.is_cld,
-                is_clt: bind_notification_detail.is_clt,
-                is_bind11: bind_notification_detail.is_bind11,
-                is_bind11T: bind_notification_detail.is_bind11T,
-                is_bind10: bind_notification_detail.is_bind10,
-                is_bind10T: bind_notification_detail.is_bind10T,
-                is_bind9: bind_notification_detail.is_bind9,
-                is_bind9T: bind_notification_detail.is_bind9T,
-
-            };
-            if (util.isEmpty(bind_notification_detail.content.match(/(<img src='[\S]*'>){1}/g)))
-            {
-                item.content = bind_notification_detail.content;
-            }
-            else {
-                item.image_url = bind_notification_detail.content.split(/(<img src='[\S]*'>){1}/g)[1];
-                item.image_content = bind_notification_detail.content.split(/(<img src='[\S]*'>){1}/g)[2];
-            }
             let output = {};
+            const item = buildNotificationItem(bind_notification_detail);
             output['item'] = item;
             return output;
         }).then((output) => {
@@ -746,6 +719,44 @@ exports.findNotificationById = (notificationId) => {
         });
     });
 };
+
+function buildNotificationItem(bind_notification_detail) {
+    let item = {
+        id: bind_notification_detail.id,
+        parent_id: bind_notification_detail.parent_id,
+        display_title: bind_notification_detail.display_title,
+        display_area: bind_notification_detail.display_area,
+        date: bind_notification_detail.date,
+        sub_title: bind_notification_detail.sub_title,
+        is_cld: bind_notification_detail.is_cld,
+        is_clt: bind_notification_detail.is_clt,
+        is_bind11: bind_notification_detail.is_bind11,
+        is_bind11T: bind_notification_detail.is_bind11T,
+        is_bind10: bind_notification_detail.is_bind10,
+        is_bind10T: bind_notification_detail.is_bind10T,
+        is_bind9: bind_notification_detail.is_bind9,
+        is_bind9T: bind_notification_detail.is_bind9T,
+    };
+    if (bind_notification_detail.display_area === appConst.DA_POPUP) {
+        item.url = bind_notification_detail.ext_link;
+        item.limit = bind_notification_detail.limit;
+    }
+    else if (bind_notification_detail.display_area === appConst.DA_MODAL) {
+        item.url = bind_notification_detail.modal_link;
+    }
+    else if (bind_notification_detail.display_area === appConst.DA_SIDE) {
+        item.url = bind_notification_detail.ext_link;
+    }
+    if (util.isEmpty(bind_notification_detail.content.match(/(<img src='[\S]*'>){1}/g)))
+    {
+        item.content = bind_notification_detail.content;
+    }
+    else {
+        item.image_url = bind_notification_detail.content.split(/(<img src='[\S]*'>){1}/g)[1];
+        item.image_content = bind_notification_detail.content.split(/(<img src='[\S]*'>){1}/g)[2];
+    }
+    return item;
+}
 
 function getNotificationCategory() {
     return new Promise((resolve, reject) => {
