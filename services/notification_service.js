@@ -692,3 +692,82 @@ exports.getAllNotifications = () => {
         resolve(items);
     });
 };
+
+exports.findNotificationById = (notificationId) => {
+    return new Promise((resolve, reject) => {
+        new Promise((cResolve, cReject) => {
+            const bind_notification_detail = models.bind_notification_detail.find({
+                where: {
+                    id: notificationId,
+                    delete_flag: false,
+                    display_area: {
+                        $ne: appConst.DA_PARENT
+                    }
+                }
+            });
+            cResolve(bind_notification_detail);
+        }).then((bind_notification_detail) => {
+            let item = {
+                id: bind_notification_detail.id,
+                parent_id: bind_notification_detail.parent_id,
+                display_title: bind_notification_detail.display_title,
+                display_area: bind_notification_detail.display_area,
+                date: bind_notification_detail.date,
+                ext_link: bind_notification_detail.ext_link,
+                modal_link: bind_notification_detail.modal_link,
+                limit: bind_notification_detail.limit
+            };
+            if (util.isEmpty(bind_notification_detail.content.match(/(<img src='[\S]*'>){1}/g)))
+            {
+                item.content = bind_notification_detail.content;
+            }
+            else {
+                item.image_url = bind_notification_detail.content.split(/(<img src='[\S]*'>){1}/g)[1];
+                item.image_content = bind_notification_detail.content.split(/(<img src='[\S]*'>){1}/g)[2];
+            }
+            let output = {};
+            output['item'] = item;
+            return output;
+        }).then((output) => {
+            getNotificationCategory().then((data) => {
+                output['category'] = data;
+                resolve(output);
+            });
+        });
+    });
+};
+
+function getNotificationCategory() {
+    return new Promise((resolve, reject) => {
+        new Promise((cResolve, cReject) => {
+            const items = models.bind_notification.findAll({
+                where: {
+                    message_type: 'news',
+                },
+                include: [
+                    {
+                        model: models.bind_notification_detail,
+                        where: {
+                            delete_flag: false,
+                            display_area: appConst.DA_PARENT
+                        }
+                    }
+                ]
+            });
+            cResolve(items);
+        }).then((items) => {
+            const promises = _.map(items, (item) => {
+                return new Promise((cResolve, rReject) => {
+                    const category = {
+                        id: item.id,
+                        title: item.title
+                    }
+                    cResolve(category);
+                });
+            });
+            Promise.all(promises).then((data) => {
+                resolve(data)
+            });
+        });
+    });
+}

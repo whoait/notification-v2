@@ -16,19 +16,10 @@ const data = datamock;
 
 //get one
 router.get("/posts/:id", function (req, res) {
-    console.log(parseInt(req.params.id));
-    var dataEdit = data.filter(function (i,n) {
-        return n.id = req.params.id;
+    const notificationId =  req.params.id;
+    notificationService.findNotificationById(notificationId).then((data) => {
+        res.send(data);
     });
-    console.log(dataEdit);
-    res.set(
-        {
-            'x-total-count': 100
-
-        }
-    );
-
-    res.send(dataEdit);
 });
 
 router.get("/posts/:id", function (req, res) {
@@ -84,7 +75,7 @@ router.post("/posts", function (req, res) {
 
 
 // handle upload notification file.
-router.post('/uploadNotificationFile', function (req, res) {
+router.post('/changeStatus/:id', function (req, res) {
     const bindVersion = req.body.bindVersion;
     const encodedString = req.body.files[0].src.split(',')[1];
     const utf8encoded = (new Buffer(encodedString, 'base64')).toString('utf8');
