@@ -85,6 +85,11 @@ router.post('/createNotificationFile', (req, res) => {
     });
 });
 
+router.put('/changeStatus/:id', (req, res) => {
+    const notificationId =  req.params.id;
+    res.send(notificationId);
+});
+
 //get list
 router.get('/posts', (req, res) => {
     notificationService.getAllNotifications().then((data) => {

@@ -681,15 +681,24 @@ function addNewAd(adTitle, adContent, bindVersion) {
 
 exports.getAllNotifications = () => {
     return new Promise((resolve, reject) => {
-        const items = models.bind_notification_detail.findAll({
-            where: {
-                delete_flag: false,
-                display_area: {
-                    $ne: appConst.DA_PARENT
+        new Promise ((cResolve, cReject) => {
+            const items = models.bind_notification_detail.findAll({
+                where: {
+                    delete_flag: false,
+                    display_area: {
+                        $ne: appConst.DA_PARENT
+                    }
                 }
-            }
+            });
+            cResolve(items);
+        }).then((items) => {
+            const promises = _.map(items, (item) => {
+               return buildNotificationItem(item);
+            });
+            Promise.all(promises).then((output) => {
+                resolve(output);
+            });
         });
-        resolve(items);
     });
 };
 
@@ -736,6 +745,10 @@ function buildNotificationItem(bind_notification_detail) {
         is_bind10T: bind_notification_detail.is_bind10T,
         is_bind9: bind_notification_detail.is_bind9,
         is_bind9T: bind_notification_detail.is_bind9T,
+        status: bind_notification_detail.status,
+        start_date: bind_notification_detail.start_date,
+        end_date: bind_notification_detail.end_date,
+        updated_at: bind_notification_detail.updated_at
     };
     if (bind_notification_detail.display_area === appConst.DA_POPUP) {
         item.url = bind_notification_detail.ext_link;
@@ -752,7 +765,8 @@ function buildNotificationItem(bind_notification_detail) {
         item.content = bind_notification_detail.content;
     }
     else {
-        item.image_url = bind_notification_detail.content.split(/(<img src='[\S]*'>){1}/g)[1];
+        const imageWithHTMLTag = bind_notification_detail.content.split(/(<img src='[\S]*'>){1}/g)[1];
+        item.image_url = imageWithHTMLTag.split(/<img[^>]+src='?([^\s]+)?\s*'>/g)[1];
         item.image_content = bind_notification_detail.content.split(/(<img src='[\S]*'>){1}/g)[2];
     }
     return item;
