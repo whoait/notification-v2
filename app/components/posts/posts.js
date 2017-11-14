@@ -147,13 +147,15 @@ export const PostEdit = (props) => (
                 {id: '2', name: 'サポート情報'},
                 {id: '3', name: 'BiND CAMP'},
             ]}/>
-            <LongTextInput source="sub_title" label="タイトル"/>
-            <ImageInput source="pictures" label="画像" accept="image/*" placeholder={<p>Drop your file here</p>}>
-                <ImageField source="image_url" title="title"/>
+            <LongTextInput source="sub_title" label="タイトル" validate={required}/>
+            <ImageInput source="pictures"  label="画像" accept="image/*" placeholder={<p>Drop your file here</p>}>
+                <ImageField source="src"  title="title"/>
             </ImageInput>
-            <LongTextInput source="image_content" label="本文"/>
-            <LongTextInput source="content_button" label="ボタンテキスト"/>
-            <LongTextInput source="modal_link" label="リンク URL"/>
+
+            <ImageField source="image_url"  title="old image"/>
+            <LongTextInput source="image_content" label="本文" validate={required}/>
+            {/*<LongTextInput source="content_button" label="ボタンテキスト"/>*/}
+            <LongTextInput source="url" label="リンク URL"/>
 
             <SelectInput source="limit" label="表示回数" choices={[
                 {id: '1', name: '1 回'},
