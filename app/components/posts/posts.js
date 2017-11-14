@@ -123,7 +123,7 @@ export const PostCreate = (props) => (
 export const PostEdit = (props) => (
     <Edit {...props}>
         <SimpleForm redirect="show">
-            <TextInput source="sub_title" label="管理タイトル" validate={required}/>
+            <TextInput source="display_title" label="管理タイトル" validate={required}/>
             <BooleanInput source="is_cld" label="Cld"/>
             <BooleanInput source="is_dlt" label="Clt"/>
             <BooleanInput source="is_bind11" label="11"/>
@@ -133,7 +133,7 @@ export const PostEdit = (props) => (
             <BooleanInput source="is_bind9" label="9"/>
             <BooleanInput source="is_bind9T" label="9t"/>
 
-            <SelectInput source="modal_link" label="通知エリア" choices={[
+            <SelectInput source="display_area" label="通知エリア" choices={[
                 {id: '0', name: 'サイド'},
                 {id: '1', name: 'モーダル'},
                 {id: '2', name: 'ポップアップ'},
@@ -142,14 +142,15 @@ export const PostEdit = (props) => (
             />
             <TextField source="xxxxxx" label="掲載情報" style={{font: 'italic bold 12px/30px Georgia, serif'}}/>
 
-            <SelectInput source="xxxxx" label="カテゴリ" choices={[
-                {id: '1x', name: '重要なお知らせ1'},
-                {id: '2x', name: '重要なお知らせ2'},
-                {id: '3x', name: '重要なお知らせ3'},
+            <DateInput source="date" label = "date" locales="ja-jp"/>
+            <SelectInput source="category" label="カテゴリ" choices={[
+                {id: '1', name: '重要なお知らせ'},
+                {id: '2', name: 'サポート情報'},
+                {id: '3', name: 'BiND CAMP'},
             ]}/>
             <TextInput source="ub_title" label="タイトル"/>
             <ImageInput source="pictures" label="画像" accept="image/*" placeholder={<p>Drop your file here</p>}>
-                <ImageField source="src" title="title"/>
+                <ImageField source="image_url" title="title"/>
             </ImageInput>
             <LongTextInput source="content" label="本文"/>
             <TextInput source="content" label="ボタンテキスト"/>

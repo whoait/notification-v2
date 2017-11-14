@@ -5,8 +5,10 @@ import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import {connect} from 'react-redux';
+import { showNotification as showNotificationAction } from 'admin-on-rest';
+import { push as pushAction } from 'react-router-redux';
 import {TextField, DeleteButton} from 'admin-on-rest';
-import { ChangeStatusSubmit as changeStatusSubmitAction } from './ChangeStatusAction';
+// import { ChangeStatusSubmit as changeStatusSubmitAction } from './ChangeStatusAction';
 
 
 class StatusButton extends Component {
@@ -24,13 +26,23 @@ class StatusButton extends Component {
     handleSubmit = () => {
         const valueChoise =  this.refs.valueStatus.getSelectedValue();
 
-        const { ChangeStatusSubmit, record } = this.props;
-        ChangeStatusSubmit(record.id, record, valueChoise);
-        console.log(valueChoise);
-        console.log(this.props);
+        const { push, record, showNotification } = this.props;
+        const updatedRecord = { ...record, status: valueChoise };
+        const data = JSON.stringify(updatedRecord);
+        console.log(data);
+        fetch(`/uploadNotificationFile/${record.id}`, { method: 'PUT', body: data, headers: new Headers({
+            'Content-Type': 'text/plain'
+        }) })
+            .then(() => {
+                showNotification('Status has change');
+                this.setState({ disable: !this.state.disable, open: false});
+                push('/posts');
+            })
+            .catch((e) => {
+                console.error(e);
+                showNotification('Error: Status change', 'warning')
+            });
 
-
-        this.setState({ disable: !this.state.disable, open: false});
     }
 
     handleChooseStatus = () => {
@@ -117,13 +129,14 @@ class StatusButton extends Component {
 }
 
 StatusButton.propTypes = {
+    push: PropTypes.func,
     record: PropTypes.object,
-    valueChoise: PropTypes.object,
-    ChangeStatusSubmit: PropTypes.func,
+    showNotification: PropTypes.func,
 
 };
 
 export default connect(null, {
-    ChangeStatusSubmit: changeStatusSubmitAction,
+    showNotification: showNotificationAction,
+    push: pushAction,
 })(StatusButton);
 
