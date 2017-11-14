@@ -22,21 +22,6 @@ router.get("/posts/:id", function (req, res) {
     });
 });
 
-router.get("/posts/:id", function (req, res) {
-    console.log(parseInt(req.params.id));
-    var dataEdit = data.filter(function (i,n) {
-        return n.id = req.params.id;
-    });
-    console.log(dataEdit);
-    res.set(
-        {
-            'x-total-count': 100
-
-        }
-    );
-
-    res.send(dataEdit);
-});
 
 //edit
 router.put("/posts/:id", function (req, res) {

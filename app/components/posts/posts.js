@@ -34,7 +34,6 @@ import StatusButton from './StatusButton';
 const detailStyle = {display: 'inline-block', verticalAlign: 'top', marginRight: '2em', minWidth: '8em'};
 
 
-
 const DisplayAreaField = ({record = {}}) => {
     if (record.display_area === 0) {
         return (<span>サイド </span>);
@@ -66,9 +65,9 @@ export const PostList = (props) => (
             <BooleanField source="is_bind9" label="9"/>
             <BooleanField source="is_bind9T" label="9t"/>
             <DisplayAreaField source="display_area" label="通知エリア"/>
-            <DateField source="updated_at"  showTime  label="編集日時を"/>
-            <DateField source="start_date" showTime  label="公開日時"/>
-            <DateField source="end_date"  showTime label="終了日時"/>
+            <DateField source="updated_at" showTime label="編集日時を"/>
+            <DateField source="start_date" showTime label="公開日時"/>
+            <DateField source="end_date" showTime label="終了日時"/>
             <EditButton style={{padding: 0}} label="編集"/>
             <DeleteCustomButton style={{padding: 0}} label="削除"/>
 
@@ -123,7 +122,7 @@ export const PostCreate = (props) => (
 export const PostEdit = (props) => (
     <Edit {...props}>
         <SimpleForm redirect="show">
-            <TextInput source="display_title" label="管理タイトル" validate={required}/>
+            <LongTextInput source="display_title" label="管理タイトル" validate={required}/>
             <BooleanInput source="is_cld" label="Cld"/>
             <BooleanInput source="is_dlt" label="Clt"/>
             <BooleanInput source="is_bind11" label="11"/>
@@ -134,27 +133,27 @@ export const PostEdit = (props) => (
             <BooleanInput source="is_bind9T" label="9t"/>
 
             <SelectInput source="display_area" label="通知エリア" choices={[
-                {id: '0', name: 'サイド'},
-                {id: '1', name: 'モーダル'},
-                {id: '2', name: 'ポップアップ'},
+                {id: 0, name: 'サイド'},
+                {id: 1, name: 'モーダル'},
+                {id: 2, name: 'ポップアップ'},
             ]}
                          validate={required}
             />
-            <TextField source="xxxxxx" label="掲載情報" style={{font: 'italic bold 12px/30px Georgia, serif'}}/>
+            <TextField source="xxxxxx" label="掲載情報" style={{font: 'italic bold 50px/30px Georgia, serif'}}/>
 
-            <DateInput source="date" label = "date" locales="ja-jp"/>
+            <DateInput source="date" label="date" locales="ja-jp"/>
             <SelectInput source="category" label="カテゴリ" choices={[
                 {id: '1', name: '重要なお知らせ'},
                 {id: '2', name: 'サポート情報'},
                 {id: '3', name: 'BiND CAMP'},
             ]}/>
-            <TextInput source="ub_title" label="タイトル"/>
+            <LongTextInput source="sub_title" label="タイトル"/>
             <ImageInput source="pictures" label="画像" accept="image/*" placeholder={<p>Drop your file here</p>}>
                 <ImageField source="image_url" title="title"/>
             </ImageInput>
-            <LongTextInput source="content" label="本文"/>
-            <TextInput source="content" label="ボタンテキスト"/>
-            <TextInput source="modal_link" label="リンク URL"/>
+            <LongTextInput source="image_content" label="本文"/>
+            <LongTextInput source="content_button" label="ボタンテキスト"/>
+            <LongTextInput source="modal_link" label="リンク URL"/>
 
             <SelectInput source="limit" label="表示回数" choices={[
                 {id: '1', name: '1 回'},
