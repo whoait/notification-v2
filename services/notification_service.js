@@ -713,9 +713,19 @@ exports.findNotificationById = (notificationId) => {
                 display_title: bind_notification_detail.display_title,
                 display_area: bind_notification_detail.display_area,
                 date: bind_notification_detail.date,
+                sub_title: bind_notification_detail.sub_title,
                 ext_link: bind_notification_detail.ext_link,
                 modal_link: bind_notification_detail.modal_link,
-                limit: bind_notification_detail.limit
+                limit: bind_notification_detail.limit,
+                is_cld: bind_notification_detail.is_cld,
+                is_clt: bind_notification_detail.is_clt,
+                is_bind11: bind_notification_detail.is_bind11,
+                is_bind11T: bind_notification_detail.is_bind11T,
+                is_bind10: bind_notification_detail.is_bind10,
+                is_bind10T: bind_notification_detail.is_bind10T,
+                is_bind9: bind_notification_detail.is_bind9,
+                is_bind9T: bind_notification_detail.is_bind9T,
+
             };
             if (util.isEmpty(bind_notification_detail.content.match(/(<img src='[\S]*'>){1}/g)))
             {
