@@ -4,6 +4,7 @@ const models = require('../models');
 const util = require('../util/util');
 const appConst = require('../util/const');
 const _ = require('underscore');
+const sftp = require('./sftp');
 
 exports.createNotificationFile = (bindVersion) => {
     return new Promise((resolve, reject) => {
@@ -631,7 +632,7 @@ exports.checkAdElement = (notificationData, bindVersion) => {
             reject();
         }
     });
-}
+};
 
 function updateAdWithBindVersion(item, bindVersion) {
     console.log(`update ad element with bind version ${bindVersion} and parent_id = ${item.id}`);
@@ -806,3 +807,11 @@ function getNotificationCategory() {
         });
     });
 }
+
+exports.uploadImages = (imagePath) => {
+    return new Promise((resolve, reject) => {
+        sftp.sendImage(imagePath).then(() => {
+           resolve();
+        });
+    })
+};
