@@ -114514,6 +114514,8 @@ var _react2 = _interopRequireDefault(_react);
 
 var _adminOnRest = __webpack_require__(78);
 
+var _Card = __webpack_require__(38);
+
 var _DeleteCustomButton = __webpack_require__(954);
 
 var _DeleteCustomButton2 = _interopRequireDefault(_DeleteCustomButton);
@@ -114525,6 +114527,10 @@ var _rowStyle2 = _interopRequireDefault(_rowStyle);
 var _StatusButton = __webpack_require__(956);
 
 var _StatusButton2 = _interopRequireDefault(_StatusButton);
+
+var _refresh = __webpack_require__(712);
+
+var _refresh2 = _interopRequireDefault(_refresh);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -114595,14 +114601,14 @@ var PostCreate = exports.PostCreate = function PostCreate(props) {
             _adminOnRest.SimpleForm,
             { redirect: 'show' },
             _react2.default.createElement(_adminOnRest.LongTextInput, { source: 'display_title', label: '\u7BA1\u7406\u30BF\u30A4\u30C8\u30EB', validate: _adminOnRest.required }),
-            _react2.default.createElement(_adminOnRest.BooleanInput, { source: 'is_cld', label: 'Cld' }),
-            _react2.default.createElement(_adminOnRest.BooleanInput, { source: 'is_dlt', label: 'Clt' }),
-            _react2.default.createElement(_adminOnRest.BooleanInput, { source: 'is_bind11', label: '11' }),
-            _react2.default.createElement(_adminOnRest.BooleanInput, { source: 'is_bind11T', label: '11t' }),
-            _react2.default.createElement(_adminOnRest.BooleanInput, { source: 'is_bind10', label: '10' }),
-            _react2.default.createElement(_adminOnRest.BooleanInput, { source: 'is_bind10T', label: '10t' }),
-            _react2.default.createElement(_adminOnRest.BooleanInput, { source: 'is_bind9', label: '9' }),
-            _react2.default.createElement(_adminOnRest.BooleanInput, { source: 'is_bind9T', label: '9t' }),
+            _react2.default.createElement(_adminOnRest.BooleanInput, { source: 'is_cld', label: 'Cld', defaultValue: true }),
+            _react2.default.createElement(_adminOnRest.BooleanInput, { source: 'is_dlt', label: 'Clt', defaultValue: true }),
+            _react2.default.createElement(_adminOnRest.BooleanInput, { source: 'is_bind11', label: '11', defaultValue: true }),
+            _react2.default.createElement(_adminOnRest.BooleanInput, { source: 'is_bind11T', label: '11t', defaultValue: true }),
+            _react2.default.createElement(_adminOnRest.BooleanInput, { source: 'is_bind10', label: '10', defaultValue: true }),
+            _react2.default.createElement(_adminOnRest.BooleanInput, { source: 'is_bind10T', label: '10t', defaultValue: true }),
+            _react2.default.createElement(_adminOnRest.BooleanInput, { source: 'is_bind9', label: '9', defaultValue: true }),
+            _react2.default.createElement(_adminOnRest.BooleanInput, { source: 'is_bind9T', label: '9t', defaultValue: true }),
             _react2.default.createElement(_adminOnRest.SelectInput, { source: 'display_area', label: '\u901A\u77E5\u30A8\u30EA\u30A2', choices: [{ id: 0, name: 'サイド' }, { id: 1, name: 'モーダル' }, { id: 2, name: 'ポップアップ' }],
                 validate: _adminOnRest.required
             }),
@@ -114627,10 +114633,28 @@ var PostCreate = exports.PostCreate = function PostCreate(props) {
     );
 };
 
+var cardActionStyle = {
+    zIndex: 2,
+    display: 'inline-block',
+    float: 'right'
+};
+
+var PostEditActions = function PostEditActions(_ref2) {
+    var basePath = _ref2.basePath,
+        data = _ref2.data;
+    return _react2.default.createElement(
+        _Card.CardActions,
+        { style: cardActionStyle },
+        _react2.default.createElement(_adminOnRest.ShowButton, { basePath: basePath, record: data }),
+        _react2.default.createElement(_adminOnRest.ListButton, { basePath: basePath, onClick: confirm }),
+        _react2.default.createElement(_adminOnRest.DeleteButton, { basePath: basePath, record: data })
+    );
+};
+
 var PostEdit = exports.PostEdit = function PostEdit(props) {
     return _react2.default.createElement(
         _adminOnRest.Edit,
-        props,
+        _extends({ actions: _react2.default.createElement(PostEditActions, null) }, props),
         _react2.default.createElement(
             _adminOnRest.SimpleForm,
             { redirect: 'show' },
@@ -114858,16 +114882,15 @@ var StatusButton = function (_Component) {
 
             var updatedRecord = _extends({}, record, { status: valueChoise });
             var data = JSON.stringify(updatedRecord);
-            console.log(data);
-            fetch('/uploadNotificationFile/' + record.id, { method: 'PUT', body: data, headers: new Headers({
-                    'Content-Type': 'text/plain'
+            fetch('/changeStatus/' + record.id, { method: 'PUT', json: true, body: data, headers: new Headers({
+                    'Content-Type': 'application/json'
                 }) }).then(function () {
-                showNotification('Status has change');
+                showNotification('ステータスが変更されました。');
                 _this.setState({ disable: !_this.state.disable, open: false });
                 push('/posts');
             }).catch(function (e) {
                 console.error(e);
-                showNotification('Error: Status change', 'warning');
+                showNotification('エラー：ステータスは変更されていません。');
             });
         }, _this.handleChooseStatus = function () {
             _this.setState({ disable: false });

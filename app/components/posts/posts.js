@@ -24,12 +24,16 @@ import {
     ImageInput,
     ImageField,
     required,
-    BooleanInput
+    BooleanInput,
+    ShowButton,
+    ListButton
 } from 'admin-on-rest';
 
+import { CardActions } from 'material-ui/Card';
 import DeleteCustomButton from './DeleteCustomButton';
 import rowStyle from './rowStyle';
 import StatusButton from './StatusButton';
+import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh'
 
 const detailStyle = {display: 'inline-block', verticalAlign: 'top', marginRight: '2em', minWidth: '8em'};
 
@@ -79,14 +83,14 @@ export const PostCreate = (props) => (
     <Create {...props}>
         <SimpleForm redirect="show">
             <LongTextInput source="display_title" label="管理タイトル" validate={required}/>
-            <BooleanInput source="is_cld" label="Cld"/>
-            <BooleanInput source="is_dlt" label="Clt"/>
-            <BooleanInput source="is_bind11" label="11"/>
-            <BooleanInput source="is_bind11T" label="11t"/>
-            <BooleanInput source="is_bind10" label="10"/>
-            <BooleanInput source="is_bind10T" label="10t"/>
-            <BooleanInput source="is_bind9" label="9"/>
-            <BooleanInput source="is_bind9T" label="9t"/>
+            <BooleanInput source="is_cld" label="Cld" defaultValue={true}/>
+            <BooleanInput source="is_dlt" label="Clt" defaultValue={true}/>
+            <BooleanInput source="is_bind11" label="11" defaultValue={true}/>
+            <BooleanInput source="is_bind11T" label="11t" defaultValue={true}/>
+            <BooleanInput source="is_bind10" label="10" defaultValue={true}/>
+            <BooleanInput source="is_bind10T" label="10t" defaultValue={true}/>
+            <BooleanInput source="is_bind9" label="9" defaultValue={true}/>
+            <BooleanInput source="is_bind9T" label="9t" defaultValue={true}/>
 
             <SelectInput source="display_area" label="通知エリア" choices={[
                 {id: 0, name: 'サイド'},
@@ -125,8 +129,26 @@ export const PostCreate = (props) => (
     </Create>
 );
 
+const cardActionStyle = {
+    zIndex: 2,
+    display: 'inline-block',
+    float: 'right',
+};
+
+
+const PostEditActions = ({ basePath, data }) => (
+    <CardActions style={cardActionStyle}>
+        <ShowButton basePath={basePath} record={data} />
+        <ListButton basePath={basePath} onClick={confirm} />
+        <DeleteButton basePath={basePath} record={data} />
+        {/*<FlatButton primary label="Refresh" onClick={refresh} icon={<NavigationRefresh />} />*/}
+        {/* Add your custom actions */}
+        {/*<FlatButton primary label="Custom Action" />*/}
+    </CardActions>
+);
+
 export const PostEdit = (props) => (
-    <Edit {...props}>
+    <Edit actions={<PostEditActions />} {...props}>
         <SimpleForm redirect="show">
             <LongTextInput source="display_title" label="管理タイトル" validate={required}/>
             <BooleanInput source="is_cld" label="Cld"/>

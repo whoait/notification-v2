@@ -29,18 +29,17 @@ class StatusButton extends Component {
         const { push, record, showNotification } = this.props;
         const updatedRecord = { ...record, status: valueChoise };
         const data = JSON.stringify(updatedRecord);
-        console.log(data);
-        fetch(`/uploadNotificationFile/${record.id}`, { method: 'PUT', body: data, headers: new Headers({
-            'Content-Type': 'text/plain'
+        fetch(`/changeStatus/${record.id}`, { method: 'PUT', json: true, body: data, headers: new Headers({
+            'Content-Type': 'application/json'
         }) })
             .then(() => {
-                showNotification('Status has change');
+                showNotification('ステータスが変更されました。');
                 this.setState({ disable: !this.state.disable, open: false});
                 push('/posts');
             })
             .catch((e) => {
                 console.error(e);
-                showNotification('Error: Status change', 'warning')
+                showNotification('エラー：ステータスは変更されていません。')
             });
 
     }
