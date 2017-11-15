@@ -3,6 +3,7 @@ const router = express.Router();
 const datamock = require('./mockdata.json');
 const models = require('../models');
 const util = require('../util/util');
+const path = require('path');
 const notificationService = require('../services/notification_service');
 
 /* GET home page. */
@@ -100,6 +101,14 @@ router.get('/posts', (req, res) => {
         res.send(data);
 
     });
+});
+
+router.get('/test', (req, res) => {
+   const imagePath = path.join(__dirname, '/notification171015_03.png');
+   console.log(imagePath);
+   notificationService.uploadImages(imagePath).then(() => {
+      res.send('ok');
+   });
 });
 
 module.exports = router;
