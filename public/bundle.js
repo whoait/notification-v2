@@ -114594,12 +114594,22 @@ var PostCreate = exports.PostCreate = function PostCreate(props) {
         _react2.default.createElement(
             _adminOnRest.SimpleForm,
             { redirect: 'show' },
-            _react2.default.createElement(_adminOnRest.TextInput, { source: 'sub_title', label: '\u7BA1\u7406\u30BF\u30A4\u30C8\u30EB' }),
-            _react2.default.createElement(_adminOnRest.CheckboxGroupInput, { source: 'bindversion', label: '\u901A\u77E5\u5BFE\u8C61', choices: [{ id: 'programming', name: 'クラウド' }, { id: 'lifestyle', name: 'クライアント' }, { id: 'photography', name: 'BiND10' }, { id: '1', name: 'BiND10 体験版' }, { id: 'photog2raphy', name: 'BiND9' }, { id: 'phot3ography', name: 'BiND9 体験版' }] }),
-            _react2.default.createElement(_adminOnRest.SelectInput, { source: 'modal_link', label: '\u901A\u77E5\u30A8\u30EA\u30A2', choices: [{ id: '1x', name: 'サイド' }, { id: '2x', name: 'モーダル' }, { id: '3x', name: 'ポップアップ' }] }),
-            _react2.default.createElement(_adminOnRest.TextField, { source: 'xxxxxx', label: '\u63B2\u8F09\u60C5\u5831', style: { font: 'italic bold 12px/30px Georgia, serif' } }),
-            _react2.default.createElement(_adminOnRest.SelectInput, { source: 'xxxxx', label: '\u30AB\u30C6\u30B4\u30EA', choices: [{ id: '1x', name: '重要なお知らせ1' }, { id: '2x', name: '重要なお知らせ2' }, { id: '3x', name: '重要なお知らせ3' }] }),
-            _react2.default.createElement(_adminOnRest.TextInput, { source: 'ticxcvcxxvtle', label: '\u30BF\u30A4\u30C8\u30EB' }),
+            _react2.default.createElement(_adminOnRest.LongTextInput, { source: 'display_title', label: '\u7BA1\u7406\u30BF\u30A4\u30C8\u30EB', validate: _adminOnRest.required }),
+            _react2.default.createElement(_adminOnRest.BooleanInput, { source: 'is_cld', label: 'Cld' }),
+            _react2.default.createElement(_adminOnRest.BooleanInput, { source: 'is_dlt', label: 'Clt' }),
+            _react2.default.createElement(_adminOnRest.BooleanInput, { source: 'is_bind11', label: '11' }),
+            _react2.default.createElement(_adminOnRest.BooleanInput, { source: 'is_bind11T', label: '11t' }),
+            _react2.default.createElement(_adminOnRest.BooleanInput, { source: 'is_bind10', label: '10' }),
+            _react2.default.createElement(_adminOnRest.BooleanInput, { source: 'is_bind10T', label: '10t' }),
+            _react2.default.createElement(_adminOnRest.BooleanInput, { source: 'is_bind9', label: '9' }),
+            _react2.default.createElement(_adminOnRest.BooleanInput, { source: 'is_bind9T', label: '9t' }),
+            _react2.default.createElement(_adminOnRest.SelectInput, { source: 'display_area', label: '\u901A\u77E5\u30A8\u30EA\u30A2', choices: [{ id: 0, name: 'サイド' }, { id: 1, name: 'モーダル' }, { id: 2, name: 'ポップアップ' }],
+                validate: _adminOnRest.required
+            }),
+            _react2.default.createElement(_adminOnRest.TextField, { source: 'xxxxxx', label: '\u63B2\u8F09\u60C5\u5831', style: { font: 'italic bold 50px/30px Georgia, serif' } }),
+            _react2.default.createElement(_adminOnRest.DateInput, { source: 'date', label: 'date', locales: 'ja-jp' }),
+            _react2.default.createElement(_adminOnRest.SelectInput, { source: 'category', label: '\u30AB\u30C6\u30B4\u30EA', choices: [{ id: '1', name: '重要なお知らせ' }, { id: '2', name: 'サポート情報' }, { id: '3', name: 'BiND CAMP' }] }),
+            _react2.default.createElement(_adminOnRest.LongTextInput, { source: 'sub_title', label: '\u30BF\u30A4\u30C8\u30EB', validate: _adminOnRest.required }),
             _react2.default.createElement(
                 _adminOnRest.ImageInput,
                 { source: 'pictures', label: '\u753B\u50CF', accept: 'image/*', placeholder: _react2.default.createElement(
@@ -114609,10 +114619,10 @@ var PostCreate = exports.PostCreate = function PostCreate(props) {
                     ) },
                 _react2.default.createElement(_adminOnRest.ImageField, { source: 'src', title: 'title' })
             ),
-            _react2.default.createElement(_adminOnRest.LongTextInput, { source: 'body', label: '\u672C\u6587' }),
-            _react2.default.createElement(_adminOnRest.TextInput, { source: 'titlze', label: '\u30DC\u30BF\u30F3\u30C6\u30AD\u30B9\u30C8' }),
-            _react2.default.createElement(_adminOnRest.TextInput, { source: 'titxle', label: '\u30EA\u30F3\u30AF URL' }),
-            _react2.default.createElement(_adminOnRest.SelectInput, { source: 'xxxxxx', label: '\u8868\u793A\u56DE\u6570', choices: [{ id: '1', name: '1 回' }, { id: '2', name: '2 回' }, { id: '3', name: '3 回' }, { id: '4', name: '4 回' }, { id: '5', name: '5 回' }] })
+            _react2.default.createElement(_adminOnRest.ImageField, { source: 'image_url', title: 'old image' }),
+            _react2.default.createElement(_adminOnRest.LongTextInput, { source: 'image_content', label: '\u672C\u6587', validate: _adminOnRest.required }),
+            _react2.default.createElement(_adminOnRest.LongTextInput, { source: 'url', label: '\u30EA\u30F3\u30AF URL' }),
+            _react2.default.createElement(_adminOnRest.SelectInput, { source: 'limit', label: '\u8868\u793A\u56DE\u6570', choices: [{ id: '1', name: '1 回' }, { id: '2', name: '2 回' }, { id: '3', name: '3 回' }, { id: '4', name: '4 回' }, { id: '5', name: '5 回' }] })
         )
     );
 };
@@ -114664,10 +114674,24 @@ var PostShow = exports.PostShow = function PostShow(props) {
         _react2.default.createElement(
             _adminOnRest.SimpleShowLayout,
             null,
-            _react2.default.createElement(_adminOnRest.TextField, { source: 'sub_title', label: '\u7BA1\u7406\u30BF\u30A4\u30C8\u30EB', validate: _adminOnRest.required }),
-            _react2.default.createElement(_adminOnRest.TextField, { source: 'ub_title', label: '\u30BF\u30A4\u30C8\u30EB' }),
-            _react2.default.createElement(_adminOnRest.TextField, { source: 'content', label: '\u30DC\u30BF\u30F3\u30C6\u30AD\u30B9\u30C8' }),
-            _react2.default.createElement(_adminOnRest.TextField, { source: 'modal_link', label: '\u30EA\u30F3\u30AF URL' })
+            _react2.default.createElement(_adminOnRest.TextField, { source: 'display_title', label: '\u7BA1\u7406\u30BF\u30A4\u30C8\u30EB', validate: _adminOnRest.required }),
+            _react2.default.createElement(_adminOnRest.BooleanField, { source: 'is_cld', label: 'Cld' }),
+            _react2.default.createElement(_adminOnRest.BooleanField, { source: 'is_dlt', label: 'Clt' }),
+            _react2.default.createElement(_adminOnRest.BooleanField, { source: 'is_bind11', label: '11' }),
+            _react2.default.createElement(_adminOnRest.BooleanField, { source: 'is_bind11T', label: '11t' }),
+            _react2.default.createElement(_adminOnRest.BooleanField, { source: 'is_bind10', label: '10' }),
+            _react2.default.createElement(_adminOnRest.BooleanField, { source: 'is_bind10T', label: '10t' }),
+            _react2.default.createElement(_adminOnRest.BooleanField, { source: 'is_bind9', label: '9' }),
+            _react2.default.createElement(_adminOnRest.BooleanField, { source: 'is_bind9T', label: '9t' }),
+            'validate=',
+            _adminOnRest.required,
+            '/>',
+            _react2.default.createElement(_adminOnRest.TextField, { source: 'xxxxxx', label: '\u63B2\u8F09\u60C5\u5831', style: { font: 'italic bold 50px/30px Georgia, serif' } }),
+            _react2.default.createElement(_adminOnRest.DateField, { source: 'date', label: 'date', locales: 'ja-jp' }),
+            _react2.default.createElement(_adminOnRest.TextField, { source: 'sub_title', label: '\u30BF\u30A4\u30C8\u30EB', validate: _adminOnRest.required }),
+            _react2.default.createElement(_adminOnRest.ImageField, { source: 'image_url', title: 'old image' }),
+            _react2.default.createElement(_adminOnRest.TextField, { source: 'image_content', label: '\u672C\u6587', validate: _adminOnRest.required }),
+            _react2.default.createElement(_adminOnRest.TextField, { source: 'url', label: '\u30EA\u30F3\u30AF URL' })
         )
     );
 };
