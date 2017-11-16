@@ -4,7 +4,12 @@ const models = require('../models');
 const util = require('../util/util');
 const appConst = require('../util/const');
 const _ = require('underscore');
+const path = require('path');
 const sftp = require('./sftp');
+const env = process.env.NODE_ENV || 'development';
+const config = require(`${__dirname}/../config/bind_version_config.json`)[env];
+
+const jsonFilePath = path.join(__dirname, '../tmp/');
 
 exports.createNotificationFile = (bindVersion) => {
     return new Promise((resolve, reject) => {
@@ -682,7 +687,7 @@ function addNewAd(adTitle, adContent, bindVersion) {
 
 exports.getAllNotifications = () => {
     return new Promise((resolve, reject) => {
-        new Promise ((cResolve, cReject) => {
+        new Promise((cResolve, cReject) => {
             const items = models.bind_notification_detail.findAll({
                 where: {
                     delete_flag: false,
@@ -694,7 +699,7 @@ exports.getAllNotifications = () => {
             cResolve(items);
         }).then((items) => {
             const promises = _.map(items, (item) => {
-               return buildNotificationItem(item);
+                return buildNotificationItem(item);
             });
             Promise.all(promises).then((output) => {
                 resolve(output);
@@ -761,8 +766,7 @@ function buildNotificationItem(bind_notification_detail) {
     else if (bind_notification_detail.display_area === appConst.DA_SIDE) {
         item.url = bind_notification_detail.ext_link;
     }
-    if (util.isEmpty(bind_notification_detail.content.match(/(<img src='[\S]*'>){1}/g)))
-    {
+    if (util.isEmpty(bind_notification_detail.content.match(/(<img src='[\S]*'>){1}/g))) {
         item.content = bind_notification_detail.content;
     }
     else {
@@ -808,10 +812,111 @@ function getNotificationCategory() {
     });
 }
 
-exports.uploadImages = (imagePath) => {
+exports.uploadImages = (imagePath, imageFileName) => {
     return new Promise((resolve, reject) => {
-        sftp.sendImage(imagePath).then(() => {
-           resolve();
+        client.sendImage(imagePath, imageFileName).then(() => {
+            resolve();
         });
     })
+};
+
+exports.updateStatus = (notificationId, newStatus) => {
+    return new Promise((resolve, reject) => {
+        const item = models.bind_notification_detail.update(
+            {
+                status: newStatus,
+            },
+            {
+                where: {
+                    id: notificationId,
+                    delete_flag: false
+                }
+            });
+        resolve(item);
+    });
+};
+
+exports.buildJsonFile = (notificationId) => {
+    return new Promise((resolve, reject) => {
+        new Promise((cResolve, cReject) => {
+            const item = models.bind_notification_detail.find({
+                where: {
+                    id: notificationId,
+                    delete_flag: false
+                }
+            });
+            cResolve(item);
+        }).then((item) => {
+            const promises = _.map(config.version, (version) => {
+                if (item[version.code] === true) {
+                    return buildNotificationJsonFileByVersion(version.code);
+                }
+            });
+            Promise.all(promises).then((data) => {
+                _.map(data, (element) => {
+                    if (!util.isEmpty(element)) {
+                        uploadJSonFile(element).then(() => {
+                            resolve();
+                        });
+                    }
+                });
+            });
+        });
+    });
+};
+
+function buildNotificationJsonFileByVersion(bindVersion) {
+    return new Promise((resolve, reject) => {
+        util.makeDirIfNotExisted(jsonFilePath + bindVersion);
+        createNotificationOutputData(bindVersion).then((output) => {
+            util.writeJson(jsonFilePath + bindVersion + '/notification.json', output).then(() => {
+                resolve(bindVersion);
+            })
+        });
+    })
+}
+
+function createNotificationOutputData(bindVersion) {
+    return new Promise((resolve, reject) => {
+        let output = {};
+        buildAdJSONObject(bindVersion).then((data) => {
+            output['ad'] = data;
+            return output;
+        }).then((output) => {
+            buildNewsJSONObject(bindVersion).then((data) => {
+                output['news'] = data;
+                output['schedule'] = [];
+                return output;
+            }).then((output) => {
+                buildPopupJSONObject(bindVersion).then((data) => {
+                    output['popup'] = data;
+                    resolve(JSON.stringify(output));
+                });
+            });
+        });
+    });
+};
+
+function uploadJSonFile (bindVersion){
+    return new Promise((resolve, reject) => {
+        // Test with development environment
+        if (env === 'development') {
+            console.log(`upload sftp with bind version is ${bindVersion}`);
+            const srcPath = jsonFilePath + bindVersion + '/notification.json';
+            console.log(srcPath);
+            _.each(config.version, (version) => {
+                if (version.code === bindVersion) {
+                    const destPath = version.notificationPath + `notification_${bindVersion}.json`;
+                    console.log(destPath);
+                    sftp.sendNotificationFile(srcPath, destPath).then((data)=> {
+                        console.log(data);
+                        resolve();
+                    });
+                };
+            });
+        }
+        else {
+            resolve();
+        }
+    });
 };
