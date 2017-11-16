@@ -1,4 +1,4 @@
-Install requires package:
+Install required packages:
 $ npm install
 
 Database:
