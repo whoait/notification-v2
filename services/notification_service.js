@@ -965,3 +965,20 @@ function uploadJsonFileWithSFTP(bindVersion) {
         });
     });
 }
+
+exports.deleteNotification = (notificationId) => {
+    return new Promise((resolve, reject) => {
+        const item = models.bind_notification_detail.update(
+            {
+                delete_flag: true,
+            },
+            {
+                where: {
+                    id: notificationId,
+                    status: appConst.STATUS_PUBLISHED,
+                    delete_flag: false
+                }
+            });
+        resolve(item);
+    });
+};

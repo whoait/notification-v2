@@ -114,6 +114,13 @@ router.put('/changeStatus/:id', (req, res) => {
     });
 });
 
+router.delete('/posts/:id', (req, res) => {
+    const notificationId = req.params.id;
+    notificationService.deleteNotification(notificationId).then(() => {
+        res.send(util.responseSuccess());
+    });
+});
+
 //get list
 router.get('/posts', (req, res) => {
     notificationService.getAllNotifications().then((data) => {
