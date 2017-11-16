@@ -16,9 +16,10 @@ function doConnect() {
     });
 }
 
-
-exports.sendImage = (imagePath, imageFileName) => {
-    return sftp.put(imagePath, config.imagePath + imageFileName);
+exports.sendImage = (srcPath, destPath) => {
+    return doConnect().then(() => {
+        return sftp.put(srcPath, destPath);
+    });
 };
 
 exports.sendNotificationFile = (srcPath, destPath) => {

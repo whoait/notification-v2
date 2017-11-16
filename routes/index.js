@@ -90,6 +90,7 @@ router.post('/createNotificationFile', (req, res) => {
 router.put('/changeStatus/:id', (req, res) => {
     const notificationId = req.params.id;
     const newStatus = req.body.status;
+    const imageURL = req.body.image_url;
     notificationService.updateStatus(notificationId, newStatus).then((data) => {
         console.log(data);
         if (newStatus === appConst.STATUS_PUBLISHED) {
@@ -100,7 +101,15 @@ router.put('/changeStatus/:id', (req, res) => {
             });
         }
         if (newStatus === appConst.STATUS_PUBLISHING) {
-            res.send(util.responseSuccess());
+            notificationService.uploadImage(notificationId, imageURL).then(() => {
+                notificationService.buildJsonFile(notificationId).then(() => {
+                    res.send(util.responseSuccess());
+                }).catch((err) => {
+                    res.send(util.responseError());
+                });
+            }).catch((err) => {
+                res.send(util.responseError());
+            });
         }
     });
 });
@@ -119,7 +128,7 @@ router.get('/posts', (req, res) => {
 router.get('/test', (req, res) => {
     const imagePath = path.join(__dirname, '/notification171015_03.png');
     console.log(imagePath);
-    notificationService.uploadImages(imagePath, 'test.png').then(() => {
+    notificationService.uploadImage(imagePath, 'test.png').then(() => {
         res.send('ok');
     });
 });
