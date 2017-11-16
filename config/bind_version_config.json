@@ -1,0 +1,113 @@
+{
+  "development": {
+    "host": "192.168.252.105",
+    "port": 22,
+    "type": "sftp",
+    "username": "dsadmin",
+    "password": "DSP@ssw0rd",
+    "imagePath": "/share/work/bindcld/sitetheater/images/",
+    "notificationPath": "/share/bind_data2/template/sitetheater/",
+    "version": [
+      {
+        "name": "Bind Cloud",
+        "code": "is_cld",
+        "imagePath": "",
+        "notificationPath": ""
+      },
+      {
+        "name": "Bind Client",
+        "code": "is_clt",
+        "imagePath": "/share/work/bindcld/sitetheater/images/",
+        "notificationPath": "/share/bind_data2/template/sitetheater/"
+      },
+      {
+        "name": "Bind 11",
+        "code": "is_bind11",
+        "imagePath": "/share/work/bindcld/sitetheater/images/",
+        "notificationPath": "/share/bind_data2/template/sitetheater/"
+      },
+      {
+        "name": "Bind 11 Trial",
+        "code": "is_bind11T",
+        "imagePath": "/share/work/bindcld/sitetheater/images/",
+        "notificationPath": "/share/bind_data2/template/sitetheater/"
+      },
+      {
+        "name": "Bind 10",
+        "code": "is_bind10",
+        "imagePath": "/share/work/bindcld/sitetheater/images/",
+        "notificationPath": "/share/bind_data2/template/sitetheater/"
+      },
+      {
+        "name": "Bind 10 Trial",
+        "code": "is_bind10T",
+        "imagePath": "/share/work/bindcld/sitetheater/images/",
+        "notificationPath": "/share/bind_data2/template/sitetheater/"
+      },
+      {
+        "name": "Bind 9",
+        "code": "is_bind9",
+        "imagePath": "/share/work/bindcld/sitetheater/images/",
+        "notificationPath": "/share/bind_data2/template/sitetheater/"
+      },
+      {
+        "name": "Bind 9 Trial",
+        "code": "is_bind9T",
+        "imagePath": "/share/work/bindcld/sitetheater/images/",
+        "notificationPath": "/share/bind_data2/template/sitetheater/"
+      }
+    ]
+  },
+  "test": {
+    "host": "192.168.252.105",
+    "port": 22,
+    "type": "sftp",
+    "username": "dsadmin",
+    "password": "DSP@ssw0rd",
+    "imagePath": "/share/work/bindcld/sitetheater/images/",
+    "notificationPath": "/share/bind_data2/template/sitetheater/"
+  },
+  "production": {
+    "host": "dl.digitalstage.jp",
+    "port": 21,
+    "type": "ftp",
+    "username": "dsadmin",
+    "password": "DSP@ssw0rd",
+    "version": [
+      {
+        "is_cld": {
+          "imagePath": "/share/work/bindcld/sitetheater/images/",
+          "notificationPath": ""
+        },
+        "is_clt": {
+          "imagePath": "/share/work/bindcld/sitetheater/images/",
+          "notificationPath": "/home/notification-test/bindclient/sitetheater/"
+        },
+        "bind_11": {
+          "imagePath": "/share/work/bindcld/sitetheater/images/",
+          "notificationPath": "/home/notification-test/bind11/sitetheater/"
+        },
+        "bind_11T": {
+          "imagePath": "/share/work/bindcld/sitetheater/images/",
+          "notificationPath": "/home/notification-test/bind11/sitetheater/"
+        },
+        "bind_10": {
+          "imagePath": "/share/work/bindcld/sitetheater/images/",
+          "notificationPath": "/home/notification-test/bind10/sitetheater/"
+        },
+        "bind_10T": {
+          "imagePath": "/share/work/bindcld/sitetheater/images/",
+          "notificationPath": "/home/notification-test/bind10/sitetheater/"
+        },
+        "bind_9": {
+          "imagePath": "/share/work/bindcld/sitetheater/images/",
+          "notificationPath": "/home/notification-test/bind9/sitetheater/"
+        },
+        "bind_9T": {
+          "imagePath": "/share/work/bindcld/sitetheater/images/",
+          "notificationPath": "/home/notification-test/bind9/sitetheater/"
+        }
+      }
+    ]
+  }
+}

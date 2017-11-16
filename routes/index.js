@@ -5,6 +5,7 @@ const models = require('../models');
 const util = require('../util/util');
 const path = require('path');
 const notificationService = require('../services/notification_service');
+const appConst = require('../util/const');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -17,7 +18,7 @@ const data = datamock;
 
 //get one
 router.get("/posts/:id", function (req, res) {
-    const notificationId =  req.params.id;
+    const notificationId = req.params.id;
     notificationService.findNotificationById(notificationId).then((data) => {
         res.send(data);
     });
@@ -87,8 +88,21 @@ router.post('/createNotificationFile', (req, res) => {
 });
 
 router.put('/changeStatus/:id', (req, res) => {
-    const notificationId =  req.params.id;
-    res.send(notificationId);
+    const notificationId = req.params.id;
+    const newStatus = req.body.status;
+    notificationService.updateStatus(notificationId, newStatus).then((data) => {
+        console.log(data);
+        if (newStatus === appConst.STATUS_PUBLISHED) {
+            notificationService.buildJsonFile(notificationId).then(() => {
+                res.send(util.responseSuccess());
+            }).catch((err) => {
+                res.send(util.responseError());
+            });
+        }
+        if (newStatus === appConst.STATUS_PUBLISHING) {
+            res.send(util.responseSuccess());
+        }
+    });
 });
 
 //get list
@@ -97,18 +111,17 @@ router.get('/posts', (req, res) => {
         res.set({
             'x-total-count': data.length
         });
-        console.log(data);
         res.send(data);
 
     });
 });
 
 router.get('/test', (req, res) => {
-   const imagePath = path.join(__dirname, '/notification171015_03.png');
-   console.log(imagePath);
-   notificationService.uploadImages(imagePath).then(() => {
-      res.send('ok');
-   });
+    const imagePath = path.join(__dirname, '/notification171015_03.png');
+    console.log(imagePath);
+    notificationService.uploadImages(imagePath, 'test.png').then(() => {
+        res.send('ok');
+    });
 });
 
 module.exports = router;

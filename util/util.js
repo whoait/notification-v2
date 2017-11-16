@@ -1,5 +1,6 @@
 'use strict';
 const _ = require('underscore');
+const fs = require('fs')
 
 
 exports.isEmpty = (aData) =>{
@@ -31,4 +32,25 @@ exports.responseError = () => {
         // content: "Invalid json format"
     };
     return JSON.stringify(res);
+};
+
+exports.writeJson = (aPath, aData)=>{
+    return new Promise((resolve, reject) => {
+        fs.writeFile(aPath, aData, (err)=>{
+            resolve(err);
+        });
+    });
+};
+
+exports.makeDirIfNotExisted = (aPath) => {
+    return new Promise((resolve, reject) => {
+        if (!fs.existsSync(aPath)){
+            fs.mkdir(aPath, (err) =>{
+                resolve(err);
+            });
+        }
+        else {
+            resolve();
+        }
+    })
 };
