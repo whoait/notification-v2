@@ -32,14 +32,17 @@ import {
 } from 'admin-on-rest';
 
 import {CardActions} from 'material-ui/Card';
+import RaisedButton from 'material-ui/RaisedButton';
 import DeleteCustomButton from './DeleteCustomButton';
 import rowStyle from './rowStyle';
 import StatusButton from './StatusButton';
 import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh'
-
+// area css--start
 const detailStyle = {display: 'inline-block', verticalAlign: 'top', marginRight: '2em', minWidth: '8em'};
+const style = {margin: 12,};
+const confirmStyle = {fontSize: 22, textAlign: 'center', fontWeight: 'bold'};
 
-
+// area css--end
 const DisplayAreaField = ({record = {}}) => {
     if (record.display_area === 0) {
         return (<span>サイド </span>);
@@ -200,14 +203,10 @@ export const PostEdit = (props) => (
     </Edit>
 );
 
-const PostShowToolbar = props => <Toolbar {...props} >
-    <ListButton label="キャンセル" redirect={false} submitOnEnter={false} raised={false}/>
-    <SaveButton label="確認する" redirect="show" submitOnEnter={true}/>
 
-</Toolbar>;
 export const PostShow = (props) => (
     <Show actions={<PostEditActions/>} {...props}>
-        <SimpleShowLayout toolbar={<PostShowToolbar/>}>
+        <SimpleShowLayout>
             <TextField source="display_title" label="管理タイトル" validate={required}/>
             <BooleanField source="is_cld" label="Cld"/>
             <BooleanField source="is_dlt" label="Clt"/>
@@ -251,6 +250,13 @@ export const PostShow = (props) => (
             {/*{id: '5', name: '5 回'},*/}
 
             {/*]}/>*/}
+            <div style={confirmStyle}>
+                <div style={confirmStyle}>
+                    <span>この内容で間違いありませんか？</span>
+                </div>
+                <RaisedButton label="修正する" style={style}/>
+                <RaisedButton label="保存する" primary={true} style={style}/>
+            </div>
         </SimpleShowLayout>
     </Show>
 );

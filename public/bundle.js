@@ -114516,6 +114516,10 @@ var _adminOnRest = __webpack_require__(78);
 
 var _Card = __webpack_require__(32);
 
+var _RaisedButton = __webpack_require__(107);
+
+var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
+
 var _DeleteCustomButton = __webpack_require__(954);
 
 var _DeleteCustomButton2 = _interopRequireDefault(_DeleteCustomButton);
@@ -114534,8 +114538,12 @@ var _refresh2 = _interopRequireDefault(_refresh);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// area css--start
 var detailStyle = { display: 'inline-block', verticalAlign: 'top', marginRight: '2em', minWidth: '8em' };
+var style = { margin: 12 };
+var confirmStyle = { fontSize: 22, textAlign: 'center', fontWeight: 'bold' };
 
+// area css--end
 var DisplayAreaField = function DisplayAreaField(_ref) {
     var _ref$record = _ref.record,
         record = _ref$record === undefined ? {} : _ref$record;
@@ -114698,21 +114706,13 @@ var PostEdit = exports.PostEdit = function PostEdit(props) {
     );
 };
 
-var PostShowToolbar = function PostShowToolbar(props) {
-    return _react2.default.createElement(
-        _adminOnRest.Toolbar,
-        props,
-        _react2.default.createElement(_adminOnRest.ListButton, { label: '\u30AD\u30E3\u30F3\u30BB\u30EB', redirect: false, submitOnEnter: false, raised: false }),
-        _react2.default.createElement(_adminOnRest.SaveButton, { label: '\u78BA\u8A8D\u3059\u308B', redirect: 'show', submitOnEnter: true })
-    );
-};
 var PostShow = exports.PostShow = function PostShow(props) {
     return _react2.default.createElement(
         _adminOnRest.Show,
         _extends({ actions: _react2.default.createElement(PostEditActions, null) }, props),
         _react2.default.createElement(
             _adminOnRest.SimpleShowLayout,
-            { toolbar: _react2.default.createElement(PostShowToolbar, null) },
+            null,
             _react2.default.createElement(_adminOnRest.TextField, { source: 'display_title', label: '\u7BA1\u7406\u30BF\u30A4\u30C8\u30EB', validate: _adminOnRest.required }),
             _react2.default.createElement(_adminOnRest.BooleanField, { source: 'is_cld', label: 'Cld' }),
             _react2.default.createElement(_adminOnRest.BooleanField, { source: 'is_dlt', label: 'Clt' }),
@@ -114727,7 +114727,22 @@ var PostShow = exports.PostShow = function PostShow(props) {
             _react2.default.createElement(_adminOnRest.TextField, { source: 'sub_title', label: '\u30BF\u30A4\u30C8\u30EB', validate: _adminOnRest.required }),
             _react2.default.createElement(_adminOnRest.ImageField, { source: 'image_url', title: 'old image' }),
             _react2.default.createElement(_adminOnRest.TextField, { source: 'image_content', label: '\u672C\u6587', validate: _adminOnRest.required }),
-            _react2.default.createElement(_adminOnRest.TextField, { source: 'url', label: '\u30EA\u30F3\u30AF URL' })
+            _react2.default.createElement(_adminOnRest.TextField, { source: 'url', label: '\u30EA\u30F3\u30AF URL' }),
+            _react2.default.createElement(
+                'div',
+                { style: confirmStyle },
+                _react2.default.createElement(
+                    'div',
+                    { style: confirmStyle },
+                    _react2.default.createElement(
+                        'span',
+                        null,
+                        '\u3053\u306E\u5185\u5BB9\u3067\u9593\u9055\u3044\u3042\u308A\u307E\u305B\u3093\u304B\uFF1F'
+                    )
+                ),
+                _react2.default.createElement(_RaisedButton2.default, { label: '\u4FEE\u6B63\u3059\u308B', style: style }),
+                _react2.default.createElement(_RaisedButton2.default, { label: '\u4FDD\u5B58\u3059\u308B', primary: true, style: style })
+            )
         )
     );
 };
