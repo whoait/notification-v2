@@ -857,6 +857,8 @@ exports.buildJsonFile = (notificationId) => {
                     if (!util.isEmpty(element)) {
                         uploadJSonFile(element).then(() => {
                             resolve();
+                        }).catch((err) => {
+                            reject();
                         });
                     }
                 });
@@ -867,6 +869,7 @@ exports.buildJsonFile = (notificationId) => {
 
 function buildNotificationJsonFileByVersion(bindVersion) {
     return new Promise((resolve, reject) => {
+        util.makeDirIfNotExisted(jsonFilePath);
         util.makeDirIfNotExisted(jsonFilePath + bindVersion);
         createNotificationOutputData(bindVersion).then((output) => {
             util.writeJson(jsonFilePath + bindVersion + '/notification.json', output).then(() => {
@@ -897,26 +900,52 @@ function createNotificationOutputData(bindVersion) {
     });
 };
 
-function uploadJSonFile (bindVersion){
+function uploadJSonFile(bindVersion) {
+    // Test with development environment
+    if (env === 'development') {
+        return uploadWithSFTP(bindVersion);
+    }
+    else {
+        return new Promise((resolve, reject) => {
+            resolve();
+        });
+    }
+};
+
+function uploadWithSFTP(bindVersion) {
     return new Promise((resolve, reject) => {
-        // Test with development environment
-        if (env === 'development') {
-            console.log(`upload sftp with bind version is ${bindVersion}`);
-            const srcPath = jsonFilePath + bindVersion + '/notification.json';
-            console.log(srcPath);
-            _.each(config.version, (version) => {
+        console.log(`upload sftp with bind version is ${bindVersion}`);
+        const srcPath = jsonFilePath + bindVersion + '/notification.json';
+        console.log(srcPath);
+        const promises = _.map(config.version, (version) => {
+            return new Promise((cResolve, cReject) => {
                 if (version.code === bindVersion) {
                     const destPath = version.notificationPath + `notification_${bindVersion}.json`;
                     console.log(destPath);
-                    sftp.sendNotificationFile(srcPath, destPath).then((data)=> {
-                        console.log(data);
-                        resolve();
+                    sftp.sendNotificationFile(srcPath, destPath).then(() => {
+                        cResolve();
+                    }).catch(() => {
+                        console.log('error when send file');
+                        reject();
                     });
-                };
+                }
+                else {
+                    cResolve();
+                }
             });
-        }
-        else {
+            // if (version.code === bindVersion) {
+            //     const destPath = version.notificationPath + `notification_${bindVersion}.json`;
+            //     console.log(destPath);
+            //     return new Promise((cResolve, cReject) => {
+            //         sftp.sendNotificationFile(srcPath, destPath).then((data)=> {
+            //             console.log(data);
+            //             cResolve();
+            //         });
+            //     });
+            // }
+        });
+        Promise.all(promises).then(() => {
             resolve();
-        }
+        });
     });
-};
+}

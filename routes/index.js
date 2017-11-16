@@ -95,9 +95,8 @@ router.put('/changeStatus/:id', (req, res) => {
         if (newStatus === appConst.STATUS_PUBLISHED) {
             notificationService.buildJsonFile(notificationId).then(() => {
                 res.send(util.responseSuccess());
-                // notificationService.uploadJSonFile(notificationId).then(() => {
-                //     res.send(util.responseSuccess());
-                // });
+            }).catch((err) => {
+                res.send(util.responseError());
             });
         }
         if (newStatus === appConst.STATUS_PUBLISHING) {

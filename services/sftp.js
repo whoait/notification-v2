@@ -3,15 +3,18 @@ const config = require(`${__dirname}/../config/bind_version_config.json`)[env];
 const Client = require('ssh2-sftp-client');
 const sftp = new Client();
 
-
-sftp.connect({
-    host: config.host,
-    port: config.port,
-    username: config.username,
-    password: config.password
-}).catch((err) => {
-    console.log(err, 'catch error');
-});
+function doConnect() {
+    return sftp.connect(
+        {
+            host: config.host,
+            port: config.port,
+            username: config.username,
+            password: config.password
+        }
+    ).catch((err) => {
+        console.log(`Error: err`);
+    });
+}
 
 
 exports.sendImage = (imagePath, imageFileName) => {
@@ -19,6 +22,8 @@ exports.sendImage = (imagePath, imageFileName) => {
 };
 
 exports.sendNotificationFile = (srcPath, destPath) => {
-    return sftp.put(srcPath, destPath);
+    return doConnect().then(() => {
+        return sftp.put(srcPath, destPath);
+    });
 };
 
