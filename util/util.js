@@ -54,3 +54,11 @@ exports.makeDirIfNotExisted = (aPath) => {
         }
     })
 };
+
+exports.writeImage = (aPath, aData) => {
+    return new Promise((resolve, reject) => {
+        fs.writeFile(aPath, aData, (err) => {
+            resolve(err);
+        })
+    });
+};

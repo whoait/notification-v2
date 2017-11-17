@@ -772,7 +772,7 @@ function buildNotificationItem(bind_notification_detail) {
     else {
         const imageWithHTMLTag = bind_notification_detail.content.split(/(<img src='[\S]*'>){1}/g)[1];
         item.image_url = imageWithHTMLTag.split(/<img[^>]+src='?([^\s]+)?\s*'>/g)[1];
-        item.image_content = bind_notification_detail.content.split(/(<img src='[\S]*'>){1}/g)[2];
+        item.content = bind_notification_detail.content;
     }
     return item;
 }
@@ -982,3 +982,170 @@ exports.deleteNotification = (notificationId) => {
         resolve(item);
     });
 };
+
+exports.updateNotification = (notificationId, item) => {
+    if (!util.isEmpty(item.pictures) && (!util.isEmpty(item.content.match(/(<img src='[\S]*'>){1}/g)))) {
+        saveUpdateImage(item.pictures, item.content, notificationId)
+    }
+    if (item.display_area === appConst.DA_POPUP) {
+        return updateNotificationWithTypePopup(notificationId, item);
+    }
+    else if (item.display_area === appConst.DA_MODAL) {
+        return updateNotificationWithTypeModal(notificationId, item);
+    }
+    else if (item.display_area === appConst.DA_SIDE) {
+        return updateNotificationWithTypeSide(notificationId, item);
+    }
+    else {
+        return new Promise((resolve, reject) => {
+           resolve();
+        });
+    }
+};
+
+function updateNotificationWithTypePopup(item, notificationId) {
+    return new Promise((resolve, reject) => {
+        models.bind_notification_detail.update(
+            {
+                // parent_id: item.parent_id,
+                display_title: item.display_title,
+                display_area: item.display_area,
+                date: item.date,
+                sub_title: item.sub_title,
+                is_cld: item.is_cld,
+                is_clt: item.is_clt,
+                is_bind11: item.is_bind11,
+                is_bind11T: item.is_bind11T,
+                is_bind10: item.is_bind10,
+                is_bind10T: item.is_bind10T,
+                is_bind9: item.is_bind9,
+                is_bind9T: item.is_bind9T,
+                content: item.content.replace(/(")/g, "'"),
+                ext_link: item.url,
+                limit: item.limit,
+                modal_link: null
+            },
+            {
+                where: {
+                    id: notificationId,
+                    delete_flag: false
+                }
+            }
+        );
+        resolve();
+    });
+}
+
+function updateNotificationWithTypeModal(item, notificationId) {
+    return new Promise((resolve, reject) => {
+        models.bind_notification_detail.update(
+            {
+                // parent_id: item.parent_id,
+                display_title: item.display_title,
+                display_area: item.display_area,
+                date: item.date,
+                sub_title: item.sub_title,
+                is_cld: item.is_cld,
+                is_clt: item.is_clt,
+                is_bind11: item.is_bind11,
+                is_bind11T: item.is_bind11T,
+                is_bind10: item.is_bind10,
+                is_bind10T: item.is_bind10T,
+                is_bind9: item.is_bind9,
+                is_bind9T: item.is_bind9T,
+                content: item.content.replace(/(")/g, "'"),
+                ext_link: null,
+                limit: null,
+                modal_link: item.url
+            },
+            {
+                where: {
+                    id: notificationId,
+                    delete_flag: false
+                }
+            }
+        );
+        resolve();
+    });
+}
+
+function updateNotificationWithTypeSide(item, notificationId) {
+    return new Promise((resolve, reject) => {
+        models.bind_notification_detail.update(
+            {
+                // parent_id: item.parent_id,
+                display_title: item.display_title,
+                display_area: item.display_area,
+                date: item.date,
+                sub_title: item.sub_title,
+                is_cld: item.is_cld,
+                is_clt: item.is_clt,
+                is_bind11: item.is_bind11,
+                is_bind11T: item.is_bind11T,
+                is_bind10: item.is_bind10,
+                is_bind10T: item.is_bind10T,
+                is_bind9: item.is_bind9,
+                is_bind9T: item.is_bind9T,
+                content: item.content.replace(/(")/g, "'"),
+                ext_link: item.url,
+                limit: null,
+                modal_link: null
+            },
+            {
+                where: {
+                    id: notificationId,
+                    delete_flag: false
+                }
+            }
+        );
+        resolve();
+    });
+}
+
+function saveUpdateImage(pictures, content, notificationId) {
+    const imageWithHTMLTag = content.split(/(<img src='[\S]*'>){1}/g)[1];
+    const imageURL = imageWithHTMLTag.split(/<img[^>]+src='?([^\s]+)?\s*'>/g)[1];
+    const imageFileName = getImageFileNameFromURL(imageURL);
+    const encodedString = pictures[0].src.split(',')[1];
+    util.makeDirIfNotExisted(tmpFolderPath);
+    util.makeDirIfNotExisted(tmpFolderPath + /images/);
+    util.makeDirIfNotExisted(tmpFolderPath + /images/ + notificationId);
+    const imagePath = tmpFolderPath + /images/ + notificationId + '/' + imageFileName;
+    util.writeImage(imagePath, new Buffer(encodedString, 'base64'));
+}
+
+exports.getAllCategories = () => {
+    return new Promise((resolve, reject) => {
+        new Promise((cResolve, cReject) => {
+            const items = models.bind_notification.findAll({
+                where: {
+                    message_type: 'news'
+                },
+                include: [
+                    {
+                        model: models.bind_notification,
+                        where: {
+                            delete_flag: false,
+                        }
+                    }
+                ]
+            });
+            cResolve(items);
+        }).then((items) => {
+            const promises = _.map(items, (item) => {
+                return buildCategoryItem(item);
+            });
+            Promise.all(promises).then((output) => {
+                resolve(output);
+            });
+        });
+    });
+};
+
+function buildCategoryItem(item) {
+    const item = {
+        category_id: item.id,
+        name: item.title
+    };
+    return item;
+}
