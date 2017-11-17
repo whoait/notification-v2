@@ -35,6 +35,7 @@ class StatusButton extends Component {
             .then(() => {
                 showNotification('ステータスが変更されました。');
                 this.setState({ disable: !this.state.disable, open: false});
+                push('/uploadNotificationFile');
                 push('/posts');
             })
             .catch((e) => {
