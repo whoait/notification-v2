@@ -36,6 +36,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import DeleteCustomButton from './DeleteCustomButton';
 import rowStyle from './rowStyle';
 import StatusButton from './StatusButton';
+import ConfirmComponent from './ConfirmComponent';
 import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh'
 // area css--start
 const detailStyle = {display: 'inline-block', verticalAlign: 'top', marginRight: '2em', minWidth: '8em'};
@@ -85,8 +86,8 @@ export const PostList = (props) => (
 );
 
 export const PostCreate = (props) => (
-    <Create {...props}>
-        <SimpleForm redirect="show">
+    <Create actions={<PostCreateEditActions/>} {...props}>
+        <SimpleForm toolbar={<PostCreateEditToolbar/>} redirect="show">
             <LongTextInput source="display_title" label="管理タイトル" validate={required}/>
             <BooleanInput source="is_cld" label="Cld" defaultValue={true}/>
             <BooleanInput source="is_dlt" label="Clt" defaultValue={true}/>
@@ -141,21 +142,21 @@ const cardActionStyle = {
 };
 
 
-const PostEditActions = ({basePath, data}) => (
+const PostCreateEditActions = ({basePath, data}) => (
     <CardActions style={cardActionStyle}>
         <ListButton basePath={basePath} label="一覧へもどる"/>
     </CardActions>
 );
 
-const PostCreateToolbar = props => <Toolbar {...props} >
+const PostCreateEditToolbar = props => <Toolbar {...props} >
     <ListButton label="キャンセル" redirect={false} submitOnEnter={false} raised={false}/>
     <SaveButton label="確認する" redirect="show" submitOnEnter={true}/>
 
 </Toolbar>;
 
 export const PostEdit = (props) => (
-    <Edit actions={<PostEditActions/>} {...props}>
-        <SimpleForm toolbar={<PostCreateToolbar/>}>
+    <Edit actions={<PostCreateEditActions/>} {...props}>
+        <SimpleForm toolbar={<PostCreateEditToolbar/>}>
             <LongTextInput source="display_title" label="管理タイトル" validate={required}/>
             <BooleanInput source="is_cld" label="Cld"/>
             <BooleanInput source="is_dlt" label="Clt"/>
@@ -177,9 +178,9 @@ export const PostEdit = (props) => (
 
             <DateInput source="date" label="日付" locales="ja-jp"/>
             <SelectInput source="category" label="カテゴリ" choices={[
-                {id: '1', name: '重要なお知らせ'},
-                {id: '2', name: 'サポート情報'},
-                {id: '3', name: 'BiND CAMP'},
+                {id: 1, name: '重要なお知らせ'},
+                {id: 2, name: 'サポート情報'},
+                {id: 3, name: 'BiND CAMP'},
             ]}/>
             <LongTextInput source="sub_title" label="タイトル" validate={required}/>
             <ImageInput source="pictures" label="画像" accept="image/*" placeholder={<p>Drop your file here</p>}>
@@ -205,8 +206,8 @@ export const PostEdit = (props) => (
 
 
 export const PostShow = (props) => (
-    <Show actions={<PostEditActions/>} {...props}>
-        <SimpleShowLayout>
+    <Show actions={<PostCreateEditActions/>} {...props}>
+        <SimpleShowLayout {...props} >
             <TextField source="display_title" label="管理タイトル" validate={required}/>
             <BooleanField source="is_cld" label="Cld"/>
             <BooleanField source="is_dlt" label="Clt"/>
@@ -250,13 +251,16 @@ export const PostShow = (props) => (
             {/*{id: '5', name: '5 回'},*/}
 
             {/*]}/>*/}
-            <div style={confirmStyle}>
-                <div style={confirmStyle}>
-                    <span>この内容で間違いありませんか？</span>
-                </div>
-                <RaisedButton label="修正する" style={style}/>
-                <RaisedButton label="保存する" primary={true} style={style}/>
-            </div>
+            {/*<div style={confirmStyle}>*/}
+                {/*<div style={confirmStyle}>*/}
+                    {/*<span>この内容で間違いありませんか？</span>*/}
+                {/*</div>*/}
+
+            {/*</div>*/}
+            {/*<EditButton basePath={this.props.basePath}*/}
+                        {/*record={this.props} style={{padding: 0}} label="修正する"/>*/}
+            {/*<ListButton label="保存する" redirect={false} submitOnEnter={false} raised={false}/>*/}
+            <ConfirmComponent/>
         </SimpleShowLayout>
     </Show>
 );
