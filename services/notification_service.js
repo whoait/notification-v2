@@ -9,7 +9,7 @@ const sftp = require('./sftp');
 const env = process.env.NODE_ENV || 'development';
 const config = require(`${__dirname}/../config/bind_version_config.json`)[env];
 
-const jsonFilePath = path.join(__dirname, '../tmp/');
+const tmpFolderPath = path.join(__dirname, '../tmp/');
 
 exports.createNotificationFile = (bindVersion) => {
     return new Promise((resolve, reject) => {
@@ -812,13 +812,39 @@ function getNotificationCategory() {
     });
 }
 
-exports.uploadImages = (imagePath, imageFileName) => {
-    return new Promise((resolve, reject) => {
-        client.sendImage(imagePath, imageFileName).then(() => {
+exports.uploadImage = (notificationId, imageURL) => {
+    // Test with development environment
+    if (env === 'development') {
+        return uploadImageWithSFTP(notificationId, imageURL);
+    }
+    else {
+        return new Promise((resolve, reject) => {
             resolve();
         });
-    })
+    }
 };
+
+function uploadImageWithSFTP(notificationId, imageURL) {
+    return new Promise((resolve, reject) => {
+        console.log(`upload image using sftp`);
+        const imageFileName = getImageFileNameFromURL(imageURL);
+        const imagePath = tmpFolderPath + /images/ + notificationId + '/' + imageFileName;
+        console.log(imagePath);
+        const destPath = config.imagePath + imageFileName;
+        console.log(destPath);
+        sftp.sendImage(imagePath, destPath).then(() => {
+            resolve();
+        }).catch((err) => {
+            console.log('error when send image');
+            reject();
+        });
+    });
+}
+
+function getImageFileNameFromURL(imageURL) {
+    const arrayList = imageURL.split('/');
+    return arrayList[arrayList.length - 1]
+}
 
 exports.updateStatus = (notificationId, newStatus) => {
     return new Promise((resolve, reject) => {
@@ -869,10 +895,10 @@ exports.buildJsonFile = (notificationId) => {
 
 function buildNotificationJsonFileByVersion(bindVersion) {
     return new Promise((resolve, reject) => {
-        util.makeDirIfNotExisted(jsonFilePath);
-        util.makeDirIfNotExisted(jsonFilePath + bindVersion);
+        util.makeDirIfNotExisted(tmpFolderPath);
+        util.makeDirIfNotExisted(tmpFolderPath + bindVersion);
         createNotificationOutputData(bindVersion).then((output) => {
-            util.writeJson(jsonFilePath + bindVersion + '/notification.json', output).then(() => {
+            util.writeJson(tmpFolderPath + bindVersion + '/notification.json', output).then(() => {
                 resolve(bindVersion);
             })
         });
@@ -903,7 +929,7 @@ function createNotificationOutputData(bindVersion) {
 function uploadJSonFile(bindVersion) {
     // Test with development environment
     if (env === 'development') {
-        return uploadWithSFTP(bindVersion);
+        return uploadJsonFileWithSFTP(bindVersion);
     }
     else {
         return new Promise((resolve, reject) => {
@@ -912,10 +938,10 @@ function uploadJSonFile(bindVersion) {
     }
 };
 
-function uploadWithSFTP(bindVersion) {
+function uploadJsonFileWithSFTP(bindVersion) {
     return new Promise((resolve, reject) => {
         console.log(`upload sftp with bind version is ${bindVersion}`);
-        const srcPath = jsonFilePath + bindVersion + '/notification.json';
+        const srcPath = tmpFolderPath + bindVersion + '/notification.json';
         console.log(srcPath);
         const promises = _.map(config.version, (version) => {
             return new Promise((cResolve, cReject) => {
@@ -933,19 +959,26 @@ function uploadWithSFTP(bindVersion) {
                     cResolve();
                 }
             });
-            // if (version.code === bindVersion) {
-            //     const destPath = version.notificationPath + `notification_${bindVersion}.json`;
-            //     console.log(destPath);
-            //     return new Promise((cResolve, cReject) => {
-            //         sftp.sendNotificationFile(srcPath, destPath).then((data)=> {
-            //             console.log(data);
-            //             cResolve();
-            //         });
-            //     });
-            // }
         });
         Promise.all(promises).then(() => {
             resolve();
         });
     });
 }
+
+exports.deleteNotification = (notificationId) => {
+    return new Promise((resolve, reject) => {
+        const item = models.bind_notification_detail.update(
+            {
+                delete_flag: true,
+            },
+            {
+                where: {
+                    id: notificationId,
+                    status: appConst.STATUS_PUBLISHED,
+                    delete_flag: false
+                }
+            });
+        resolve(item);
+    });
+};
