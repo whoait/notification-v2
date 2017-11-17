@@ -32,6 +32,7 @@ class IndexNotification extends Component {
                           remove={Delete} show = {PostShow} />
                 <Resource name="uploadNotificationFile" options={{label: 'アップロードファイルjson'}} list={UploadList}
                           create={UploadCreate}/>
+                <Resource name="categories" />
             </Admin>
         )
     }

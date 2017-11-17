@@ -108,11 +108,14 @@ export const PostCreate = (props) => (
             <TextField source="xxxxxx" label="掲載情報" style={{font: 'italic bold 50px/30px Georgia, serif'}}/>
 
             <DateInput source="date" label="date" locales="ja-jp"/>
-            <SelectInput source="category" label="カテゴリ" choices={[
-                {id: '1', name: '重要なお知らせ'},
-                {id: '2', name: 'サポート情報'},
-                {id: '3', name: 'BiND CAMP'},
-            ]}/>
+            {/*<SelectInput source="category" label="カテゴリ" choices={[*/}
+                {/*{id: '1', name: '重要なお知らせ'},*/}
+                {/*{id: '2', name: 'サポート情報'},*/}
+                {/*{id: '3', name: 'BiND CAMP'},*/}
+            {/*]}/>*/}
+            <ReferenceInput source="category_id" reference="categories" label = 'カテゴリ' allowEmpty >
+                <SelectInput optionText="name" />
+            </ReferenceInput>
             <LongTextInput source="sub_title" label="タイトル" validate={required}/>
             <ImageInput source="pictures" label="画像" accept="image/*" placeholder={<p>Drop your file here</p>}>
                 <ImageField source="src" title="title"/>
@@ -177,11 +180,15 @@ export const PostEdit = (props) => (
             <TextField source="xxxxxx" label="掲載情報" style={{font: 'italic bold 50px/30px Georgia, serif'}}/>
 
             <DateInput source="date" label="日付" locales="ja-jp"/>
-            <SelectInput source="category" label="カテゴリ" choices={[
-                {id: 1, name: '重要なお知らせ'},
-                {id: 2, name: 'サポート情報'},
-                {id: 3, name: 'BiND CAMP'},
-            ]}/>
+            {/*<SelectInput source="category" label="カテゴリ" choices={[*/}
+                {/*{id: 1, name: '重要なお知らせ'},*/}
+                {/*{id: 2, name: 'サポート情報'},*/}
+                {/*{id: 3, name: 'BiND CAMP'},*/}
+            {/*]}/>*/}
+
+            <ReferenceInput source="id" reference="categories" label = 'カテゴリ' allowEmpty>
+                <SelectInput optionText="name" />
+            </ReferenceInput>
             <LongTextInput source="sub_title" label="タイトル" validate={required}/>
             <ImageInput source="pictures" label="画像" accept="image/*" placeholder={<p>Drop your file here</p>}>
                 <ImageField source="src" title="title"/>
