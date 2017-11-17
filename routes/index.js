@@ -28,20 +28,24 @@ router.get("/posts/:id", function (req, res) {
 //edit
 router.put("/posts/:id", function (req, res) {
 
-    console.log(req.get(':id'));
-    res.set(
-        {
-            // 'Accept': 'application/json',
-            // 'Content-Type': 'application/json',
-            // 'Access-Control-Allow-Origin': '*',
-            // 'Access-Control-Allow-Credentials': true,
-            // 'Access-Control-Allow-Methods': 'POST, GET, PUT, DELETE',
-            'x-total-count': 100
+    const notificationId = req.params.id;
+    const item = req.body;
+    console.log(item);
+    notificationService.updateNotification(notificationId, item).then(() => {
+        res.set(
+            {
+                // 'Accept': 'application/json',
+                // 'Content-Type': 'application/json',
+                // 'Access-Control-Allow-Origin': '*',
+                // 'Access-Control-Allow-Credentials': true,
+                // 'Access-Control-Allow-Methods': 'POST, GET, PUT, DELETE',
+                'x-total-count': 100
 
-        }
-    );
+            }
+        );
 
-    res.send(data[0]);
+        res.send(data[0]);
+    });
 });
 
 router.post("/posts", function (req, res) {
@@ -137,6 +141,13 @@ router.get('/test', (req, res) => {
     console.log(imagePath);
     notificationService.uploadImage(imagePath, 'test.png').then(() => {
         res.send('ok');
+    });
+});
+
+//get list category
+router.get('/categories', (req, res) => {
+    notificationService.getAllCategories().then(() => {
+        res.send(util.responseSuccess());
     });
 });
 
