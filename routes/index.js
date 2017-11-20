@@ -25,29 +25,32 @@ router.get("/posts/:id", function (req, res) {
 });
 
 
-//edit
+//edit notification
 router.put("/posts/:id", function (req, res) {
-
     const notificationId = req.params.id;
     const item = req.body;
     console.log(item);
+    const status = item.status;
     notificationService.updateNotification(notificationId, item).then(() => {
-        res.set(
-            {
-                // 'Accept': 'application/json',
-                // 'Content-Type': 'application/json',
-                // 'Access-Control-Allow-Origin': '*',
-                // 'Access-Control-Allow-Credentials': true,
-                // 'Access-Control-Allow-Methods': 'POST, GET, PUT, DELETE',
-                'x-total-count': 100
-
-            }
-        );
-
-        res.send(data[0]);
+        if (status === appConst.STATUS_PUBLISHING) {
+            const imageURL = item.image_url;
+            notificationService.uploadImage(notificationId, imageURL).then(() => {
+                notificationService.buildJsonFile(notificationId).then(() => {
+                    res.send(util.responseSuccess());
+                }).catch((err) => {
+                    res.send(util.responseError());
+                });
+            }).catch((err) => {
+                res.send(util.responseError());
+            });
+        }
+        else {
+            res.send(util.responseSuccess());
+        }
     });
 });
 
+// create new posts
 router.post("/posts", function (req, res) {
     console.log(req.body.pictures);
     res.set(
@@ -63,7 +66,6 @@ router.post("/posts", function (req, res) {
     );
     res.send(data);
 });
-
 
 // handle upload notification file.
 router.post('/uploadNotificationFile', function (req, res) {

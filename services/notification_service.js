@@ -1003,7 +1003,7 @@ exports.updateNotification = (notificationId, item) => {
     }
 };
 
-function updateNotificationWithTypePopup(item, notificationId) {
+function updateNotificationWithTypePopup(notificationId, item) {
     return new Promise((resolve, reject) => {
         models.bind_notification_detail.update(
             {
@@ -1036,7 +1036,7 @@ function updateNotificationWithTypePopup(item, notificationId) {
     });
 }
 
-function updateNotificationWithTypeModal(item, notificationId) {
+function updateNotificationWithTypeModal(notificationId, item) {
     return new Promise((resolve, reject) => {
         models.bind_notification_detail.update(
             {
@@ -1069,7 +1069,7 @@ function updateNotificationWithTypeModal(item, notificationId) {
     });
 }
 
-function updateNotificationWithTypeSide(item, notificationId) {
+function updateNotificationWithTypeSide(notificationId, item) {
     return new Promise((resolve, reject) => {
         models.bind_notification_detail.update(
             {
@@ -1143,9 +1143,9 @@ exports.getAllCategories = () => {
 };
 
 function buildCategoryItem(item) {
-    const item = {
+    const category = {
         category_id: item.id,
         name: item.title
     };
-    return item;
+    return category;
 }
