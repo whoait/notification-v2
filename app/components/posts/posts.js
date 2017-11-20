@@ -122,7 +122,7 @@ export const PostCreate = (props) => (
             </ImageInput>
 
             <ImageField source="image_url" title="old image"/>
-            <LongTextInput source="image_content" label="本文" validate={required}/>
+            <LongTextInput source="content" label="本文" validate={required}/>
             {/*<LongTextInput source="content_button" label="ボタンテキスト"/>*/}
             <LongTextInput source="url" label="リンク URL"/>
 
@@ -195,7 +195,7 @@ export const PostEdit = (props) => (
             </ImageInput>
 
             <ImageField source="image_url" title="old image"/>
-            <LongTextInput source="image_content" label="本文" validate={required}/>
+            <LongTextInput source="content" label="本文" validate={required}/>
             {/*<LongTextInput source="content_button" label="ボタンテキスト"/>*/}
             <LongTextInput source="url" label="リンク URL"/>
 
@@ -246,7 +246,7 @@ export const PostShow = (props) => (
             {/*</ImageInput>*/}
 
             <ImageField source="image_url" title="old image"/>
-            <TextField source="image_content" label="本文" validate={required}/>
+            <TextField source="content" label="本文" validate={required}/>
             {/*<LongTextInput source="content_button" label="ボタンテキスト"/>*/}
             <TextField source="url" label="リンク URL"/>
 
