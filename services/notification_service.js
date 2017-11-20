@@ -847,10 +847,22 @@ function getImageFileNameFromURL(imageURL) {
 }
 
 exports.updateStatus = (notificationId, newStatus) => {
+    // Change status from draft to publishing.
+    if (newStatus === appConst.STATUS_PUBLISHING) {
+        return updateStatusToPublishing(notificationId, newStatus);
+    }
+    // Change status from publishing to published.
+    else {
+        return updateStatusToPublished(notificationId, newStatus);
+    }
+};
+
+function updateStatusToPublishing(notificationId, newStatus) {
     return new Promise((resolve, reject) => {
         const item = models.bind_notification_detail.update(
             {
                 status: newStatus,
+                start_date: new Date()
             },
             {
                 where: {
@@ -860,7 +872,24 @@ exports.updateStatus = (notificationId, newStatus) => {
             });
         resolve(item);
     });
-};
+}
+
+function updateStatusToPublished(notificationId, newStatus) {
+    return new Promise((resolve, reject) => {
+        const item = models.bind_notification_detail.update(
+            {
+                status: newStatus,
+                end_date: new Date()
+            },
+            {
+                where: {
+                    id: notificationId,
+                    delete_flag: false
+                }
+            });
+        resolve(item);
+    });
+}
 
 exports.buildJsonFile = (notificationId) => {
     return new Promise((resolve, reject) => {
