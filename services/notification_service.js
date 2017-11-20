@@ -1123,7 +1123,7 @@ exports.getAllCategories = () => {
                 },
                 include: [
                     {
-                        model: models.bind_notification,
+                        model: models.bind_notification_detail,
                         where: {
                             delete_flag: false,
                         }

@@ -148,8 +148,8 @@ router.get('/test', (req, res) => {
 
 //get list category
 router.get('/categories', (req, res) => {
-    notificationService.getAllCategories().then(() => {
-        res.send(util.responseSuccess());
+    notificationService.getAllCategories().then((data) => {
+        res.send(data);
     });
 });
 
