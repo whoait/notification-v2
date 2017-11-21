@@ -6,6 +6,7 @@ const appConst = require('../util/const');
 const _ = require('underscore');
 const path = require('path');
 const sftp = require('./sftp');
+const ftp = require('./ftp');
 const env = process.env.NODE_ENV || 'development';
 const config = require(`${__dirname}/../config/bind_version_config.json`)[env];
 
@@ -956,16 +957,43 @@ function createNotificationOutputData(bindVersion) {
 };
 
 function uploadJSonFile(bindVersion) {
-    // Test with development environment
-    if (env === 'development') {
+    // Test with development or test environment
+    if (env === 'development' || env === 'test') {
         return uploadJsonFileWithSFTP(bindVersion);
     }
+    // Production environment
     else {
-        return new Promise((resolve, reject) => {
-            resolve();
-        });
+        return uploadJsonFileWithFTP(bindVersion);
     }
 };
+
+function uploadJsonFileWithFTP(bindVersion) {
+    return new Promise((resolve, reject) => {
+        console.log(`upload ftp with bind version is ${bindVersion}`);
+        const srcPath = tmpFolderPath + bindVersion + '/notification.json';
+        console.log(srcPath);
+        const promises = _.map(config.version, (version) => {
+            return new Promise((cResolve, cReject) => {
+                if (version.code === bindVersion) {
+                    const destPath = version.notificationPath + `notification_${bindVersion}.json`;
+                    console.log(destPath);
+                    ftp.sendNotificationFile(srcPath, destPath).then(() => {
+                        cResolve();
+                    }).catch(() => {
+                        console.log('error when send file');
+                        reject();
+                    });
+                }
+                else {
+                    cResolve();
+                }
+            });
+        });
+        Promise.all(promises).then(() => {
+            resolve();
+        });
+    });
+}
 
 function uploadJsonFileWithSFTP(bindVersion) {
     return new Promise((resolve, reject) => {

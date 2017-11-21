@@ -98,7 +98,6 @@ router.put('/changeStatus/:id', (req, res) => {
     const newStatus = req.body.status;
     const imageURL = req.body.image_url;
     notificationService.updateStatus(notificationId, newStatus).then((data) => {
-        console.log(data);
         if (newStatus === appConst.STATUS_PUBLISHED) {
             notificationService.buildJsonFile(notificationId).then(() => {
                 res.send(util.responseSuccess());
