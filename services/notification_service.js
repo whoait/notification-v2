@@ -727,10 +727,11 @@ exports.findNotificationById = (notificationId) => {
             output['item'] = item;
             return output;
         }).then((output) => {
-            getNotificationCategory().then((data) => {
-                output['category'] = data;
-                resolve(output);
-            });
+            // getNotificationCategory().then((data) => {
+            //     output['category'] = data;
+            //     resolve(output);
+            // });
+            resolve(output);
         });
     });
 };
@@ -738,7 +739,7 @@ exports.findNotificationById = (notificationId) => {
 function buildNotificationItem(bind_notification_detail) {
     let item = {
         id: bind_notification_detail.id,
-        parent_id: bind_notification_detail.parent_id,
+        category_id: bind_notification_detail.parent_id,
         display_title: bind_notification_detail.display_title,
         display_area: bind_notification_detail.display_area,
         date: bind_notification_detail.date,
@@ -1173,7 +1174,7 @@ exports.getAllCategories = () => {
 
 function buildCategoryItem(item) {
     const category = {
-        category_id: item.id,
+        id: item.id,
         name: item.title
     };
     return category;

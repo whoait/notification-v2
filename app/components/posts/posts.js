@@ -108,13 +108,8 @@ export const PostCreate = (props) => (
             <TextField source="xxxxxx" label="掲載情報" style={{font: 'italic bold 50px/30px Georgia, serif'}}/>
 
             <DateInput source="date" label="date" locales="ja-jp"/>
-            {/*<SelectInput source="category" label="カテゴリ" choices={[*/}
-                {/*{id: '1', name: '重要なお知らせ'},*/}
-                {/*{id: '2', name: 'サポート情報'},*/}
-                {/*{id: '3', name: 'BiND CAMP'},*/}
-            {/*]}/>*/}
             <ReferenceInput source="category_id" reference="categories" label = 'カテゴリ' allowEmpty >
-                <SelectInput optionText="name" />
+                <SelectInput source="name"  />
             </ReferenceInput>
             <LongTextInput source="sub_title" label="タイトル" validate={required}/>
             <ImageInput source="pictures" label="画像" accept="image/*" placeholder={<p>Drop your file here</p>}>
@@ -127,11 +122,11 @@ export const PostCreate = (props) => (
             <LongTextInput source="url" label="リンク URL"/>
 
             <SelectInput source="limit" label="表示回数" choices={[
-                {id: '1', name: '1 回'},
-                {id: '2', name: '2 回'},
-                {id: '3', name: '3 回'},
-                {id: '4', name: '4 回'},
-                {id: '5', name: '5 回'},
+                {id: 1, name: '1 回'},
+                {id: 2, name: '2 回'},
+                {id: 3, name: '3 回'},
+                {id: 4, name: '4 回'},
+                {id: 5, name: '5 回'},
 
             ]}/>
         </SimpleForm>
@@ -186,8 +181,8 @@ export const PostEdit = (props) => (
                 {/*{id: 3, name: 'BiND CAMP'},*/}
             {/*]}/>*/}
 
-            <ReferenceInput source="id" reference="categories" label = 'カテゴリ' allowEmpty>
-                <SelectInput optionText="name" />
+            <ReferenceInput source="category_id" reference="categories" label = 'カテゴリ'>
+                <SelectInput source="name"  />
             </ReferenceInput>
             <LongTextInput source="sub_title" label="タイトル" validate={required}/>
             <ImageInput source="pictures" label="画像" accept="image/*" placeholder={<p>Drop your file here</p>}>

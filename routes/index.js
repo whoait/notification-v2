@@ -153,4 +153,16 @@ router.get('/categories', (req, res) => {
     });
 });
 
+//get one category
+router.get('/categories/:id', (req,res) => {
+    const category = {
+        id: 2,
+        name: "bind camp"
+    };
+    console.log(category);
+    res.set({"Content-Type": "application/json", "Content-Range": "items 0-12/13"});
+    res.send(category);
+});
+module.exports = router;
+
 module.exports = router;
