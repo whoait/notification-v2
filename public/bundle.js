@@ -114537,9 +114537,13 @@ var _ConfirmComponent = __webpack_require__(957);
 
 var _ConfirmComponent2 = _interopRequireDefault(_ConfirmComponent);
 
-var _refresh = __webpack_require__(320);
+var _ToolBarCreateEditComponent = __webpack_require__(965);
 
-var _refresh2 = _interopRequireDefault(_refresh);
+var _ToolBarCreateEditComponent2 = _interopRequireDefault(_ToolBarCreateEditComponent);
+
+var _CardActionCreateEditComponent = __webpack_require__(980);
+
+var _CardActionCreateEditComponent2 = _interopRequireDefault(_CardActionCreateEditComponent);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -114629,7 +114633,7 @@ var PostCreate = exports.PostCreate = function PostCreate(props) {
             _react2.default.createElement(_adminOnRest.DateInput, { source: 'date', label: 'date', locales: 'ja-jp' }),
             _react2.default.createElement(
                 _adminOnRest.ReferenceInput,
-                { source: 'category_id', reference: 'categories', label: '\u30AB\u30C6\u30B4\u30EA', allowEmpty: true },
+                { source: 'parent_id', reference: 'categories', label: '\u30AB\u30C6\u30B4\u30EA', allowEmpty: true },
                 _react2.default.createElement(_adminOnRest.SelectInput, { source: 'name' })
             ),
             _react2.default.createElement(_adminOnRest.LongTextInput, { source: 'sub_title', label: '\u30BF\u30A4\u30C8\u30EB', validate: _adminOnRest.required }),
@@ -114662,7 +114666,7 @@ var PostCreateEditActions = function PostCreateEditActions(_ref2) {
     return _react2.default.createElement(
         _Card.CardActions,
         { style: cardActionStyle },
-        _react2.default.createElement(_adminOnRest.ListButton, { basePath: basePath, label: '\u4E00\u89A7\u3078\u3082\u3069\u308B' })
+        _react2.default.createElement(_CardActionCreateEditComponent2.default, null)
     );
 };
 
@@ -114670,8 +114674,7 @@ var PostCreateEditToolbar = function PostCreateEditToolbar(props) {
     return _react2.default.createElement(
         _adminOnRest.Toolbar,
         props,
-        _react2.default.createElement(_adminOnRest.ListButton, { label: '\u30AD\u30E3\u30F3\u30BB\u30EB', redirect: false, submitOnEnter: false, raised: false }),
-        _react2.default.createElement(_adminOnRest.SaveButton, { label: '\u78BA\u8A8D\u3059\u308B', redirect: 'show', submitOnEnter: true })
+        _react2.default.createElement(_ToolBarCreateEditComponent2.default, null)
     );
 };
 
@@ -114698,7 +114701,7 @@ var PostEdit = exports.PostEdit = function PostEdit(props) {
             _react2.default.createElement(_adminOnRest.DateInput, { source: 'date', label: '\u65E5\u4ED8', locales: 'ja-jp' }),
             _react2.default.createElement(
                 _adminOnRest.ReferenceInput,
-                { source: 'category_id', reference: 'categories', label: '\u30AB\u30C6\u30B4\u30EA' },
+                { source: 'parent_id', reference: 'categories', label: '\u30AB\u30C6\u30B4\u30EA' },
                 _react2.default.createElement(_adminOnRest.SelectInput, { source: 'name' })
             ),
             _react2.default.createElement(_adminOnRest.LongTextInput, { source: 'sub_title', label: '\u30BF\u30A4\u30C8\u30EB', validate: _adminOnRest.required }),
@@ -114918,7 +114921,7 @@ var StatusButton = function (_Component) {
                 push('/uploadNotificationFile');
                 push('/posts');
             }).catch(function (e) {
-                $('#loading').toggleClass('loading_popup');
+                $('#loading').toggleClass(loading_popup);
                 console.error(e);
                 showNotification('エラー：ステータスは変更されていません。');
             });
@@ -115043,6 +115046,10 @@ var _reactRedux = __webpack_require__(12);
 
 var _adminOnRest = __webpack_require__(62);
 
+var _ButtonBackToEditComponent = __webpack_require__(981);
+
+var _ButtonBackToEditComponent2 = _interopRequireDefault(_ButtonBackToEditComponent);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -115079,9 +115086,7 @@ var ConfirmComponent = function (_Component) {
                         '\u3053\u306E\u5185\u5BB9\u3067\u9593\u9055\u3044\u3042\u308A\u307E\u305B\u3093\u304B\uFF1F'
                     )
                 ),
-                _react2.default.createElement(_adminOnRest.EditButton, { basePath: basePath,
-                    record: record, style: { padding: 0 }, label: '\u4FEE\u6B63\u3059\u308B' }),
-                _react2.default.createElement(_adminOnRest.ListButton, { label: '\u4FDD\u5B58\u3059\u308B', redirect: false, submitOnEnter: false, raised: false })
+                _react2.default.createElement(_ButtonBackToEditComponent2.default, { record: record, basePath: basePath })
             );
         }
     }]);
@@ -117234,6 +117239,319 @@ var addUploadCapabilities = function addUploadCapabilities(requestHandler) {
 };
 
 exports.default = addUploadCapabilities;
+
+/***/ }),
+/* 965 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRedux = __webpack_require__(12);
+
+var _adminOnRest = __webpack_require__(62);
+
+var _Dialog = __webpack_require__(341);
+
+var _Dialog2 = _interopRequireDefault(_Dialog);
+
+var _FlatButton = __webpack_require__(30);
+
+var _FlatButton2 = _interopRequireDefault(_FlatButton);
+
+var _RaisedButton = __webpack_require__(88);
+
+var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var ToolBarCreateEditComponent = function (_Component) {
+    _inherits(ToolBarCreateEditComponent, _Component);
+
+    function ToolBarCreateEditComponent() {
+        var _ref;
+
+        var _temp, _this, _ret;
+
+        _classCallCheck(this, ToolBarCreateEditComponent);
+
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+        }
+
+        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = ToolBarCreateEditComponent.__proto__ || Object.getPrototypeOf(ToolBarCreateEditComponent)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+            open: false
+        }, _this.handleOpen = function () {
+            _this.setState({ open: true });
+        }, _this.handleClose = function () {
+            _this.setState({ open: false });
+        }, _temp), _possibleConstructorReturn(_this, _ret);
+    }
+
+    _createClass(ToolBarCreateEditComponent, [{
+        key: 'render',
+        value: function render() {
+
+            var actions = [_react2.default.createElement(_FlatButton2.default, {
+                label: '\u30AD\u30E3\u30F3\u30BB\u30EB',
+                primary: true,
+                onClick: this.handleClose
+            }), _react2.default.createElement(_adminOnRest.ListButton, { label: 'OK', redirect: false, submitOnEnter: false, raised: false })];
+
+            return _react2.default.createElement(
+                'div',
+                null,
+                _react2.default.createElement(_RaisedButton2.default, { label: '\u30AD\u30E3\u30F3\u30BB\u30EB', onClick: this.handleOpen }),
+                _react2.default.createElement(
+                    _Dialog2.default,
+                    {
+                        title: '\u901A\u77E5',
+                        actions: actions,
+                        modal: false,
+                        open: this.state.open,
+                        onRequestClose: this.handleClose
+                    },
+                    '\u4FDD\u5B58\u305B\u305A\u306B\u623B\u308A\u307E\u3059\u3002'
+                ),
+                _react2.default.createElement(_adminOnRest.SaveButton, { label: '\u78BA\u8A8D\u3059\u308B', handleSubmitWithRedirect: this.props.handleSubmitWithRedirect, redirect: 'show', submitOnEnter: true })
+            );
+        }
+    }]);
+
+    return ToolBarCreateEditComponent;
+}(_react.Component);
+
+exports.default = ToolBarCreateEditComponent;
+
+/***/ }),
+/* 966 */,
+/* 967 */,
+/* 968 */,
+/* 969 */,
+/* 970 */,
+/* 971 */,
+/* 972 */,
+/* 973 */,
+/* 974 */,
+/* 975 */,
+/* 976 */,
+/* 977 */,
+/* 978 */,
+/* 979 */,
+/* 980 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRedux = __webpack_require__(12);
+
+var _adminOnRest = __webpack_require__(62);
+
+var _Dialog = __webpack_require__(341);
+
+var _Dialog2 = _interopRequireDefault(_Dialog);
+
+var _FlatButton = __webpack_require__(30);
+
+var _FlatButton2 = _interopRequireDefault(_FlatButton);
+
+var _RaisedButton = __webpack_require__(88);
+
+var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var CardActionCreateEditComponent = function (_Component) {
+    _inherits(CardActionCreateEditComponent, _Component);
+
+    function CardActionCreateEditComponent() {
+        var _ref;
+
+        var _temp, _this, _ret;
+
+        _classCallCheck(this, CardActionCreateEditComponent);
+
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+        }
+
+        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = CardActionCreateEditComponent.__proto__ || Object.getPrototypeOf(CardActionCreateEditComponent)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+            open: false
+        }, _this.handleOpen = function () {
+            _this.setState({ open: true });
+        }, _this.handleClose = function () {
+            _this.setState({ open: false });
+        }, _temp), _possibleConstructorReturn(_this, _ret);
+    }
+
+    _createClass(CardActionCreateEditComponent, [{
+        key: 'render',
+        value: function render() {
+
+            var actions = [_react2.default.createElement(_FlatButton2.default, {
+                label: '\u30AD\u30E3\u30F3\u30BB\u30EB',
+                primary: true,
+                onClick: this.handleClose
+            }), _react2.default.createElement(_adminOnRest.ListButton, { label: 'OK', redirect: false, submitOnEnter: false, raised: false })];
+
+            return _react2.default.createElement(
+                'div',
+                null,
+                _react2.default.createElement(_RaisedButton2.default, { label: '\u4E00\u89A7\u3078\u3082\u3069\u308B', onClick: this.handleOpen }),
+                _react2.default.createElement(
+                    _Dialog2.default,
+                    {
+                        title: '\u901A\u77E5',
+                        actions: actions,
+                        modal: false,
+                        open: this.state.open,
+                        onRequestClose: this.handleClose
+                    },
+                    '\u4FDD\u5B58\u305B\u305A\u306B\u623B\u308A\u307E\u3059\u3002'
+                )
+            );
+        }
+    }]);
+
+    return CardActionCreateEditComponent;
+}(_react.Component);
+
+exports.default = CardActionCreateEditComponent;
+
+/***/ }),
+/* 981 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRedux = __webpack_require__(12);
+
+var _adminOnRest = __webpack_require__(62);
+
+var _Dialog = __webpack_require__(341);
+
+var _Dialog2 = _interopRequireDefault(_Dialog);
+
+var _FlatButton = __webpack_require__(30);
+
+var _FlatButton2 = _interopRequireDefault(_FlatButton);
+
+var _RaisedButton = __webpack_require__(88);
+
+var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var ButtonBackToEditComponent = function (_Component) {
+    _inherits(ButtonBackToEditComponent, _Component);
+
+    function ButtonBackToEditComponent() {
+        var _ref;
+
+        var _temp, _this, _ret;
+
+        _classCallCheck(this, ButtonBackToEditComponent);
+
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+        }
+
+        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = ButtonBackToEditComponent.__proto__ || Object.getPrototypeOf(ButtonBackToEditComponent)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+            open: false
+        }, _this.handleOpen = function () {
+            _this.setState({ open: true });
+        }, _this.handleClose = function () {
+            _this.setState({ open: false });
+        }, _temp), _possibleConstructorReturn(_this, _ret);
+    }
+
+    _createClass(ButtonBackToEditComponent, [{
+        key: 'render',
+        value: function render() {
+            var record = this.props.record;
+
+            var basePath = this.props.basePath;
+            var actions = [_react2.default.createElement(_FlatButton2.default, {
+                label: '\u30AD\u30E3\u30F3\u30BB\u30EB',
+                primary: true,
+                onClick: this.handleClose
+            }), _react2.default.createElement(_adminOnRest.EditButton, { basePath: basePath,
+                record: record, style: { padding: 0 }, label: '\u4FEE\u6B63\u3059\u308B' })];
+
+            return _react2.default.createElement(
+                'div',
+                null,
+                _react2.default.createElement(_RaisedButton2.default, { label: '\u4E00\u89A7\u3078\u3082\u3069\u308B', onClick: this.handleOpen }),
+                _react2.default.createElement(_adminOnRest.ListButton, { label: '\u4FDD\u5B58\u3059\u308B', redirect: false, submitOnEnter: false, raised: false }),
+                _react2.default.createElement(
+                    _Dialog2.default,
+                    {
+                        title: '\u901A\u77E5',
+                        actions: actions,
+                        modal: false,
+                        open: this.state.open,
+                        onRequestClose: this.handleClose
+                    },
+                    '\u4FDD\u5B58\u305B\u305A\u306B\u623B\u308A\u307E\u3059\u3002'
+                )
+            );
+        }
+    }]);
+
+    return ButtonBackToEditComponent;
+}(_react.Component);
+
+exports.default = ButtonBackToEditComponent;
 
 /***/ })
 /******/ ]);

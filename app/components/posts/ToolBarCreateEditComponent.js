@@ -39,7 +39,7 @@ class ToolBarCreateEditComponent extends Component {
                     open={this.state.open}
                     onRequestClose={this.handleClose}
                 >
-                    The actions in this window were passed in as an array of React objects.
+                    保存せずに戻ります。
                 </Dialog>
                 {/*<ListButton label="キャンセル" onClick={this.handleOpenDialogConfirm}  redirect={false} submitOnEnter={false} raised={false}/>*/}
                 <SaveButton label="確認する" handleSubmitWithRedirect = {this.props.handleSubmitWithRedirect} redirect="show" submitOnEnter={true}/>
