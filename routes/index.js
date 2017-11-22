@@ -29,7 +29,6 @@ router.get("/posts/:id", function (req, res) {
 router.put("/posts/:id", function (req, res) {
     const notificationId = req.params.id;
     const item = req.body;
-    console.log(item);
     const status = item.status;
     notificationService.updateNotification(notificationId, item).then(() => {
         if (status === appConst.STATUS_PUBLISHING) {
@@ -52,19 +51,12 @@ router.put("/posts/:id", function (req, res) {
 
 // create new posts
 router.post("/posts", function (req, res) {
-    console.log(req.body.pictures);
-    res.set(
-        {
-            // 'Accept': 'application/json',
-            // 'Content-Type': 'application/json',
-            // 'Access-Control-Allow-Origin': '*',
-            // 'Access-Control-Allow-Credentials': true,
-            // 'Access-Control-Allow-Methods': 'POST, GET, PUT, DELETE',
-            'x-total-count': 100
-
-        }
-    );
-    res.send(data);
+    const item = req.body;
+    notificationService.createNotification(item).then(() => {
+        res.send(util.responseSuccess());
+    }).catch((err) => {
+        res.send(util.responseError());
+    });
 });
 
 // handle upload notification file.
@@ -148,20 +140,18 @@ router.get('/test', (req, res) => {
 //get list category
 router.get('/categories', (req, res) => {
     notificationService.getAllCategories().then((data) => {
-        res.send(data);
+        res.set({
+            'x-total-count': data.length
+        });
+        res.status(200).send(data);
     });
 });
 
 //get one category
 router.get('/categories/:id', (req,res) => {
-    const category = {
-        id: 2,
-        name: "bind camp"
-    };
-    console.log(category);
-    res.set({"Content-Type": "application/json", "Content-Range": "items 0-12/13"});
-    res.send(category);
+    notificationService.getCategoryById(req.params.id).then((data) => {
+        res.send(data);
+    });
 });
-module.exports = router;
 
 module.exports = router;

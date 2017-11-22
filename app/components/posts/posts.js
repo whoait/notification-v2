@@ -109,7 +109,7 @@ export const PostCreate = (props) => (
             <TextField source="xxxxxx" label="掲載情報" style={{font: 'italic bold 50px/30px Georgia, serif'}}/>
 
             <DateInput source="date" label="date" locales="ja-jp"/>
-            <ReferenceInput source="category_id" reference="categories" label = 'カテゴリ' allowEmpty >
+            <ReferenceInput source="parent_id" reference="categories" label = 'カテゴリ' allowEmpty >
                 <SelectInput source="name"  />
             </ReferenceInput>
             <LongTextInput source="sub_title" label="タイトル" validate={required}/>
@@ -184,7 +184,7 @@ export const PostEdit = (props) => (
                 {/*{id: 3, name: 'BiND CAMP'},*/}
             {/*]}/>*/}
 
-            <ReferenceInput source="category_id" reference="categories" label = 'カテゴリ'>
+            <ReferenceInput source="parent_id" reference="categories" label = 'カテゴリ'>
                 <SelectInput source="name"  />
             </ReferenceInput>
             <LongTextInput source="sub_title" label="タイトル" validate={required}/>

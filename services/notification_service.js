@@ -728,10 +728,6 @@ exports.findNotificationById = (notificationId) => {
             output['item'] = item;
             return output;
         }).then((output) => {
-            // getNotificationCategory().then((data) => {
-            //     output['category'] = data;
-            //     resolve(output);
-            // });
             resolve(output);
         });
     });
@@ -740,7 +736,7 @@ exports.findNotificationById = (notificationId) => {
 function buildNotificationItem(bind_notification_detail) {
     let item = {
         id: bind_notification_detail.id,
-        category_id: bind_notification_detail.parent_id,
+        parent_id: bind_notification_detail.parent_id,
         display_title: bind_notification_detail.display_title,
         display_area: bind_notification_detail.display_area,
         date: bind_notification_detail.date,
@@ -1056,7 +1052,7 @@ exports.updateNotification = (notificationId, item) => {
     }
     else {
         return new Promise((resolve, reject) => {
-           resolve();
+            resolve();
         });
     }
 };
@@ -1169,7 +1165,7 @@ function saveUpdateImage(pictures, content, notificationId) {
     util.makeDirIfNotExisted(tmpFolderPath + /images/);
     util.makeDirIfNotExisted(tmpFolderPath + /images/ + notificationId);
     const imagePath = tmpFolderPath + /images/ + notificationId + '/' + imageFileName;
-    util.writeImage(imagePath, new Buffer(encodedString, 'base64'));
+    return util.writeImage(imagePath, new Buffer(encodedString, 'base64'));
 }
 
 exports.getAllCategories = () => {
@@ -1206,4 +1202,130 @@ function buildCategoryItem(item) {
         name: item.title
     };
     return category;
+}
+
+exports.createNotification = (item) => {
+    return new Promise((resolve, reject) => {
+        createNotificationInDB(item).then((data) => {
+            if (!util.isEmpty(item.pictures) && (!util.isEmpty(item.content.match(/(<img src='[\S]*'>){1}/g)))) {
+                saveUpdateImage(item.pictures, item.content, data.id).then(() => {
+                    resolve();
+                })
+            }
+        });
+    });
+};
+
+function createNotificationInDB(item) {
+    if (item.display_area === appConst.DA_POPUP) {
+        return createNotificationWithTypePopup(item);
+    }
+    else if (item.display_area === appConst.DA_MODAL) {
+        return createNotificationWithTypeModal(item);
+    }
+    else if (item.display_area === appConst.DA_SIDE) {
+        return createNotificationWithTypeSide(item);
+    }
+}
+
+function createNotificationWithTypePopup(item) {
+    return new Promise((resolve, reject) => {
+       const data = models.bind_notification_detail.create({
+           parent_id: item.parent_id,
+           display_title: item.display_title,
+           display_area: item.display_area,
+           date: item.date,
+           sub_title: item.sub_title,
+           is_cld: item.is_cld,
+           is_clt: item.is_clt,
+           is_bind11: item.is_bind11,
+           is_bind11T: item.is_bind11T,
+           is_bind10: item.is_bind10,
+           is_bind10T: item.is_bind10T,
+           is_bind9: item.is_bind9,
+           is_bind9T: item.is_bind9T,
+           content: item.content.replace(/(")/g, "'"),
+           status: appConst.STATUS_DRAFT,
+           ext_link: item.url,
+           limit: item.limit,
+           modal_link: null
+       });
+       resolve(data);
+    });
+}
+
+function createNotificationWithTypeModal(item) {
+    return new Promise((resolve, reject) => {
+        const data = models.bind_notification_detail.create({
+            parent_id: item.parent_id,
+            display_title: item.display_title,
+            display_area: item.display_area,
+            date: item.date,
+            sub_title: item.sub_title,
+            is_cld: item.is_cld,
+            is_clt: item.is_clt,
+            is_bind11: item.is_bind11,
+            is_bind11T: item.is_bind11T,
+            is_bind10: item.is_bind10,
+            is_bind10T: item.is_bind10T,
+            is_bind9: item.is_bind9,
+            is_bind9T: item.is_bind9T,
+            content: item.content.replace(/(")/g, "'"),
+            status: appConst.STATUS_DRAFT,
+            ext_link: null,
+            limit: null,
+            modal_link: item.url
+        });
+        resolve(data);
+    });
+}
+
+function createNotificationWithTypeSide(item) {
+    return new Promise((resolve, reject) => {
+        const data = models.bind_notification_detail.create({
+            parent_id: item.parent_id,
+            display_title: item.display_title,
+            display_area: item.display_area,
+            date: item.date,
+            sub_title: item.sub_title,
+            is_cld: item.is_cld,
+            is_clt: item.is_clt,
+            is_bind11: item.is_bind11,
+            is_bind11T: item.is_bind11T,
+            is_bind10: item.is_bind10,
+            is_bind10T: item.is_bind10T,
+            is_bind9: item.is_bind9,
+            is_bind9T: item.is_bind9T,
+            content: item.content.replace(/(")/g, "'"),
+            status: appConst.STATUS_DRAFT,
+            ext_link: item.url,
+            limit: null,
+            modal_link: null
+        });
+        resolve(data);
+    });
+}
+
+exports.getCategoryById = (categoryId) => {
+    return new Promise((resolve, reject) => {
+        new Promise((cResolve, cReject) => {
+            const item = models.bind_notification.find({
+                where: {
+                    id: categoryId
+                },
+                include: [
+                    {
+                        model: models.bind_notification_detail,
+                        where: {
+                            delete_flag: false,
+                        }
+                    }
+                ]
+            });
+            cResolve(item);
+        }).then((item) => {
+            const output = buildCategoryItem(item);
+            resolve(output);
+        });
+    });
 }
