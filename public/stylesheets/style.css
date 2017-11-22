@@ -6,3 +6,13 @@ body {
 a {
   color: #00B7FF;
 }
+.loading_popup
+{
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: url('../img/loader.gif') no-repeat center center;
+  opacity: 1;
+  z-index: 9999;
+  background-size: 10%;
+}

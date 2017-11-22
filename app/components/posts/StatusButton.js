@@ -29,16 +29,19 @@ class StatusButton extends Component {
         const { push, record, showNotification } = this.props;
         const updatedRecord = { ...record, status: valueChoise };
         const data = JSON.stringify(updatedRecord);
+        $('#loading').toggleClass('loading_popup');
         fetch(`/changeStatus/${record.id}`, { method: 'PUT', json: true, body: data, headers: new Headers({
             'Content-Type': 'application/json'
         }) })
             .then(() => {
+                $('#loading').toggleClass('loading_popup');
                 showNotification('ステータスが変更されました。');
                 this.setState({ disable: !this.state.disable, open: false});
                 push('/uploadNotificationFile');
                 push('/posts');
             })
             .catch((e) => {
+                $('#loading').toggleClass('loading_popup');
                 console.error(e);
                 showNotification('エラー：ステータスは変更されていません。')
             });
