@@ -91,7 +91,7 @@ export const PostCreate = (props) => (
         <SimpleForm toolbar={<PostCreateEditToolbar/>} redirect="show">
             <LongTextInput source="display_title" label="管理タイトル" validate={required}/>
             <BooleanInput source="is_cld" label="Cld" defaultValue={true}/>
-            <BooleanInput source="is_dlt" label="Clt" defaultValue={true}/>
+            <BooleanInput source="is_clt" label="Clt" defaultValue={true}/>
             <BooleanInput source="is_bind11" label="11" defaultValue={true}/>
             <BooleanInput source="is_bind11T" label="11t" defaultValue={true}/>
             <BooleanInput source="is_bind10" label="10" defaultValue={true}/>
@@ -109,7 +109,7 @@ export const PostCreate = (props) => (
             <TextField source="xxxxxx" label="掲載情報" style={{font: 'italic bold 50px/30px Georgia, serif'}}/>
 
             <DateInput source="date" label="date" locales="ja-jp"/>
-            <ReferenceInput source="parent_id" reference="categories" label = 'カテゴリ' allowEmpty >
+            <ReferenceInput source="parent_id" reference="categories" label = 'カテゴリ' allowEmpty validate={required}>
                 <SelectInput source="name"  />
             </ReferenceInput>
             <LongTextInput source="sub_title" label="タイトル" validate={required}/>
