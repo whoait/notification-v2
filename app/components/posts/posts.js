@@ -160,7 +160,7 @@ export const PostEdit = (props) => (
         <SimpleForm toolbar={<PostCreateEditToolbar/>} >
             <LongTextInput source="display_title" label="管理タイトル" validate={required}/>
             <BooleanInput source="is_cld" label="Cld"/>
-            <BooleanInput source="is_dlt" label="Clt"/>
+            <BooleanInput source="is_clt" label="Clt"/>
             <BooleanInput source="is_bind11" label="11"/>
             <BooleanInput source="is_bind11T" label="11t"/>
             <BooleanInput source="is_bind10" label="10"/>
