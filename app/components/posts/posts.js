@@ -37,7 +37,8 @@ import DeleteCustomButton from './DeleteCustomButton';
 import rowStyle from './rowStyle';
 import StatusButton from './StatusButton';
 import ConfirmComponent from './ConfirmComponent';
-import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh'
+import ToolBarCreateEditComponent from './ToolBarCreateEditComponent';
+import CardActionCreateEditComponent from './CardActionCreateEditComponent';
 // area css--start
 const detailStyle = {display: 'inline-block', verticalAlign: 'top', marginRight: '2em', minWidth: '8em'};
 const style = {margin: 12,};
@@ -142,19 +143,21 @@ const cardActionStyle = {
 
 const PostCreateEditActions = ({basePath, data}) => (
     <CardActions style={cardActionStyle}>
-        <ListButton basePath={basePath} label="一覧へもどる"/>
+        {/*<ListButton basePath={basePath} label="一覧へもどる"/>*/}
+        <CardActionCreateEditComponent/>
     </CardActions>
 );
 
 const PostCreateEditToolbar = props => <Toolbar {...props} >
-    <ListButton label="キャンセル" redirect={false} submitOnEnter={false} raised={false}/>
-    <SaveButton label="確認する" redirect="show" submitOnEnter={true}/>
+    <ToolBarCreateEditComponent/>
+    {/*<ListButton label="キャンセル" redirect={false} submitOnEnter={false} raised={false}/>*/}
+    {/*<SaveButton label="確認する" redirect="show" submitOnEnter={true}/>*/}
 
 </Toolbar>;
 
 export const PostEdit = (props) => (
     <Edit actions={<PostCreateEditActions/>} {...props}>
-        <SimpleForm toolbar={<PostCreateEditToolbar/>}>
+        <SimpleForm toolbar={<PostCreateEditToolbar/>} >
             <LongTextInput source="display_title" label="管理タイトル" validate={required}/>
             <BooleanInput source="is_cld" label="Cld"/>
             <BooleanInput source="is_dlt" label="Clt"/>

@@ -41,7 +41,7 @@ class StatusButton extends Component {
                 push('/posts');
             })
             .catch((e) => {
-                $('#loading').toggleClass('loading_popup');
+                $('#loading').toggleClass(loading_popup);
                 console.error(e);
                 showNotification('エラー：ステータスは変更されていません。')
             });
