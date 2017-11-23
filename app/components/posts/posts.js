@@ -39,6 +39,7 @@ import StatusButton from './StatusButton';
 import ConfirmComponent from './ConfirmComponent';
 import ToolBarCreateEditComponent from './ToolBarCreateEditComponent';
 import CardActionCreateEditComponent from './CardActionCreateEditComponent';
+import {DependentInput} from 'aor-dependent-input';
 // area css--start
 const detailStyle = {display: 'inline-block', verticalAlign: 'top', marginRight: '2em', minWidth: '8em'};
 const style = {margin: 12,};
@@ -98,7 +99,6 @@ export const PostCreate = (props) => (
             <BooleanInput source="is_bind10T" label="10t" defaultValue={true}/>
             <BooleanInput source="is_bind9" label="9" defaultValue={true}/>
             <BooleanInput source="is_bind9T" label="9t" defaultValue={true}/>
-
             <SelectInput source="display_area" label="通知エリア" choices={[
                 {id: 0, name: 'サイド'},
                 {id: 1, name: 'モーダル'},
@@ -108,10 +108,12 @@ export const PostCreate = (props) => (
             />
             <TextField source="xxxxxx" label="掲載情報" style={{font: 'italic bold 50px/30px Georgia, serif'}}/>
 
-            <DateInput source="date" label="date" locales="ja-jp"/>
-            <ReferenceInput source="parent_id" reference="categories" label = 'カテゴリ' allowEmpty validate={required}>
-                <SelectInput source="name"  />
-            </ReferenceInput>
+            <DateInput source="date" label="日付" locales="ja-jp"/>
+            <DependentInput dependsOn="display_area" resolve={checkNew}>
+                <ReferenceInput source="parent_id" reference="categories" label='カテゴリ' allowEmpty>
+                    <SelectInput source="name"/>
+                </ReferenceInput>
+            </DependentInput>
             <LongTextInput source="sub_title" label="タイトル" validate={required}/>
             <ImageInput source="pictures" label="画像" accept="image/*" placeholder={<p>Drop your file here</p>}>
                 <ImageField source="src" title="title"/>
@@ -121,26 +123,27 @@ export const PostCreate = (props) => (
             <LongTextInput source="content" label="本文" validate={required}/>
             {/*<LongTextInput source="content_button" label="ボタンテキスト"/>*/}
             <LongTextInput source="url" label="リンク URL"/>
+            <DependentInput dependsOn="display_area" resolve={checkPopup}>
+                <SelectInput source="limit" label="表示回数" choices={[
+                    {id: 1, name: '1 回'},
+                    {id: 2, name: '2 回'},
+                    {id: 3, name: '3 回'},
+                    {id: 4, name: '4 回'},
+                    {id: 5, name: '5 回'},
 
-            <SelectInput source="limit" label="表示回数" choices={[
-                {id: 1, name: '1 回'},
-                {id: 2, name: '2 回'},
-                {id: 3, name: '3 回'},
-                {id: 4, name: '4 回'},
-                {id: 5, name: '5 回'},
-
-            ]}/>
+                ]}/>
+            </DependentInput>
         </SimpleForm>
     </Create>
 );
-
 const cardActionStyle = {
     zIndex: 2,
     display: 'inline-block',
     float: 'right',
 };
 
-
+const checkPopup = (value) => value === 2 ? true : false;
+const checkNew = (value) => (value === 0 || value ===1) ? true : false;
 const PostCreateEditActions = ({basePath, data}) => (
     <CardActions style={cardActionStyle}>
         {/*<ListButton basePath={basePath} label="一覧へもどる"/>*/}
@@ -157,7 +160,7 @@ const PostCreateEditToolbar = props => <Toolbar {...props} >
 
 export const PostEdit = (props) => (
     <Edit actions={<PostCreateEditActions/>} {...props}>
-        <SimpleForm toolbar={<PostCreateEditToolbar/>} >
+        <SimpleForm toolbar={<PostCreateEditToolbar/>}>
             <LongTextInput source="display_title" label="管理タイトル" validate={required}/>
             <BooleanInput source="is_cld" label="Cld"/>
             <BooleanInput source="is_clt" label="Clt"/>
@@ -179,14 +182,15 @@ export const PostEdit = (props) => (
 
             <DateInput source="date" label="日付" locales="ja-jp"/>
             {/*<SelectInput source="category" label="カテゴリ" choices={[*/}
-                {/*{id: 1, name: '重要なお知らせ'},*/}
-                {/*{id: 2, name: 'サポート情報'},*/}
-                {/*{id: 3, name: 'BiND CAMP'},*/}
+            {/*{id: 1, name: '重要なお知らせ'},*/}
+            {/*{id: 2, name: 'サポート情報'},*/}
+            {/*{id: 3, name: 'BiND CAMP'},*/}
             {/*]}/>*/}
-
-            <ReferenceInput source="parent_id" reference="categories" label = 'カテゴリ'>
-                <SelectInput source="name"  />
-            </ReferenceInput>
+            <DependentInput dependsOn="display_area" resolve={checkNew}>
+                <ReferenceInput source="parent_id" reference="categories" label='カテゴリ'>
+                    <SelectInput source="name"/>
+                </ReferenceInput>
+            </DependentInput>
             <LongTextInput source="sub_title" label="タイトル" validate={required}/>
             <ImageInput source="pictures" label="画像" accept="image/*" placeholder={<p>Drop your file here</p>}>
                 <ImageField source="src" title="title"/>
@@ -196,15 +200,16 @@ export const PostEdit = (props) => (
             <LongTextInput source="content" label="本文" validate={required}/>
             {/*<LongTextInput source="content_button" label="ボタンテキスト"/>*/}
             <LongTextInput source="url" label="リンク URL"/>
+            <DependentInput dependsOn="display_area" resolve={checkPopup}>
+                <SelectInput source="limit" label="表示回数" choices={[
+                    {id: '1', name: '1 回'},
+                    {id: '2', name: '2 回'},
+                    {id: '3', name: '3 回'},
+                    {id: '4', name: '4 回'},
+                    {id: '5', name: '5 回'},
 
-            <SelectInput source="limit" label="表示回数" choices={[
-                {id: '1', name: '1 回'},
-                {id: '2', name: '2 回'},
-                {id: '3', name: '3 回'},
-                {id: '4', name: '4 回'},
-                {id: '5', name: '5 回'},
-
-            ]}/>
+                ]}/>
+            </DependentInput>
         </SimpleForm>
     </Edit>
 );
@@ -232,7 +237,7 @@ export const PostShow = (props) => (
             {/*/>*/}
             <TextField source="xxxxxx" label="掲載情報" style={{font: 'italic bold 50px/30px Georgia, serif'}}/>
 
-            <DateField source="date" label="date" locales="ja-jp"/>
+            <DateField source="date" label="日付" locales="ja-jp"/>
             {/*<SelectInput source="category" label="カテゴリ" choices={[*/}
             {/*{id: '1', name: '重要なお知らせ'},*/}
             {/*{id: '2', name: 'サポート情報'},*/}
@@ -257,13 +262,13 @@ export const PostShow = (props) => (
 
             {/*]}/>*/}
             {/*<div style={confirmStyle}>*/}
-                {/*<div style={confirmStyle}>*/}
-                    {/*<span>この内容で間違いありませんか？</span>*/}
-                {/*</div>*/}
+            {/*<div style={confirmStyle}>*/}
+            {/*<span>この内容で間違いありませんか？</span>*/}
+            {/*</div>*/}
 
             {/*</div>*/}
             {/*<EditButton basePath={this.props.basePath}*/}
-                        {/*record={this.props} style={{padding: 0}} label="修正する"/>*/}
+            {/*record={this.props} style={{padding: 0}} label="修正する"/>*/}
             {/*<ListButton label="保存する" redirect={false} submitOnEnter={false} raised={false}/>*/}
             <ConfirmComponent/>
         </SimpleShowLayout>

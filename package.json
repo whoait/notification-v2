@@ -6,6 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "aor-dependent-input": "^1.2.0",
     "aor-language-japanese": "^1.0.0",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
