@@ -28,7 +28,8 @@ import {
     ShowButton,
     ListButton,
     SaveButton,
-    Toolbar
+    Toolbar,
+    FunctionField
 } from 'admin-on-rest';
 
 import {CardActions} from 'material-ui/Card';
@@ -91,14 +92,14 @@ export const PostCreate = (props) => (
     <Create actions={<PostCreateEditActions/>} {...props}>
         <SimpleForm toolbar={<PostCreateEditToolbar/>} redirect="show">
             <LongTextInput source="display_title" label="管理タイトル" validate={required}/>
-            <BooleanInput source="is_cld" label="Cld" defaultValue={true}/>
-            <BooleanInput source="is_clt" label="Clt" defaultValue={true}/>
-            <BooleanInput source="is_bind11" label="11" defaultValue={true}/>
-            <BooleanInput source="is_bind11T" label="11t" defaultValue={true}/>
-            <BooleanInput source="is_bind10" label="10" defaultValue={true}/>
-            <BooleanInput source="is_bind10T" label="10t" defaultValue={true}/>
-            <BooleanInput source="is_bind9" label="9" defaultValue={true}/>
-            <BooleanInput source="is_bind9T" label="9t" defaultValue={true}/>
+            <BooleanInput source="is_cld" label="クラウド" defaultValue={true}/>
+            <BooleanInput source="is_clt" label="クライアント" defaultValue={true}/>
+            <BooleanInput source="is_bind11" label="BiND11" defaultValue={true}/>
+            <BooleanInput source="is_bind11T" label="BiND11 体験版" defaultValue={true}/>
+            <BooleanInput source="is_bind10" label="BiND10" defaultValue={true}/>
+            <BooleanInput source="is_bind10T" label="BiND10 体験版" defaultValue={true}/>
+            <BooleanInput source="is_bind9" label="BiND9" defaultValue={true}/>
+            <BooleanInput source="is_bind9T" label="BiND9 体験版" defaultValue={true}/>
             <SelectInput source="display_area" label="通知エリア" choices={[
                 {id: 0, name: 'サイド'},
                 {id: 1, name: 'モーダル'},
@@ -143,7 +144,7 @@ const cardActionStyle = {
 };
 
 const checkPopup = (value) => value === 2 ? true : false;
-const checkNew = (value) => (value === 0 || value ===1) ? true : false;
+const checkNew = (value) => (value === 0 || value === 1) ? true : false;
 const PostCreateEditActions = ({basePath, data}) => (
     <CardActions style={cardActionStyle}>
         {/*<ListButton basePath={basePath} label="一覧へもどる"/>*/}
@@ -162,14 +163,14 @@ export const PostEdit = (props) => (
     <Edit actions={<PostCreateEditActions/>} {...props}>
         <SimpleForm toolbar={<PostCreateEditToolbar/>}>
             <LongTextInput source="display_title" label="管理タイトル" validate={required}/>
-            <BooleanInput source="is_cld" label="Cld"/>
-            <BooleanInput source="is_clt" label="Clt"/>
-            <BooleanInput source="is_bind11" label="11"/>
-            <BooleanInput source="is_bind11T" label="11t"/>
-            <BooleanInput source="is_bind10" label="10"/>
-            <BooleanInput source="is_bind10T" label="10t"/>
-            <BooleanInput source="is_bind9" label="9"/>
-            <BooleanInput source="is_bind9T" label="9t"/>
+            <BooleanInput source="is_cld" label="クラウド"/>
+            <BooleanInput source="is_clt" label="クライアント"/>
+            <BooleanInput source="is_bind11" label="BiND11"/>
+            <BooleanInput source="is_bind11T" label="BiND11 体験版"/>
+            <BooleanInput source="is_bind10" label="BiND10"/>
+            <BooleanInput source="is_bind10T" label="BiND10 体験版"/>
+            <BooleanInput source="is_bind9" label="BiND9"/>
+            <BooleanInput source="is_bind9T" label="BiND9 体験版"/>
 
             <SelectInput source="display_area" label="通知エリア" choices={[
                 {id: 0, name: 'サイド'},
@@ -202,11 +203,11 @@ export const PostEdit = (props) => (
             <LongTextInput source="url" label="リンク URL"/>
             <DependentInput dependsOn="display_area" resolve={checkPopup}>
                 <SelectInput source="limit" label="表示回数" choices={[
-                    {id: '1', name: '1 回'},
-                    {id: '2', name: '2 回'},
-                    {id: '3', name: '3 回'},
-                    {id: '4', name: '4 回'},
-                    {id: '5', name: '5 回'},
+                    {id: 1, name: '1 回'},
+                    {id: 2, name: '2 回'},
+                    {id: 3, name: '3 回'},
+                    {id: 4, name: '4 回'},
+                    {id: 5, name: '5 回'},
 
                 ]}/>
             </DependentInput>
@@ -214,62 +215,82 @@ export const PostEdit = (props) => (
     </Edit>
 );
 
+const showDisplayArea = (record) => {
+    if (record.display_area === 0) return 'サイド';
+    if (record.display_area === 1) return 'モーダル';
+    if (record.display_area === 2) return 'ポップアップ';
+    return '';
+}
 
+const showLimit = (record) => {
+    return `${record.limit} 回`
+}
+const showBindVersionApply = (record) => {
+    var textReturn = '';
+    if (record.is_cld) { // noinspection JSAnnotator
+        textReturn += 'クラウド';
+    }
+    if (record.is_clt) { // noinspection JSAnnotator
+        textReturn += '        クライアント';
+    }
+    if (record.is_bind11) { // noinspection JSAnnotator
+        textReturn += '        BiND11';
+    }
+    if (record.is_bind11T) { // noinspection JSAnnotator
+        textReturn += '        BiND11 体験版';
+    }
+    if (record.is_bind10) { // noinspection JSAnnotator
+        textReturn += '        BiND10';
+    }
+    if (record.is_bind10T) { // noinspection JSAnnotator
+        textReturn += '        BiND10 体験版';
+    }
+    if (record.is_bind9) { // noinspection JSAnnotator
+        textReturn += '        BiND9';
+    }
+    if (record.is_bind9T) { // noinspection JSAnnotator
+        textReturn += '        BiND9 体験版';
+    }
+
+    return textReturn;
+}
 export const PostShow = (props) => (
     <Show actions={<PostCreateEditActions/>} {...props}>
-        <SimpleShowLayout {...props} >
+        <SimpleShowLayout >
             <TextField source="display_title" label="管理タイトル" validate={required}/>
-            <BooleanField source="is_cld" label="Cld"/>
-            <BooleanField source="is_dlt" label="Clt"/>
-            <BooleanField source="is_bind11" label="11"/>
-            <BooleanField source="is_bind11T" label="11t"/>
-            <BooleanField source="is_bind10" label="10"/>
-            <BooleanField source="is_bind10T" label="10t"/>
-            <BooleanField source="is_bind9" label="9"/>
-            <BooleanField source="is_bind9T" label="9t"/>
+            {/*<BooleanField source="is_cld" label="Cld"/>*/}
+            {/*<BooleanField source="is_clt" label="Clt"/>*/}
+            {/*<BooleanField source="is_bind11" label="11"/>*/}
+            {/*<BooleanField source="is_bind11T" label="11t"/>*/}
+            {/*<BooleanField source="is_bind10" label="10"/>*/}
+            {/*<BooleanField source="is_bind10T" label="10t"/>*/}
+            {/*<BooleanField source="is_bind9" label="9"/>*/}
+            {/*<BooleanField source="is_bind9T" label="9t"/>*/}
 
-            {/*<SelectInput source="display_area" label="通知エリア" choices={[*/}
-            {/*{id: 0, name: 'サイド'},*/}
-            {/*{id: 1, name: 'モーダル'},*/}
-            {/*{id: 2, name: 'ポップアップ'},*/}
-            {/*]}*/}
-            {/*validate={required}*/}
-            {/*/>*/}
+            <FunctionField label="通知対象" render={showBindVersionApply}/>
+
+            <FunctionField label="通知エリア" render={showDisplayArea}/>
+
             <TextField source="xxxxxx" label="掲載情報" style={{font: 'italic bold 50px/30px Georgia, serif'}}/>
 
             <DateField source="date" label="日付" locales="ja-jp"/>
-            {/*<SelectInput source="category" label="カテゴリ" choices={[*/}
-            {/*{id: '1', name: '重要なお知らせ'},*/}
-            {/*{id: '2', name: 'サポート情報'},*/}
-            {/*{id: '3', name: 'BiND CAMP'},*/}
-            {/*]}/>*/}
-            <TextField source="sub_title" label="タイトル" validate={required}/>
-            {/*<ImageInput source="pictures"  label="画像" accept="image/*" placeholder={<p>Drop your file here</p>}>*/}
-            {/*<ImageField source="src"  title="title"/>*/}
-            {/*</ImageInput>*/}
 
-            <ImageField source="image_url" title="old image"/>
-            <TextField source="content" label="本文" validate={required}/>
+            <ReferenceField source="parent_id" reference="categories" label='カテゴリ' linkType={false}>
+                <TextField source="name"/>
+            </ReferenceField>
+
+            <TextField source="sub_title" label="タイトル"/>
+
+            {/*<ImageField source="src"  label="title"/>*/}
+
+            <ImageField source="image_url" title="画像"/>
+            <TextField source="content" label="本文"/>
+
             {/*<LongTextInput source="content_button" label="ボタンテキスト"/>*/}
             <TextField source="url" label="リンク URL"/>
-
-            {/*<SelectInput source="limit" label="表示回数" choices={[*/}
-            {/*{id: '1', name: '1 回'},*/}
-            {/*{id: '2', name: '2 回'},*/}
-            {/*{id: '3', name: '3 回'},*/}
-            {/*{id: '4', name: '4 回'},*/}
-            {/*{id: '5', name: '5 回'},*/}
-
-            {/*]}/>*/}
-            {/*<div style={confirmStyle}>*/}
-            {/*<div style={confirmStyle}>*/}
-            {/*<span>この内容で間違いありませんか？</span>*/}
-            {/*</div>*/}
-
-            {/*</div>*/}
-            {/*<EditButton basePath={this.props.basePath}*/}
-            {/*record={this.props} style={{padding: 0}} label="修正する"/>*/}
-            {/*<ListButton label="保存する" redirect={false} submitOnEnter={false} raised={false}/>*/}
+            <DependentInput dependsOn="display_area" resolve={checkPopup}>
+                <FunctionField label="表示回数" render={showLimit}/>
+            </DependentInput>
             <ConfirmComponent/>
         </SimpleShowLayout>
     </Show>
