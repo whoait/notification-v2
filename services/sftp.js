@@ -10,7 +10,7 @@ function doConnect() {
             port: config.port,
             username: config.username,
             password: config.password
-        }
+        }, 'once'
     ).catch((err) => {
         console.log(`Error: err`);
     });

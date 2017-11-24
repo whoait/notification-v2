@@ -66,7 +66,7 @@ DisplayAreaField.defaultProps = {label: 'ステータス'};
 export const PostList = (props) => (
     <List {...props} perPage={20} title="トップページ">
         <Datagrid rowStyle={rowStyle}>
-            <TextField source="sub_title" label="タイトル"
+            <TextField source="display_title" label="タイトル"
                        style={{maxWidth: '18em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}/>
             <StatusButton source="status" style={{padding: 0}} label="ステータス"/>
             <BooleanField source="is_cld" label="Cld"/>

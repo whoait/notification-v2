@@ -293,7 +293,7 @@ function checkEachPopupElement(newsElement, bindVersion) {
         }).then((item) => {
             if (util.isEmpty(item)) {
                 // If popup not existed, add new popup element
-                return addPopupElement(bindVersion);
+                return addPopupElement();
             }
             else {
                 // If popup existed, update bind version.
@@ -371,7 +371,7 @@ function updateElementInPopupListWithBindVersion(element, bindVersion) {
     });
 }
 
-function addPopupElement(bindVersion) {
+function addPopupElement() {
     console.log(`add popup element`);
     return new Promise((resolve, reject) => {
         new Promise((cResolve, cReject) => {
@@ -386,7 +386,14 @@ function addPopupElement(bindVersion) {
             models.bind_notification_detail.create(
                 {
                     parent_id: parentId,
-                    [bindVersion]: true,
+                    is_cld: true,
+                    is_clt: true,
+                    is_bind11: true,
+                    is_bind11T: true,
+                    is_bind10: true,
+                    is_bind10T: true,
+                    is_bind9: true,
+                    is_bind9T: true,
                     status: appConst.STATUS_PUBLISHING,
                     display_area: appConst.DA_PARENT
                 }
@@ -1038,9 +1045,20 @@ exports.deleteNotification = (notificationId) => {
 };
 
 exports.updateNotification = (notificationId, item) => {
-    if (!util.isEmpty(item.pictures) && (!util.isEmpty(item.content.match(/(<img src='[\S]*'>){1}/g)))) {
-        saveUpdateImage(item.pictures, item.content, notificationId)
-    }
+    return new Promise((resolve, reject) => {
+       checkParentElement(item).then((updatedItem) => {
+           console.log(updatedItem);
+           if (!util.isEmpty(updatedItem.pictures) && (!util.isEmpty(updatedItem.content.match(/(<img src='[\S]*'>){1}/g)))) {
+               saveUpdateImage(updatedItem.pictures, updatedItem.content, notificationId)
+           }
+           updateNotificationInDB(notificationId, updatedItem).then((data) => {
+               resolve(data)
+           });
+       });
+    });
+};
+
+function updateNotificationInDB(notificationId, item) {
     if (item.display_area === appConst.DA_POPUP) {
         return updateNotificationWithTypePopup(notificationId, item);
     }
@@ -1050,12 +1068,7 @@ exports.updateNotification = (notificationId, item) => {
     else if (item.display_area === appConst.DA_SIDE) {
         return updateNotificationWithTypeSide(notificationId, item);
     }
-    else {
-        return new Promise((resolve, reject) => {
-            resolve();
-        });
-    }
-};
+}
 
 function updateNotificationWithTypePopup(notificationId, item) {
     return new Promise((resolve, reject) => {
@@ -1064,7 +1077,7 @@ function updateNotificationWithTypePopup(notificationId, item) {
                 // parent_id: item.parent_id,
                 display_title: item.display_title,
                 display_area: item.display_area,
-                date: item.date,
+                date: util.formatDateWithPattern_YYYYMMDD(item.date),
                 sub_title: item.sub_title,
                 is_cld: item.is_cld,
                 is_clt: item.is_clt,
@@ -1097,7 +1110,7 @@ function updateNotificationWithTypeModal(notificationId, item) {
                 // parent_id: item.parent_id,
                 display_title: item.display_title,
                 display_area: item.display_area,
-                date: item.date,
+                date: util.formatDateWithPattern_YYYYMMDD(item.date),
                 sub_title: item.sub_title,
                 is_cld: item.is_cld,
                 is_clt: item.is_clt,
@@ -1130,7 +1143,7 @@ function updateNotificationWithTypeSide(notificationId, item) {
                 // parent_id: item.parent_id,
                 display_title: item.display_title,
                 display_area: item.display_area,
-                date: item.date,
+                date: util.formatDateWithPattern_YYYYMMDD(item.date),
                 sub_title: item.sub_title,
                 is_cld: item.is_cld,
                 is_clt: item.is_clt,
@@ -1206,15 +1219,94 @@ function buildCategoryItem(item) {
 
 exports.createNotification = (item) => {
     return new Promise((resolve, reject) => {
-        createNotificationInDB(item).then((data) => {
-            if (!util.isEmpty(item.pictures) && (!util.isEmpty(item.content.match(/(<img src='[\S]*'>){1}/g)))) {
-                saveUpdateImage(item.pictures, item.content, data.id).then(() => {
+        checkParentElement(item).then((updatedItem) => {
+            createNotificationInDB(updatedItem).then((data) => {
+                if (!util.isEmpty(updatedItem.pictures) && (!util.isEmpty(updatedItem.content.match(/(<img src='[\S]*'>){1}/g)))) {
+                    saveUpdateImage(updatedItem.pictures, updatedItem.content, data.id).then(() => {
+                        resolve();
+                    })
+                }
+                else {
                     resolve();
-                })
-            }
+                }
+            });
         });
     });
 };
+
+function checkParentElement(item) {
+    if (item.display_area === appConst.DA_POPUP) {
+        return checkParentElementWithTypePopup(item);
+    }
+    else {
+        return checkParentElementWithTypeNews(item);
+    }
+}
+
+function checkParentElementWithTypePopup(item) {
+    return new Promise((resolve, reject) => {
+        new Promise((cResolve, cReject) => {
+            const popup = models.bind_notification.find({
+                where: {
+                    message_type: 'popup'
+                },
+                include: [
+                    {
+                        model: models.bind_notification_detail,
+                        where: {
+                            delete_flag: false,
+                            display_area: appConst.DA_PARENT
+                        }
+                    }
+                ]
+            });
+            cResolve(popup);
+        }).then((popup) => {
+            if (util.isEmpty(popup)) {
+                addPopupElement().then((data) => {
+                    item.parent_id = data;
+                    resolve(item);
+                })
+            }
+            else {
+                item.parent_id = popup.id;
+                resolve(item);
+            }
+        });
+    })
+}
+
+function checkParentElementWithTypeNews(item) {
+    return new Promise((resolve, reject) => {
+        const promises = _.map(config.version, (version) => {
+            if (item[version.code] === true) {
+                return updateParentElementWithBindVersion(version.code, item.parent_id);
+            }
+        });
+        Promise.all(promises).then(() => {
+            resolve(item);
+        });
+    });
+}
+
+function updateParentElementWithBindVersion (version, parentId) {
+    console.log(`parent_id = ${parentId}`);
+    return new Promise((resolve, reject) => {
+        const result = models.bind_notification_detail.update(
+            {
+                [version]: true
+            },
+            {
+                where: {
+                    parent_id: parentId,
+                    delete_flag: false,
+                    display_area: appConst.DA_PARENT
+                }
+            }
+        );
+        resolve(result);
+    })
+}
 
 function createNotificationInDB(item) {
     if (item.display_area === appConst.DA_POPUP) {
@@ -1234,7 +1326,7 @@ function createNotificationWithTypePopup(item) {
            parent_id: item.parent_id,
            display_title: item.display_title,
            display_area: item.display_area,
-           date: item.date,
+           date: util.formatDateWithPattern_YYYYMMDD(item.date),
            sub_title: item.sub_title,
            is_cld: item.is_cld,
            is_clt: item.is_clt,
@@ -1260,7 +1352,7 @@ function createNotificationWithTypeModal(item) {
             parent_id: item.parent_id,
             display_title: item.display_title,
             display_area: item.display_area,
-            date: item.date,
+            date: util.formatDateWithPattern_YYYYMMDD(item.date),
             sub_title: item.sub_title,
             is_cld: item.is_cld,
             is_clt: item.is_clt,
@@ -1286,7 +1378,7 @@ function createNotificationWithTypeSide(item) {
             parent_id: item.parent_id,
             display_title: item.display_title,
             display_area: item.display_area,
-            date: item.date,
+            date: util.formatDateWithPattern_YYYYMMDD(item.date),
             sub_title: item.sub_title,
             is_cld: item.is_cld,
             is_clt: item.is_clt,

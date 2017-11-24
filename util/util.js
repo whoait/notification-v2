@@ -62,3 +62,7 @@ exports.writeImage = (aPath, aData) => {
         })
     });
 };
+
+exports.formatDateWithPattern_YYYYMMDD = (date) => {
+    return new Date(date).toLocaleDateString().replace(/(-)/g, "\/");
+};
