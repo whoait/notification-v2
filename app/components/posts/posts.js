@@ -90,7 +90,7 @@ export const PostList = (props) => (
 
 export const PostCreate = (props) => (
     <Create actions={<PostCreateEditActions/>} {...props}>
-        <SimpleForm toolbar={<PostCreateEditToolbar/>} redirect="show">
+        <SimpleForm toolbar={<PostCreateEditToolbar/>} >
             <LongTextInput source="display_title" label="管理タイトル" validate={required}/>
             <BooleanInput source="is_cld" label="クラウド" defaultValue={true}/>
             <BooleanInput source="is_clt" label="クライアント" defaultValue={true}/>
@@ -215,83 +215,83 @@ export const PostEdit = (props) => (
     </Edit>
 );
 
-const showDisplayArea = (record) => {
-    if (record.display_area === 0) return 'サイド';
-    if (record.display_area === 1) return 'モーダル';
-    if (record.display_area === 2) return 'ポップアップ';
-    return '';
-}
-
-const showLimit = (record) => {
-    return `${record.limit} 回`
-}
-const showBindVersionApply = (record) => {
-    var textReturn = '';
-    if (record.is_cld) { // noinspection JSAnnotator
-        textReturn += 'クラウド';
-    }
-    if (record.is_clt) { // noinspection JSAnnotator
-        textReturn += '        クライアント';
-    }
-    if (record.is_bind11) { // noinspection JSAnnotator
-        textReturn += '        BiND11';
-    }
-    if (record.is_bind11T) { // noinspection JSAnnotator
-        textReturn += '        BiND11 体験版';
-    }
-    if (record.is_bind10) { // noinspection JSAnnotator
-        textReturn += '        BiND10';
-    }
-    if (record.is_bind10T) { // noinspection JSAnnotator
-        textReturn += '        BiND10 体験版';
-    }
-    if (record.is_bind9) { // noinspection JSAnnotator
-        textReturn += '        BiND9';
-    }
-    if (record.is_bind9T) { // noinspection JSAnnotator
-        textReturn += '        BiND9 体験版';
-    }
-
-    return textReturn;
-}
-export const PostShow = (props) => (
-    <Show actions={<PostCreateEditActions/>} {...props}>
-        <SimpleShowLayout >
-            <TextField source="display_title" label="管理タイトル" validate={required}/>
-            {/*<BooleanField source="is_cld" label="Cld"/>*/}
-            {/*<BooleanField source="is_clt" label="Clt"/>*/}
-            {/*<BooleanField source="is_bind11" label="11"/>*/}
-            {/*<BooleanField source="is_bind11T" label="11t"/>*/}
-            {/*<BooleanField source="is_bind10" label="10"/>*/}
-            {/*<BooleanField source="is_bind10T" label="10t"/>*/}
-            {/*<BooleanField source="is_bind9" label="9"/>*/}
-            {/*<BooleanField source="is_bind9T" label="9t"/>*/}
-
-            <FunctionField label="通知対象" render={showBindVersionApply}/>
-
-            <FunctionField label="通知エリア" render={showDisplayArea}/>
-
-            <TextField source="xxxxxx" label="掲載情報" style={{font: 'italic bold 50px/30px Georgia, serif'}}/>
-
-            <DateField source="date" label="日付" locales="ja-jp"/>
-
-            <ReferenceField source="parent_id" reference="categories" label='カテゴリ' linkType={false}>
-                <TextField source="name"/>
-            </ReferenceField>
-
-            <TextField source="sub_title" label="タイトル"/>
-
-            {/*<ImageField source="src"  label="title"/>*/}
-
-            <ImageField source="image_url" title="画像"/>
-            <TextField source="content" label="本文"/>
-
-            {/*<LongTextInput source="content_button" label="ボタンテキスト"/>*/}
-            <TextField source="url" label="リンク URL"/>
-            <DependentInput dependsOn="display_area" resolve={checkPopup}>
-                <FunctionField label="表示回数" render={showLimit}/>
-            </DependentInput>
-            <ConfirmComponent/>
-        </SimpleShowLayout>
-    </Show>
-);
+// const showDisplayArea = (record) => {
+//     if (record.display_area === 0) return 'サイド';
+//     if (record.display_area === 1) return 'モーダル';
+//     if (record.display_area === 2) return 'ポップアップ';
+//     return '';
+// }
+//
+// const showLimit = (record) => {
+//     return `${record.limit} 回`
+// }
+// const showBindVersionApply = (record) => {
+//     var textReturn = '';
+//     if (record.is_cld) { // noinspection JSAnnotator
+//         textReturn += 'クラウド';
+//     }
+//     if (record.is_clt) { // noinspection JSAnnotator
+//         textReturn += '        クライアント';
+//     }
+//     if (record.is_bind11) { // noinspection JSAnnotator
+//         textReturn += '        BiND11';
+//     }
+//     if (record.is_bind11T) { // noinspection JSAnnotator
+//         textReturn += '        BiND11 体験版';
+//     }
+//     if (record.is_bind10) { // noinspection JSAnnotator
+//         textReturn += '        BiND10';
+//     }
+//     if (record.is_bind10T) { // noinspection JSAnnotator
+//         textReturn += '        BiND10 体験版';
+//     }
+//     if (record.is_bind9) { // noinspection JSAnnotator
+//         textReturn += '        BiND9';
+//     }
+//     if (record.is_bind9T) { // noinspection JSAnnotator
+//         textReturn += '        BiND9 体験版';
+//     }
+//
+//     return textReturn;
+// }
+// export const PostShow = (props) => (
+//     <Show actions={<PostCreateEditActions/>} {...props}>
+//         <SimpleShowLayout >
+//             <TextField source="display_title" label="管理タイトル" validate={required}/>
+//             {/*<BooleanField source="is_cld" label="Cld"/>*/}
+//             {/*<BooleanField source="is_clt" label="Clt"/>*/}
+//             {/*<BooleanField source="is_bind11" label="11"/>*/}
+//             {/*<BooleanField source="is_bind11T" label="11t"/>*/}
+//             {/*<BooleanField source="is_bind10" label="10"/>*/}
+//             {/*<BooleanField source="is_bind10T" label="10t"/>*/}
+//             {/*<BooleanField source="is_bind9" label="9"/>*/}
+//             {/*<BooleanField source="is_bind9T" label="9t"/>*/}
+//
+//             <FunctionField label="通知対象" render={showBindVersionApply}/>
+//
+//             <FunctionField label="通知エリア" render={showDisplayArea}/>
+//
+//             <TextField source="xxxxxx" label="掲載情報" style={{font: 'italic bold 50px/30px Georgia, serif'}}/>
+//
+//             <DateField source="date" label="日付" locales="ja-jp"/>
+//
+//             <ReferenceField source="parent_id" reference="categories" label='カテゴリ' linkType={false}>
+//                 <TextField source="name"/>
+//             </ReferenceField>
+//
+//             <TextField source="sub_title" label="タイトル"/>
+//
+//             {/*<ImageField source="src"  label="title"/>*/}
+//
+//             <ImageField source="image_url" title="画像"/>
+//             <TextField source="content" label="本文"/>
+//
+//             {/*<LongTextInput source="content_button" label="ボタンテキスト"/>*/}
+//             <TextField source="url" label="リンク URL"/>
+//             <DependentInput dependsOn="display_area" resolve={checkPopup}>
+//                 <FunctionField label="表示回数" render={showLimit}/>
+//             </DependentInput>
+//             <ConfirmComponent/>
+//         </SimpleShowLayout>
+//     </Show>
+// );

@@ -7,42 +7,79 @@ import RaisedButton from 'material-ui/RaisedButton';
 
 class ToolBarCreateEditComponent extends Component {
     state = {
-        open: false,
+        openConfirmList: false,
+        openConfirmSave: false,
+
     };
 
-    handleOpen = () => {
-        this.setState({open: true});
+    handleOpenConfirmLSave = () => {
+        this.setState({openConfirmSave: true});
+        console.log(this.props);
     };
 
-    handleClose = () => {
-        this.setState({open: false});
+    handleCloseConfirmSave = () => {
+        this.setState({openConfirmSave: false});
     };
+
+    handleOpenConfirmList = () => {
+        this.setState({openConfirmList: true});
+    };
+
+    handleCloseConfirmList = () => {
+        this.setState({openConfirmList: false});
+    };
+
+
     render() {
-
-        const actions = [
+        const style = {
+            margin: 12,
+        };
+        const actionsConfirmList = [
             <FlatButton
                 label="キャンセル"
                 primary={true}
-                onClick={this.handleClose}
+                onClick={this.handleCloseConfirmList}
             />,
-            <ListButton label="OK"  redirect={false} submitOnEnter={false} raised={false}/>,
+            <ListButton label="OK" redirect={false} submitOnEnter={false} raised={false}/>,
         ];
 
 
+        const actionsConfirmSave = [
+            <FlatButton
+                label="キャンセル"
+                primary={true}
+                onClick={this.handleCloseConfirmSave}
+            />,
+            <SaveButton label="確認する" handleSubmitWithRedirect={this.props.handleSubmitWithRedirect}
+                        submitOnEnter={true}/>,
+        ];
+
         return (
             <div>
-                <RaisedButton label="キャンセル" onClick={this.handleOpen} />
+                <RaisedButton label="キャンセル" onClick={this.handleOpenConfirmList} primary={true} style={style}/>
+                {/*dialog confirm back button*/}
                 <Dialog
                     title="通知"
-                    actions={actions}
+                    actions={actionsConfirmList}
                     modal={false}
-                    open={this.state.open}
-                    onRequestClose={this.handleClose}
+                    open={this.state.openConfirmList}
+                    onRequestClose={this.handleCloseConfirmList}
                 >
                     保存せずに戻ります。
                 </Dialog>
-                {/*<ListButton label="キャンセル" onClick={this.handleOpenDialogConfirm}  redirect={false} submitOnEnter={false} raised={false}/>*/}
-                <SaveButton label="確認する" handleSubmitWithRedirect = {this.props.handleSubmitWithRedirect} redirect="show" submitOnEnter={true}/>
+
+
+                <RaisedButton label="確認する" onClick={this.handleOpenConfirmLSave} primary={true} style={style}/>
+                {/*dialog confirm save button*/}
+                <Dialog
+                    title="通知"
+                    actions={actionsConfirmSave}
+                    modal={false}
+                    open={this.state.openConfirmSave}
+                    onRequestClose={this.handleCloseConfirmSave}
+                >
+                    <span>この内容で間違いありませんか？</span>
+                </Dialog>
             </div>
         );
     }
