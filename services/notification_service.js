@@ -293,7 +293,7 @@ function checkEachPopupElement(newsElement, bindVersion) {
         }).then((item) => {
             if (util.isEmpty(item)) {
                 // If popup not existed, add new popup element
-                return addPopupElement();
+                return addPopupElement(bindVersion);
             }
             else {
                 // If popup existed, update bind version.
@@ -342,7 +342,7 @@ function addElementInPopupList(element, parentId, bindVersion) {
                 content: element.content,
                 ext_link: element.ext_link,
                 limit: element.limit,
-                [bindVersion]: true,
+                bind_version: util.buildBindVersionField([], bindVersion),
                 status: appConst.STATUS_PUBLISHING,
                 display_area: appConst.DA_POPUP
             }
@@ -351,17 +351,17 @@ function addElementInPopupList(element, parentId, bindVersion) {
     });
 }
 
-function updateElementInPopupListWithBindVersion(element, bindVersion) {
-    console.log(`update element in popup list with bind version ${bindVersion} and parent_id = ${element.parent_id}`);
+function updateElementInPopupListWithBindVersion(bindNotificationDetail, bindVersion) {
+    console.log(`update element in popup list with bind version ${bindVersion} and parent_id = ${bindNotificationDetail.parent_id}`);
     return new Promise((resolve, reject) => {
         models.bind_notification_detail.update(
             {
-                [bindVersion]: true
+                bind_version: util.buildBindVersionField(JSON.parse(bindNotificationDetail.bind_version), bindVersion)
             },
             {
                 where: {
-                    id: element.id,
-                    parent_id: element.parent_id,
+                    id: bindNotificationDetail.id,
+                    parent_id: bindNotificationDetail.parent_id,
                     delete_flag: false,
                     status: appConst.STATUS_PUBLISHING
                 },
@@ -371,7 +371,7 @@ function updateElementInPopupListWithBindVersion(element, bindVersion) {
     });
 }
 
-function addPopupElement() {
+function addPopupElement(bindVersion) {
     console.log(`add popup element`);
     return new Promise((resolve, reject) => {
         new Promise((cResolve, cReject) => {
@@ -386,14 +386,7 @@ function addPopupElement() {
             models.bind_notification_detail.create(
                 {
                     parent_id: parentId,
-                    is_cld: true,
-                    is_clt: true,
-                    is_bind11: true,
-                    is_bind11T: true,
-                    is_bind10: true,
-                    is_bind10T: true,
-                    is_bind9: true,
-                    is_bind9T: true,
+                    bind_version: util.buildBindVersionField([], bindVersion),
                     status: appConst.STATUS_PUBLISHING,
                     display_area: appConst.DA_PARENT
                 }
@@ -405,23 +398,24 @@ function addPopupElement() {
     });
 }
 
-function updatePopupElementWithBindVersion(item, bindVersion) {
-    console.log(`update popup element with bind version ${bindVersion} and parent_id = ${item.id}`);
+function updatePopupElementWithBindVersion(bindNotification, bindVersion) {
+    console.log(`update popup element with bind version ${bindVersion} and parent_id = ${bindNotification.id}`);
+    const bindNotificationDetail = bindNotification.bind_notification_details[0];
     return new Promise((resolve, reject) => {
         models.bind_notification_detail.update(
             {
-                [bindVersion]: true
+                bind_version: util.buildBindVersionField(JSON.parse(bindNotificationDetail.bind_version), bindVersion)
             },
             {
                 where: {
-                    parent_id: item.id,
+                    parent_id: bindNotification.id,
                     delete_flag: false,
                     status: appConst.STATUS_PUBLISHING,
                     display_area: appConst.DA_PARENT
                 },
             }
         );
-        resolve(item.id);
+        resolve(bindNotification.id);
     });
 }
 
@@ -529,7 +523,7 @@ function addElementInNewsList(element, parentId, bindVersion) {
                 modal_link: element.modal_link,
                 ext_link: element.ext_link,
                 limit: element.limit,
-                [bindVersion]: true,
+                bind_version: util.buildBindVersionField([], bindVersion),
                 status: appConst.STATUS_PUBLISHING,
                 display_area: displayArea
             }
@@ -538,17 +532,17 @@ function addElementInNewsList(element, parentId, bindVersion) {
     });
 }
 
-function updateElementInNewsListWithBindVersion(element, bindVersion) {
-    console.log(`update element in news list with bind version ${bindVersion} & parent_id = ${element.parent_id} & id = ${element.id}`);
+function updateElementInNewsListWithBindVersion(bindNotificationDetail, bindVersion) {
+    console.log(`update element in news list with bind version ${bindVersion} & parent_id = ${bindNotificationDetail.parent_id} & id = ${bindNotificationDetail.id}`);
     return new Promise((resolve, reject) => {
         models.bind_notification_detail.update(
             {
-                [bindVersion]: true
+                bind_version: util.buildBindVersionField(JSON.parse(bindNotificationDetail.bind_version), bindVersion)
             },
             {
                 where: {
-                    id: element.id,
-                    parent_id: element.parent_id,
+                    id: bindNotificationDetail.id,
+                    parent_id: bindNotificationDetail.parent_id,
                     delete_flag: false,
                     status: appConst.STATUS_PUBLISHING
                 },
@@ -573,7 +567,7 @@ function addNewsElement(newsTitle, bindVersion) {
             models.bind_notification_detail.create(
                 {
                     parent_id: parentId,
-                    [bindVersion]: true,
+                    bind_version: util.buildBindVersionField([], bindVersion),
                     status: appConst.STATUS_PUBLISHING,
                     display_area: appConst.DA_PARENT
                 }
@@ -585,23 +579,24 @@ function addNewsElement(newsTitle, bindVersion) {
     });
 }
 
-function updateNewsElementWithBindVersion(item, bindVersion) {
-    console.log(`update new element with bind version ${bindVersion} and parent_id = ${item.id}`);
+function updateNewsElementWithBindVersion(bindNotification, bindVersion) {
+    console.log(`update new element with bind version ${bindVersion} and parent_id = ${bindNotification.id}`);
+    const bindNotificationDetail = bindNotification.bind_notification_details[0];
     return new Promise((resolve, reject) => {
         models.bind_notification_detail.update(
             {
-                [bindVersion]: true
+                bind_version: util.buildBindVersionField(JSON.parse(bindNotificationDetail.bind_version), bindVersion),
             },
             {
                 where: {
-                    parent_id: item.id,
+                    parent_id: bindNotification.id,
                     delete_flag: false,
                     status: appConst.STATUS_PUBLISHING,
                     display_area: appConst.DA_PARENT
                 },
             }
         );
-        resolve(item.id);
+        resolve(bindNotification.id);
     });
 }
 
@@ -647,16 +642,17 @@ exports.checkAdElement = (notificationData, bindVersion) => {
     });
 };
 
-function updateAdWithBindVersion(item, bindVersion) {
-    console.log(`update ad element with bind version ${bindVersion} and parent_id = ${item.id}`);
+function updateAdWithBindVersion(bindNotification, bindVersion) {
+    console.log(`update ad element with bind version ${bindVersion} and parent_id = ${bindNotification.id}`);
+    const bindNotificationDetail = bindNotification.bind_notification_details[0];
     return new Promise((resolve, reject) => {
         models.bind_notification_detail.update(
             {
-                [bindVersion]: true
+                bind_version: util.buildBindVersionField(JSON.parse(bindNotificationDetail.bind_version), bindVersion)
             },
             {
                 where: {
-                    parent_id: item.id,
+                    parent_id: bindNotification.id,
                     delete_flag: false,
                     status: appConst.STATUS_PUBLISHING
                 },
@@ -682,7 +678,7 @@ function addNewAd(adTitle, adContent, bindVersion) {
             models.bind_notification_detail.create(
                 {
                     parent_id: parentId,
-                    [bindVersion]: true,
+                    bind_version: util.buildBindVersionField([], bindVersion),
                     status: appConst.STATUS_PUBLISHING,
                     display_area: appConst.DA_PARENT,
                 }

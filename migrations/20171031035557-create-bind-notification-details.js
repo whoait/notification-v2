@@ -44,29 +44,8 @@ module.exports = {
       limit: {
         type: Sequelize.INTEGER
       },
-      is_cld: {
-        type: Sequelize.BOOLEAN
-      },
-      is_clt: {
-        type: Sequelize.BOOLEAN
-      },
-      is_bind11: {
-        type: Sequelize.BOOLEAN
-      },
-      is_bind11T: {
-        type: Sequelize.BOOLEAN
-      },
-      is_bind10: {
-        type: Sequelize.BOOLEAN
-      },
-      is_bind10T: {
-        type: Sequelize.BOOLEAN
-      },
-      is_bind9: {
-        type: Sequelize.BOOLEAN
-      },
-      is_bind9T: {
-        type: Sequelize.BOOLEAN
+      bind_version: {
+        type: Sequelize.TEXT
       },
       status: {
         type: Sequelize.INTEGER
