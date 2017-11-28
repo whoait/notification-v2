@@ -91,22 +91,29 @@ function buildNewsJSONObject(bindVersion) {
             });
             cResolve(newsList);
         }).then((newsList) => {
-            let newsObject = [];
             const promises = _.map(newsList, (element) => {
                 return new Promise((cResolve, cReject) => {
                     getElementInNewsList(element.id, bindVersion).then((data) => {
-                        const newsElement = {
-                            title: element.title,
-                            list: data
-                        };
-                        cResolve(newsElement);
+                        if (util.isEmpty(data)) {
+                            cResolve();
+                        }
+                        else {
+                            const newsElement = {
+                                title: element.title,
+                                list: data
+                            };
+                            cResolve(newsElement);
+                        }
                     });
                 });
             });
             Promise.all(promises).then((data) => {
-                newsObject.push(data);
-                resolve(data);
-
+                if (JSON.stringify(data) == '[null]') {
+                    resolve([]);
+                }
+                else {
+                    resolve(data);
+                }
             })
         })
     })
@@ -138,7 +145,7 @@ function getElementInNewsList(parentId, bindVersion) {
             });
             cResolve(newsList);
         }).then((newsList) => {
-            let newsListObject = [];
+            // let newsListObject = [];
             const promises = _.map(newsList, (element) => {
                 return new Promise((cResolve, cReject) => {
                     let cElement = {
@@ -161,8 +168,8 @@ function getElementInNewsList(parentId, bindVersion) {
                 });
             });
             Promise.all(promises).then((data) => {
-                newsListObject.push(data);
-                resolve(newsListObject);
+                // newsListObject.push(data);
+                resolve(data);
             })
         });
     });
@@ -293,7 +300,7 @@ function checkEachPopupElement(newsElement, bindVersion) {
         }).then((item) => {
             if (util.isEmpty(item)) {
                 // If popup not existed, add new popup element
-                return addPopupElement(bindVersion);
+                return addPopupElement();
             }
             else {
                 // If popup existed, update bind version.
@@ -342,7 +349,7 @@ function addElementInPopupList(element, parentId, bindVersion) {
                 content: element.content,
                 ext_link: element.ext_link,
                 limit: element.limit,
-                bind_version: util.buildBindVersionField([], bindVersion),
+                [bindVersion]: true,
                 status: appConst.STATUS_PUBLISHING,
                 display_area: appConst.DA_POPUP
             }
@@ -351,17 +358,17 @@ function addElementInPopupList(element, parentId, bindVersion) {
     });
 }
 
-function updateElementInPopupListWithBindVersion(bindNotificationDetail, bindVersion) {
-    console.log(`update element in popup list with bind version ${bindVersion} and parent_id = ${bindNotificationDetail.parent_id}`);
+function updateElementInPopupListWithBindVersion(element, bindVersion) {
+    console.log(`update element in popup list with bind version ${bindVersion} and parent_id = ${element.parent_id}`);
     return new Promise((resolve, reject) => {
         models.bind_notification_detail.update(
             {
-                bind_version: util.buildBindVersionField(JSON.parse(bindNotificationDetail.bind_version), bindVersion)
+                [bindVersion]: true
             },
             {
                 where: {
-                    id: bindNotificationDetail.id,
-                    parent_id: bindNotificationDetail.parent_id,
+                    id: element.id,
+                    parent_id: element.parent_id,
                     delete_flag: false,
                     status: appConst.STATUS_PUBLISHING
                 },
@@ -371,7 +378,7 @@ function updateElementInPopupListWithBindVersion(bindNotificationDetail, bindVer
     });
 }
 
-function addPopupElement(bindVersion) {
+function addPopupElement() {
     console.log(`add popup element`);
     return new Promise((resolve, reject) => {
         new Promise((cResolve, cReject) => {
@@ -386,7 +393,14 @@ function addPopupElement(bindVersion) {
             models.bind_notification_detail.create(
                 {
                     parent_id: parentId,
-                    bind_version: util.buildBindVersionField([], bindVersion),
+                    is_cld: true,
+                    is_clt: true,
+                    is_bind11: true,
+                    is_bind11T: true,
+                    is_bind10: true,
+                    is_bind10T: true,
+                    is_bind9: true,
+                    is_bind9T: true,
                     status: appConst.STATUS_PUBLISHING,
                     display_area: appConst.DA_PARENT
                 }
@@ -398,24 +412,23 @@ function addPopupElement(bindVersion) {
     });
 }
 
-function updatePopupElementWithBindVersion(bindNotification, bindVersion) {
-    console.log(`update popup element with bind version ${bindVersion} and parent_id = ${bindNotification.id}`);
-    const bindNotificationDetail = bindNotification.bind_notification_details[0];
+function updatePopupElementWithBindVersion(item, bindVersion) {
+    console.log(`update popup element with bind version ${bindVersion} and parent_id = ${item.id}`);
     return new Promise((resolve, reject) => {
         models.bind_notification_detail.update(
             {
-                bind_version: util.buildBindVersionField(JSON.parse(bindNotificationDetail.bind_version), bindVersion)
+                [bindVersion]: true
             },
             {
                 where: {
-                    parent_id: bindNotification.id,
+                    parent_id: item.id,
                     delete_flag: false,
                     status: appConst.STATUS_PUBLISHING,
                     display_area: appConst.DA_PARENT
                 },
             }
         );
-        resolve(bindNotification.id);
+        resolve(item.id);
     });
 }
 
@@ -523,7 +536,7 @@ function addElementInNewsList(element, parentId, bindVersion) {
                 modal_link: element.modal_link,
                 ext_link: element.ext_link,
                 limit: element.limit,
-                bind_version: util.buildBindVersionField([], bindVersion),
+                [bindVersion]: true,
                 status: appConst.STATUS_PUBLISHING,
                 display_area: displayArea
             }
@@ -532,17 +545,17 @@ function addElementInNewsList(element, parentId, bindVersion) {
     });
 }
 
-function updateElementInNewsListWithBindVersion(bindNotificationDetail, bindVersion) {
-    console.log(`update element in news list with bind version ${bindVersion} & parent_id = ${bindNotificationDetail.parent_id} & id = ${bindNotificationDetail.id}`);
+function updateElementInNewsListWithBindVersion(element, bindVersion) {
+    console.log(`update element in news list with bind version ${bindVersion} & parent_id = ${element.parent_id} & id = ${element.id}`);
     return new Promise((resolve, reject) => {
         models.bind_notification_detail.update(
             {
-                bind_version: util.buildBindVersionField(JSON.parse(bindNotificationDetail.bind_version), bindVersion)
+                [bindVersion]: true
             },
             {
                 where: {
-                    id: bindNotificationDetail.id,
-                    parent_id: bindNotificationDetail.parent_id,
+                    id: element.id,
+                    parent_id: element.parent_id,
                     delete_flag: false,
                     status: appConst.STATUS_PUBLISHING
                 },
@@ -567,7 +580,7 @@ function addNewsElement(newsTitle, bindVersion) {
             models.bind_notification_detail.create(
                 {
                     parent_id: parentId,
-                    bind_version: util.buildBindVersionField([], bindVersion),
+                    [bindVersion]: true,
                     status: appConst.STATUS_PUBLISHING,
                     display_area: appConst.DA_PARENT
                 }
@@ -579,24 +592,23 @@ function addNewsElement(newsTitle, bindVersion) {
     });
 }
 
-function updateNewsElementWithBindVersion(bindNotification, bindVersion) {
-    console.log(`update new element with bind version ${bindVersion} and parent_id = ${bindNotification.id}`);
-    const bindNotificationDetail = bindNotification.bind_notification_details[0];
+function updateNewsElementWithBindVersion(item, bindVersion) {
+    console.log(`update new element with bind version ${bindVersion} and parent_id = ${item.id}`);
     return new Promise((resolve, reject) => {
         models.bind_notification_detail.update(
             {
-                bind_version: util.buildBindVersionField(JSON.parse(bindNotificationDetail.bind_version), bindVersion),
+                [bindVersion]: true
             },
             {
                 where: {
-                    parent_id: bindNotification.id,
+                    parent_id: item.id,
                     delete_flag: false,
                     status: appConst.STATUS_PUBLISHING,
                     display_area: appConst.DA_PARENT
                 },
             }
         );
-        resolve(bindNotification.id);
+        resolve(item.id);
     });
 }
 
@@ -642,17 +654,16 @@ exports.checkAdElement = (notificationData, bindVersion) => {
     });
 };
 
-function updateAdWithBindVersion(bindNotification, bindVersion) {
-    console.log(`update ad element with bind version ${bindVersion} and parent_id = ${bindNotification.id}`);
-    const bindNotificationDetail = bindNotification.bind_notification_details[0];
+function updateAdWithBindVersion(item, bindVersion) {
+    console.log(`update ad element with bind version ${bindVersion} and parent_id = ${item.id}`);
     return new Promise((resolve, reject) => {
         models.bind_notification_detail.update(
             {
-                bind_version: util.buildBindVersionField(JSON.parse(bindNotificationDetail.bind_version), bindVersion)
+                [bindVersion]: true
             },
             {
                 where: {
-                    parent_id: bindNotification.id,
+                    parent_id: item.id,
                     delete_flag: false,
                     status: appConst.STATUS_PUBLISHING
                 },
@@ -678,7 +689,7 @@ function addNewAd(adTitle, adContent, bindVersion) {
             models.bind_notification_detail.create(
                 {
                     parent_id: parentId,
-                    bind_version: util.buildBindVersionField([], bindVersion),
+                    [bindVersion]: true,
                     status: appConst.STATUS_PUBLISHING,
                     display_area: appConst.DA_PARENT,
                 }
@@ -827,18 +838,23 @@ exports.uploadImage = (notificationId, imageURL) => {
 
 function uploadImageWithSFTP(notificationId, imageURL) {
     return new Promise((resolve, reject) => {
-        console.log(`upload image using sftp`);
         const imageFileName = getImageFileNameFromURL(imageURL);
         const imagePath = tmpFolderPath + /images/ + notificationId + '/' + imageFileName;
         console.log(imagePath);
-        const destPath = config.imagePath + imageFileName;
-        console.log(destPath);
-        sftp.sendImage(imagePath, destPath).then(() => {
+        if (fs.existsSync(imagePath)) {
+            console.log(`upload image using sftp`);
+            const destPath = config.imagePath + imageFileName;
+            console.log(destPath);
+            sftp.sendImage(imagePath, destPath).then(() => {
+                resolve();
+            }).catch((err) => {
+                console.log('error when send image');
+                reject();
+            });
+        }
+        else {
             resolve();
-        }).catch((err) => {
-            console.log('error when send image');
-            reject();
-        });
+        }
     });
 }
 
@@ -943,6 +959,7 @@ function createNotificationOutputData(bindVersion) {
             return output;
         }).then((output) => {
             buildNewsJSONObject(bindVersion).then((data) => {
+                console.log(`data out: ${JSON.stringify(data)}`)
                 output['news'] = data;
                 output['schedule'] = [];
                 return output;
@@ -1042,15 +1059,15 @@ exports.deleteNotification = (notificationId) => {
 
 exports.updateNotification = (notificationId, item) => {
     return new Promise((resolve, reject) => {
-       checkParentElement(item).then((updatedItem) => {
-           console.log(updatedItem);
-           if (!util.isEmpty(updatedItem.pictures) && (!util.isEmpty(updatedItem.content.match(/(<img src='[\S]*'>){1}/g)))) {
-               saveUpdateImage(updatedItem.pictures, updatedItem.content, notificationId)
-           }
-           updateNotificationInDB(notificationId, updatedItem).then((data) => {
-               resolve(data)
-           });
-       });
+        checkParentElement(item).then((updatedItem) => {
+            console.log(updatedItem);
+            if (!util.isEmpty(updatedItem.pictures) && (!util.isEmpty(updatedItem.content.match(/(<img src='[\S]*'>){1}/g)))) {
+                saveUpdateImage(updatedItem.pictures, updatedItem.content, notificationId)
+            }
+            updateNotificationInDB(notificationId, updatedItem).then((data) => {
+                resolve(data)
+            });
+        });
     });
 };
 
@@ -1070,7 +1087,7 @@ function updateNotificationWithTypePopup(notificationId, item) {
     return new Promise((resolve, reject) => {
         models.bind_notification_detail.update(
             {
-                // parent_id: item.parent_id,
+                parent_id: item.parent_id,
                 display_title: item.display_title,
                 display_area: item.display_area,
                 date: util.formatDateWithPattern_YYYYMMDD(item.date),
@@ -1103,7 +1120,7 @@ function updateNotificationWithTypeModal(notificationId, item) {
     return new Promise((resolve, reject) => {
         models.bind_notification_detail.update(
             {
-                // parent_id: item.parent_id,
+                parent_id: item.parent_id,
                 display_title: item.display_title,
                 display_area: item.display_area,
                 date: util.formatDateWithPattern_YYYYMMDD(item.date),
@@ -1136,7 +1153,7 @@ function updateNotificationWithTypeSide(notificationId, item) {
     return new Promise((resolve, reject) => {
         models.bind_notification_detail.update(
             {
-                // parent_id: item.parent_id,
+                parent_id: item.parent_id,
                 display_title: item.display_title,
                 display_area: item.display_area,
                 date: util.formatDateWithPattern_YYYYMMDD(item.date),
@@ -1318,27 +1335,27 @@ function createNotificationInDB(item) {
 
 function createNotificationWithTypePopup(item) {
     return new Promise((resolve, reject) => {
-       const data = models.bind_notification_detail.create({
-           parent_id: item.parent_id,
-           display_title: item.display_title,
-           display_area: item.display_area,
-           date: util.formatDateWithPattern_YYYYMMDD(item.date),
-           sub_title: item.sub_title,
-           is_cld: item.is_cld,
-           is_clt: item.is_clt,
-           is_bind11: item.is_bind11,
-           is_bind11T: item.is_bind11T,
-           is_bind10: item.is_bind10,
-           is_bind10T: item.is_bind10T,
-           is_bind9: item.is_bind9,
-           is_bind9T: item.is_bind9T,
-           content: item.content.replace(/(")/g, "'"),
-           status: appConst.STATUS_DRAFT,
-           ext_link: item.url,
-           limit: item.limit,
-           modal_link: null
-       });
-       resolve(data);
+        const data = models.bind_notification_detail.create({
+            parent_id: item.parent_id,
+            display_title: item.display_title,
+            display_area: item.display_area,
+            date: util.formatDateWithPattern_YYYYMMDD(item.date),
+            sub_title: item.sub_title,
+            is_cld: item.is_cld,
+            is_clt: item.is_clt,
+            is_bind11: item.is_bind11,
+            is_bind11T: item.is_bind11T,
+            is_bind10: item.is_bind10,
+            is_bind10T: item.is_bind10T,
+            is_bind9: item.is_bind9,
+            is_bind9T: item.is_bind9T,
+            content: item.content.replace(/(")/g, "'"),
+            status: appConst.STATUS_DRAFT,
+            ext_link: item.url,
+            limit: item.limit,
+            modal_link: null
+        });
+        resolve(data);
     });
 }
 

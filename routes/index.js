@@ -30,6 +30,7 @@ router.put("/posts/:id", function (req, res) {
     const notificationId = req.params.id;
     const item = req.body;
     const status = item.status;
+    console.log(item);
     notificationService.updateNotification(notificationId, item).then(() => {
         if (status === appConst.STATUS_PUBLISHING) {
             const imageURL = item.image_url;
@@ -98,15 +99,24 @@ router.put('/changeStatus/:id', (req, res) => {
             });
         }
         if (newStatus === appConst.STATUS_PUBLISHING) {
-            notificationService.uploadImage(notificationId, imageURL).then(() => {
+            if (!util.isEmpty(imageURL)) {
+                notificationService.uploadImage(notificationId, imageURL).then(() => {
+                    notificationService.buildJsonFile(notificationId).then(() => {
+                        res.send(util.responseSuccess());
+                    }).catch((err) => {
+                        res.status(500).res.send(util.responseError());
+                    });
+                }).catch((err) => {
+                    res.status(500).send(util.responseError());
+                });
+            }
+            else {
                 notificationService.buildJsonFile(notificationId).then(() => {
                     res.send(util.responseSuccess());
                 }).catch((err) => {
-                    res.send(util.responseError());
+                    res.status(500).res.send(util.responseError());
                 });
-            }).catch((err) => {
-                res.send(util.responseError());
-            });
+            }
         }
     });
 });
