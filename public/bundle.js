@@ -114534,7 +114534,7 @@ exports.default = ActionViewList;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.PostShow = exports.PostEdit = exports.PostCreate = exports.PostList = undefined;
+exports.PostEdit = exports.PostCreate = exports.PostList = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -114620,7 +114620,7 @@ var PostList = exports.PostList = function PostList(props) {
         _react2.default.createElement(
             _adminOnRest.Datagrid,
             { rowStyle: _rowStyle2.default },
-            _react2.default.createElement(_adminOnRest.TextField, { source: 'sub_title', label: '\u30BF\u30A4\u30C8\u30EB',
+            _react2.default.createElement(_adminOnRest.TextField, { source: 'display_title', label: '\u30BF\u30A4\u30C8\u30EB',
                 style: { maxWidth: '18em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } }),
             _react2.default.createElement(_StatusButton2.default, { source: 'status', style: { padding: 0 }, label: '\u30B9\u30C6\u30FC\u30BF\u30B9' }),
             _react2.default.createElement(_adminOnRest.BooleanField, { source: 'is_cld', label: 'Cld' }),
@@ -114647,7 +114647,7 @@ var PostCreate = exports.PostCreate = function PostCreate(props) {
         _extends({ actions: _react2.default.createElement(PostCreateEditActions, null) }, props),
         _react2.default.createElement(
             _adminOnRest.SimpleForm,
-            { toolbar: _react2.default.createElement(PostCreateEditToolbar, null), redirect: 'show' },
+            { toolbar: _react2.default.createElement(PostCreateEditToolbar, null) },
             _react2.default.createElement(_adminOnRest.LongTextInput, { source: 'display_title', label: '\u7BA1\u7406\u30BF\u30A4\u30C8\u30EB', validate: _adminOnRest.required }),
             _react2.default.createElement(_adminOnRest.BooleanInput, { source: 'is_cld', label: '\u30AF\u30E9\u30A6\u30C9', defaultValue: true }),
             _react2.default.createElement(_adminOnRest.BooleanInput, { source: 'is_clt', label: '\u30AF\u30E9\u30A4\u30A2\u30F3\u30C8', defaultValue: true }),
@@ -114714,11 +114714,14 @@ var PostCreateEditActions = function PostCreateEditActions(_ref2) {
     );
 };
 
-var PostCreateEditToolbar = function PostCreateEditToolbar(props) {
+var PostCreateEditToolbar = function PostCreateEditToolbar(_ref3) {
+    var handleSubmitWithRedirect = _ref3.handleSubmitWithRedirect,
+        _ref3$upload = _ref3.upload,
+        upload = _ref3$upload === undefined ? false : _ref3$upload;
     return _react2.default.createElement(
         _adminOnRest.Toolbar,
-        props,
-        _react2.default.createElement(_ToolBarCreateEditComponent2.default, null)
+        { handleSubmitWithRedirect: handleSubmitWithRedirect, upload: upload },
+        _react2.default.createElement(_ToolBarCreateEditComponent2.default, { upload: upload })
     );
 };
 
@@ -114728,7 +114731,7 @@ var PostEdit = exports.PostEdit = function PostEdit(props) {
         _extends({ actions: _react2.default.createElement(PostCreateEditActions, null) }, props),
         _react2.default.createElement(
             _adminOnRest.SimpleForm,
-            { toolbar: _react2.default.createElement(PostCreateEditToolbar, null) },
+            { toolbar: _react2.default.createElement(PostCreateEditToolbar, { upload: true }) },
             _react2.default.createElement(_adminOnRest.LongTextInput, { source: 'display_title', label: '\u7BA1\u7406\u30BF\u30A4\u30C8\u30EB', validate: _adminOnRest.required }),
             _react2.default.createElement(_adminOnRest.BooleanInput, { source: 'is_cld', label: '\u30AF\u30E9\u30A6\u30C9' }),
             _react2.default.createElement(_adminOnRest.BooleanInput, { source: 'is_clt', label: '\u30AF\u30E9\u30A4\u30A2\u30F3\u30C8' }),
@@ -114774,83 +114777,86 @@ var PostEdit = exports.PostEdit = function PostEdit(props) {
     );
 };
 
-var showDisplayArea = function showDisplayArea(record) {
-    if (record.display_area === 0) return 'サイド';
-    if (record.display_area === 1) return 'モーダル';
-    if (record.display_area === 2) return 'ポップアップ';
-    return '';
-};
-
-var showLimit = function showLimit(record) {
-    return record.limit + ' \u56DE';
-};
-var showBindVersionApply = function showBindVersionApply(record) {
-    var textReturn = '';
-    if (record.is_cld) {
-        // noinspection JSAnnotator
-        textReturn += 'クラウド';
-    }
-    if (record.is_clt) {
-        // noinspection JSAnnotator
-        textReturn += '        クライアント';
-    }
-    if (record.is_bind11) {
-        // noinspection JSAnnotator
-        textReturn += '        BiND11';
-    }
-    if (record.is_bind11T) {
-        // noinspection JSAnnotator
-        textReturn += '        BiND11 体験版';
-    }
-    if (record.is_bind10) {
-        // noinspection JSAnnotator
-        textReturn += '        BiND10';
-    }
-    if (record.is_bind10T) {
-        // noinspection JSAnnotator
-        textReturn += '        BiND10 体験版';
-    }
-    if (record.is_bind9) {
-        // noinspection JSAnnotator
-        textReturn += '        BiND9';
-    }
-    if (record.is_bind9T) {
-        // noinspection JSAnnotator
-        textReturn += '        BiND9 体験版';
-    }
-
-    return textReturn;
-};
-var PostShow = exports.PostShow = function PostShow(props) {
-    return _react2.default.createElement(
-        _adminOnRest.Show,
-        _extends({ actions: _react2.default.createElement(PostCreateEditActions, null) }, props),
-        _react2.default.createElement(
-            _adminOnRest.SimpleShowLayout,
-            null,
-            _react2.default.createElement(_adminOnRest.TextField, { source: 'display_title', label: '\u7BA1\u7406\u30BF\u30A4\u30C8\u30EB', validate: _adminOnRest.required }),
-            _react2.default.createElement(_adminOnRest.FunctionField, { label: '\u901A\u77E5\u5BFE\u8C61', render: showBindVersionApply }),
-            _react2.default.createElement(_adminOnRest.FunctionField, { label: '\u901A\u77E5\u30A8\u30EA\u30A2', render: showDisplayArea }),
-            _react2.default.createElement(_adminOnRest.TextField, { source: 'xxxxxx', label: '\u63B2\u8F09\u60C5\u5831', style: { font: 'italic bold 50px/30px Georgia, serif' } }),
-            _react2.default.createElement(_adminOnRest.DateField, { source: 'date', label: '\u65E5\u4ED8', locales: 'ja-jp' }),
-            _react2.default.createElement(
-                _adminOnRest.ReferenceField,
-                { source: 'parent_id', reference: 'categories', label: '\u30AB\u30C6\u30B4\u30EA', linkType: false },
-                _react2.default.createElement(_adminOnRest.TextField, { source: 'name' })
-            ),
-            _react2.default.createElement(_adminOnRest.TextField, { source: 'sub_title', label: '\u30BF\u30A4\u30C8\u30EB' }),
-            _react2.default.createElement(_adminOnRest.ImageField, { source: 'image_url', title: '\u753B\u50CF' }),
-            _react2.default.createElement(_adminOnRest.TextField, { source: 'content', label: '\u672C\u6587' }),
-            _react2.default.createElement(_adminOnRest.TextField, { source: 'url', label: '\u30EA\u30F3\u30AF URL' }),
-            _react2.default.createElement(
-                _aorDependentInput.DependentInput,
-                { dependsOn: 'display_area', resolve: checkPopup },
-                _react2.default.createElement(_adminOnRest.FunctionField, { label: '\u8868\u793A\u56DE\u6570', render: showLimit })
-            ),
-            _react2.default.createElement(_ConfirmComponent2.default, null)
-        )
-    );
-};
+// const showDisplayArea = (record) => {
+//     if (record.display_area === 0) return 'サイド';
+//     if (record.display_area === 1) return 'モーダル';
+//     if (record.display_area === 2) return 'ポップアップ';
+//     return '';
+// }
+//
+// const showLimit = (record) => {
+//     return `${record.limit} 回`
+// }
+// const showBindVersionApply = (record) => {
+//     var textReturn = '';
+//     if (record.is_cld) { // noinspection JSAnnotator
+//         textReturn += 'クラウド';
+//     }
+//     if (record.is_clt) { // noinspection JSAnnotator
+//         textReturn += '        クライアント';
+//     }
+//     if (record.is_bind11) { // noinspection JSAnnotator
+//         textReturn += '        BiND11';
+//     }
+//     if (record.is_bind11T) { // noinspection JSAnnotator
+//         textReturn += '        BiND11 体験版';
+//     }
+//     if (record.is_bind10) { // noinspection JSAnnotator
+//         textReturn += '        BiND10';
+//     }
+//     if (record.is_bind10T) { // noinspection JSAnnotator
+//         textReturn += '        BiND10 体験版';
+//     }
+//     if (record.is_bind9) { // noinspection JSAnnotator
+//         textReturn += '        BiND9';
+//     }
+//     if (record.is_bind9T) { // noinspection JSAnnotator
+//         textReturn += '        BiND9 体験版';
+//     }
+//
+//     return textReturn;
+// }
+// export const PostShow = (props) => (
+//     <Show actions={<PostCreateEditActions/>} {...props}>
+//         <SimpleShowLayout >
+//             <TextField source="display_title" label="管理タイトル" validate={required}/>
+//             {/*<BooleanField source="is_cld" label="Cld"/>*/}
+//             {/*<BooleanField source="is_clt" label="Clt"/>*/}
+//             {/*<BooleanField source="is_bind11" label="11"/>*/}
+//             {/*<BooleanField source="is_bind11T" label="11t"/>*/}
+//             {/*<BooleanField source="is_bind10" label="10"/>*/}
+//             {/*<BooleanField source="is_bind10T" label="10t"/>*/}
+//             {/*<BooleanField source="is_bind9" label="9"/>*/}
+//             {/*<BooleanField source="is_bind9T" label="9t"/>*/}
+//
+//             <FunctionField label="通知対象" render={showBindVersionApply}/>
+//
+//             <FunctionField label="通知エリア" render={showDisplayArea}/>
+//
+//             <TextField source="xxxxxx" label="掲載情報" style={{font: 'italic bold 50px/30px Georgia, serif'}}/>
+//
+//             <DateField source="date" label="日付" locales="ja-jp"/>
+//
+//             <ReferenceField source="parent_id" reference="categories" label='カテゴリ' linkType={false}>
+//                 <TextField source="name"/>
+//             </ReferenceField>
+//
+//             <TextField source="sub_title" label="タイトル"/>
+//
+//             {/*<ImageField source="src"  label="title"/>*/}
+//
+//             <ImageField source="image_url" title="画像"/>
+//             <TextField source="content" label="本文"/>
+//
+//             {/*<LongTextInput source="content_button" label="ボタンテキスト"/>*/}
+//             <TextField source="url" label="リンク URL"/>
+//             <DependentInput dependsOn="display_area" resolve={checkPopup}>
+//                 <FunctionField label="表示回数" render={showLimit}/>
+//             </DependentInput>
+//             <ConfirmComponent/>
+//         </SimpleShowLayout>
+//     </Show>
+// );
 
 /***/ }),
 /* 955 */
@@ -115357,40 +115363,72 @@ var ToolBarCreateEditComponent = function (_Component) {
         }
 
         return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = ToolBarCreateEditComponent.__proto__ || Object.getPrototypeOf(ToolBarCreateEditComponent)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
-            open: false
-        }, _this.handleOpen = function () {
-            _this.setState({ open: true });
-        }, _this.handleClose = function () {
-            _this.setState({ open: false });
+            openConfirmList: false,
+            openConfirmSave: false
+
+        }, _this.handleOpenConfirmLSave = function () {
+            _this.setState({ openConfirmSave: true });
+            console.log(_this.props);
+        }, _this.handleCloseConfirmSave = function () {
+            _this.setState({ openConfirmSave: false });
+        }, _this.handleOpenConfirmList = function () {
+            _this.setState({ openConfirmList: true });
+        }, _this.handleCloseConfirmList = function () {
+            _this.setState({ openConfirmList: false });
         }, _temp), _possibleConstructorReturn(_this, _ret);
     }
 
     _createClass(ToolBarCreateEditComponent, [{
         key: 'render',
         value: function render() {
-
-            var actions = [_react2.default.createElement(_FlatButton2.default, {
+            var style = {
+                margin: 12
+            };
+            var nameButtonSave = this.props.upload === false ? "確認する" : "保存して、公開します。";
+            var actionsConfirmList = [_react2.default.createElement(_FlatButton2.default, {
                 label: '\u30AD\u30E3\u30F3\u30BB\u30EB',
                 primary: true,
-                onClick: this.handleClose
+                onClick: this.handleCloseConfirmList
             }), _react2.default.createElement(_adminOnRest.ListButton, { label: 'OK', redirect: false, submitOnEnter: false, raised: false })];
+
+            var actionsConfirmSave = [_react2.default.createElement(_FlatButton2.default, {
+                label: '\u30AD\u30E3\u30F3\u30BB\u30EB',
+                primary: true,
+                onClick: this.handleCloseConfirmSave
+            }), _react2.default.createElement(_adminOnRest.SaveButton, { label: nameButtonSave, handleSubmitWithRedirect: this.props.handleSubmitWithRedirect,
+                submitOnEnter: true, redirect: 'list' })];
 
             return _react2.default.createElement(
                 'div',
                 null,
-                _react2.default.createElement(_RaisedButton2.default, { label: '\u30AD\u30E3\u30F3\u30BB\u30EB', onClick: this.handleOpen }),
+                _react2.default.createElement(_RaisedButton2.default, { label: '\u30AD\u30E3\u30F3\u30BB\u30EB', onClick: this.handleOpenConfirmList, primary: true, style: style }),
                 _react2.default.createElement(
                     _Dialog2.default,
                     {
                         title: '\u901A\u77E5',
-                        actions: actions,
+                        actions: actionsConfirmList,
                         modal: false,
-                        open: this.state.open,
-                        onRequestClose: this.handleClose
+                        open: this.state.openConfirmList,
+                        onRequestClose: this.handleCloseConfirmList
                     },
                     '\u4FDD\u5B58\u305B\u305A\u306B\u623B\u308A\u307E\u3059\u3002'
                 ),
-                _react2.default.createElement(_adminOnRest.SaveButton, { label: '\u78BA\u8A8D\u3059\u308B', handleSubmitWithRedirect: this.props.handleSubmitWithRedirect, redirect: 'show', submitOnEnter: true })
+                _react2.default.createElement(_RaisedButton2.default, { label: nameButtonSave, onClick: this.handleOpenConfirmLSave, primary: true, style: style }),
+                _react2.default.createElement(
+                    _Dialog2.default,
+                    {
+                        title: '\u901A\u77E5',
+                        actions: actionsConfirmSave,
+                        modal: false,
+                        open: this.state.openConfirmSave,
+                        onRequestClose: this.handleCloseConfirmSave
+                    },
+                    _react2.default.createElement(
+                        'span',
+                        null,
+                        '\u3053\u306E\u5185\u5BB9\u3067\u9593\u9055\u3044\u3042\u308A\u307E\u305B\u3093\u304B\uFF1F'
+                    )
+                )
             );
         }
     }]);

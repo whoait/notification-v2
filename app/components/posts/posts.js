@@ -90,7 +90,7 @@ export const PostList = (props) => (
 
 export const PostCreate = (props) => (
     <Create actions={<PostCreateEditActions/>} {...props}>
-        <SimpleForm toolbar={<PostCreateEditToolbar/>} >
+        <SimpleForm toolbar={<PostCreateEditToolbar />}>
             <LongTextInput source="display_title" label="管理タイトル" validate={required}/>
             <BooleanInput source="is_cld" label="クラウド" defaultValue={true}/>
             <BooleanInput source="is_clt" label="クライアント" defaultValue={true}/>
@@ -152,16 +152,14 @@ const PostCreateEditActions = ({basePath, data}) => (
     </CardActions>
 );
 
-const PostCreateEditToolbar = props => <Toolbar {...props} >
-    <ToolBarCreateEditComponent/>
-    {/*<ListButton label="キャンセル" redirect={false} submitOnEnter={false} raised={false}/>*/}
-    {/*<SaveButton label="確認する" redirect="show" submitOnEnter={true}/>*/}
-
-</Toolbar>;
+const PostCreateEditToolbar = ({handleSubmitWithRedirect, upload = false}) =>
+    <Toolbar handleSubmitWithRedirect={handleSubmitWithRedirect} upload={upload}>
+        <ToolBarCreateEditComponent upload={upload}/>
+    </Toolbar>;
 
 export const PostEdit = (props) => (
     <Edit actions={<PostCreateEditActions/>} {...props}>
-        <SimpleForm toolbar={<PostCreateEditToolbar/>}>
+        <SimpleForm toolbar={<PostCreateEditToolbar upload={true}/>}>
             <LongTextInput source="display_title" label="管理タイトル" validate={required}/>
             <BooleanInput source="is_cld" label="クラウド"/>
             <BooleanInput source="is_clt" label="クライアント"/>

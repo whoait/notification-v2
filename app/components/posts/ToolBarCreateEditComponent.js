@@ -34,6 +34,7 @@ class ToolBarCreateEditComponent extends Component {
         const style = {
             margin: 12,
         };
+        const nameButtonSave = this.props.upload === false ? "確認する" : "保存して、公開します。"
         const actionsConfirmList = [
             <FlatButton
                 label="キャンセル"
@@ -50,8 +51,8 @@ class ToolBarCreateEditComponent extends Component {
                 primary={true}
                 onClick={this.handleCloseConfirmSave}
             />,
-            <SaveButton label="確認する" handleSubmitWithRedirect={this.props.handleSubmitWithRedirect}
-                        submitOnEnter={true}/>,
+            <SaveButton label={nameButtonSave} handleSubmitWithRedirect={this.props.handleSubmitWithRedirect}
+                        submitOnEnter={true} redirect = "list"/>,
         ];
 
         return (
@@ -69,7 +70,7 @@ class ToolBarCreateEditComponent extends Component {
                 </Dialog>
 
 
-                <RaisedButton label="確認する" onClick={this.handleOpenConfirmLSave} primary={true} style={style}/>
+                <RaisedButton label={nameButtonSave} onClick={this.handleOpenConfirmLSave} primary={true} style={style}/>
                 {/*dialog confirm save button*/}
                 <Dialog
                     title="通知"
