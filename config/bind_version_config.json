@@ -11,8 +11,8 @@
       {
         "name": "Bind Cloud",
         "code": "is_cld",
-        "imagePath": "",
-        "notificationPath": ""
+        "imagePath": "/share/work/bindcld/sitetheater/images/",
+        "notificationPath": "/share/bind_data2/template/sitetheater/"
       },
       {
         "name": "Bind Client",

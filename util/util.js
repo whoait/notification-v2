@@ -66,3 +66,12 @@ exports.writeImage = (aPath, aData) => {
 exports.formatDateWithPattern_YYYYMMDD = (date) => {
     return new Date(date).toLocaleDateString().replace(/(-)/g, "\/");
 };
+
+exports.removeUndefinedObjectInArray = (arr) => {
+    return new Promise((resolve, reject) => {
+        const newArr = _(arr).filter((item) => {
+            return !this.isEmpty(item);
+        });
+        resolve(newArr);
+    });
+};

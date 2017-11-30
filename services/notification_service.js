@@ -108,12 +108,9 @@ function buildNewsJSONObject(bindVersion) {
                 });
             });
             Promise.all(promises).then((data) => {
-                if (JSON.stringify(data) == '[null]') {
-                    resolve([]);
-                }
-                else {
-                    resolve(data);
-                }
+                util.removeUndefinedObjectInArray(data).then((output) => {
+                   resolve(output);
+                });
             })
         })
     })
@@ -840,21 +837,15 @@ function uploadImageWithSFTP(notificationId, imageURL) {
     return new Promise((resolve, reject) => {
         const imageFileName = getImageFileNameFromURL(imageURL);
         const imagePath = tmpFolderPath + /images/ + notificationId + '/' + imageFileName;
-        console.log(imagePath);
-        if (fs.existsSync(imagePath)) {
-            console.log(`upload image using sftp`);
-            const destPath = config.imagePath + imageFileName;
-            console.log(destPath);
-            sftp.sendImage(imagePath, destPath).then(() => {
-                resolve();
-            }).catch((err) => {
-                console.log('error when send image');
-                reject();
-            });
-        }
-        else {
+        console.log(`upload image using sftp`);
+        const destPath = config.imagePath + imageFileName;
+        console.log(destPath);
+        sftp.sendImage(imagePath, destPath).then(() => {
             resolve();
-        }
+        }).catch((err) => {
+            console.log('error when send image');
+            reject();
+        });
     });
 }
 
@@ -959,7 +950,6 @@ function createNotificationOutputData(bindVersion) {
             return output;
         }).then((output) => {
             buildNewsJSONObject(bindVersion).then((data) => {
-                console.log(`data out: ${JSON.stringify(data)}`)
                 output['news'] = data;
                 output['schedule'] = [];
                 return output;
@@ -1303,7 +1293,6 @@ function checkParentElementWithTypeNews(item) {
 }
 
 function updateParentElementWithBindVersion (version, parentId) {
-    console.log(`parent_id = ${parentId}`);
     return new Promise((resolve, reject) => {
         const result = models.bind_notification_detail.update(
             {
