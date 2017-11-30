@@ -29,7 +29,8 @@ import {
     ListButton,
     SaveButton,
     Toolbar,
-    FunctionField
+    FunctionField,
+    regex
 } from 'admin-on-rest';
 
 import {CardActions} from 'material-ui/Card';
@@ -48,13 +49,13 @@ const confirmStyle = {fontSize: 22, textAlign: 'center', fontWeight: 'bold'};
 
 // area css--end
 const DisplayAreaField = ({record = {}}) => {
-    if (record.display_area === 0) {
+    if (record.display_area === 1) {
         return (<span>サイド </span>);
     }
-    if (record.display_area === 1) {
+    if (record.display_area === 2) {
         return (<span>モーダル </span>);
     }
-    if (record.display_area === 2) {
+    if (record.display_area === 3) {
         return (<span>ポップアップ </span>);
     }
     return (<span></span>);
@@ -90,7 +91,7 @@ export const PostList = (props) => (
 
 export const PostCreate = (props) => (
     <Create actions={<PostCreateEditActions/>} {...props}>
-        <SimpleForm toolbar={<PostCreateEditToolbar />}>
+        <SimpleForm toolbar={<PostCreateEditToolbar/>}>
             <LongTextInput source="display_title" label="管理タイトル" validate={required}/>
             <BooleanInput source="is_cld" label="クラウド" defaultValue={true}/>
             <BooleanInput source="is_clt" label="クライアント" defaultValue={true}/>
@@ -100,10 +101,10 @@ export const PostCreate = (props) => (
             <BooleanInput source="is_bind10T" label="BiND10 体験版" defaultValue={true}/>
             <BooleanInput source="is_bind9" label="BiND9" defaultValue={true}/>
             <BooleanInput source="is_bind9T" label="BiND9 体験版" defaultValue={true}/>
-            <SelectInput source="display_area" label="通知エリア" choices={[
-                {id: 0, name: 'サイド'},
-                {id: 1, name: 'モーダル'},
-                {id: 2, name: 'ポップアップ'},
+            <SelectInput source="display_area" label="通知エリア" defaultValue={1} choices={[
+                {id: 1, name: 'サイド'},
+                {id: 2, name: 'モーダル'},
+                {id: 3, name: 'ポップアップ'},
             ]}
                          validate={required}
             />
@@ -111,43 +112,47 @@ export const PostCreate = (props) => (
 
             <DateInput source="date" label="日付" locales="ja-jp"/>
             <DependentInput dependsOn="display_area" resolve={checkNew}>
-                <ReferenceInput source="parent_id" reference="categories" label='カテゴリ' allowEmpty>
-                    <SelectInput source="name"/>
+                <ReferenceInput source="parent_id" reference="categories" label='カテゴリ' defaultValue={3}>
+                    <SelectInput optionText="name"/>
                 </ReferenceInput>
             </DependentInput>
             <LongTextInput source="sub_title" label="タイトル" validate={required}/>
-            <ImageInput source="pictures" label="画像" accept="image/*" placeholder={<p>Drop your file here</p>}>
+            <ImageInput source="pictures" label="画像" accept="image/*" placeholder={<p>こちらにファイルを入れてください。</p>}>
                 <ImageField source="src" title="title"/>
             </ImageInput>
 
             <ImageField source="image_url" title="old image"/>
             <LongTextInput source="content" label="本文" validate={required}/>
             {/*<LongTextInput source="content_button" label="ボタンテキスト"/>*/}
-            <LongTextInput source="url" label="リンク URL"/>
+            <LongTextInput source="url" label="リンク URL" validate={[required, validateUrl]}/>
             <DependentInput dependsOn="display_area" resolve={checkPopup}>
-                <SelectInput source="limit" label="表示回数" choices={[
-                    {id: 1, name: '1 回'},
-                    {id: 2, name: '2 回'},
-                    {id: 3, name: '3 回'},
-                    {id: 4, name: '4 回'},
-                    {id: 5, name: '5 回'},
-
-                ]}/>
+                <SelectInput source="limit" label="表示回数" defaultValue={3} choices={choicesLimit}/>
             </DependentInput>
         </SimpleForm>
     </Create>
 );
+const choicesLimit = [
+    {id: 1, name: '1 回'},
+    {id: 2, name: '2 回'},
+    {id: 3, name: '3 回'},
+    {id: 4, name: '4 回'},
+    {id: 5, name: '5 回'},
+    {id: 6, name: '6 回'},
+    {id: 7, name: '7 回'},
+    {id: 8, name: '8 回'},
+    {id: 9, name: '9 回'},
+    {id: 10, name: '10 回'}];
 const cardActionStyle = {
     zIndex: 2,
     display: 'inline-block',
     float: 'right',
 };
-
-const checkPopup = (value) => value === 2 ? true : false;
-const checkNew = (value) => (value === 0 || value === 1) ? true : false;
+const re = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
+const validateUrl = regex(re, 'URLでなければなりません。');
+const checkPopup = (value) => value === 3 ? true : false;
+const checkNew = (value) => (value === 1 || value === 2) ? true : false;
 const PostCreateEditActions = ({basePath, data}) => (
     <CardActions style={cardActionStyle}>
-        {/*<ListButton basePath={basePath} label="一覧へもどる"/>*/}
         <CardActionCreateEditComponent/>
     </CardActions>
 );
@@ -171,43 +176,31 @@ export const PostEdit = (props) => (
             <BooleanInput source="is_bind9T" label="BiND9 体験版"/>
 
             <SelectInput source="display_area" label="通知エリア" choices={[
-                {id: 0, name: 'サイド'},
-                {id: 1, name: 'モーダル'},
-                {id: 2, name: 'ポップアップ'},
+                {id: 1, name: 'サイド'},
+                {id: 2, name: 'モーダル'},
+                {id: 3, name: 'ポップアップ'},
             ]}
                          validate={required}
             />
             <TextField source="xxxxxx" label="掲載情報" style={{font: 'italic bold 50px/30px Georgia, serif'}}/>
 
             <DateInput source="date" label="日付" locales="ja-jp"/>
-            {/*<SelectInput source="category" label="カテゴリ" choices={[*/}
-            {/*{id: 1, name: '重要なお知らせ'},*/}
-            {/*{id: 2, name: 'サポート情報'},*/}
-            {/*{id: 3, name: 'BiND CAMP'},*/}
-            {/*]}/>*/}
             <DependentInput dependsOn="display_area" resolve={checkNew}>
                 <ReferenceInput source="parent_id" reference="categories" label='カテゴリ'>
                     <SelectInput source="name"/>
                 </ReferenceInput>
             </DependentInput>
             <LongTextInput source="sub_title" label="タイトル" validate={required}/>
-            <ImageInput source="pictures" label="画像" accept="image/*" placeholder={<p>Drop your file here</p>}>
+            <ImageInput source="pictures" label="画像" accept="image/*" placeholder={<p>こちらにファイルを入れてください。</p>}>
                 <ImageField source="src" title="title"/>
             </ImageInput>
 
             <ImageField source="image_url" title="old image"/>
             <LongTextInput source="content" label="本文" validate={required}/>
             {/*<LongTextInput source="content_button" label="ボタンテキスト"/>*/}
-            <LongTextInput source="url" label="リンク URL"/>
+            <LongTextInput source="url" label="リンク URL" validate={[required, validateUrl]}/>
             <DependentInput dependsOn="display_area" resolve={checkPopup}>
-                <SelectInput source="limit" label="表示回数" choices={[
-                    {id: 1, name: '1 回'},
-                    {id: 2, name: '2 回'},
-                    {id: 3, name: '3 回'},
-                    {id: 4, name: '4 回'},
-                    {id: 5, name: '5 回'},
-
-                ]}/>
+                <SelectInput source="limit" label="表示回数" defaultValue={3} choices={choicesLimit}/>
             </DependentInput>
         </SimpleForm>
     </Edit>

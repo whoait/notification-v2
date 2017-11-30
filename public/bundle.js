@@ -114588,21 +114588,21 @@ var DisplayAreaField = function DisplayAreaField(_ref) {
     var _ref$record = _ref.record,
         record = _ref$record === undefined ? {} : _ref$record;
 
-    if (record.display_area === 0) {
+    if (record.display_area === 1) {
         return _react2.default.createElement(
             'span',
             null,
             '\u30B5\u30A4\u30C9 '
         );
     }
-    if (record.display_area === 1) {
+    if (record.display_area === 2) {
         return _react2.default.createElement(
             'span',
             null,
             '\u30E2\u30FC\u30C0\u30EB '
         );
     }
-    if (record.display_area === 2) {
+    if (record.display_area === 3) {
         return _react2.default.createElement(
             'span',
             null,
@@ -114657,7 +114657,7 @@ var PostCreate = exports.PostCreate = function PostCreate(props) {
             _react2.default.createElement(_adminOnRest.BooleanInput, { source: 'is_bind10T', label: 'BiND10 \u4F53\u9A13\u7248', defaultValue: true }),
             _react2.default.createElement(_adminOnRest.BooleanInput, { source: 'is_bind9', label: 'BiND9', defaultValue: true }),
             _react2.default.createElement(_adminOnRest.BooleanInput, { source: 'is_bind9T', label: 'BiND9 \u4F53\u9A13\u7248', defaultValue: true }),
-            _react2.default.createElement(_adminOnRest.SelectInput, { source: 'display_area', label: '\u901A\u77E5\u30A8\u30EA\u30A2', choices: [{ id: 0, name: 'サイド' }, { id: 1, name: 'モーダル' }, { id: 2, name: 'ポップアップ' }],
+            _react2.default.createElement(_adminOnRest.SelectInput, { source: 'display_area', label: '\u901A\u77E5\u30A8\u30EA\u30A2', defaultValue: 1, choices: [{ id: 1, name: 'サイド' }, { id: 2, name: 'モーダル' }, { id: 3, name: 'ポップアップ' }],
                 validate: _adminOnRest.required
             }),
             _react2.default.createElement(_adminOnRest.TextField, { source: 'xxxxxx', label: '\u63B2\u8F09\u60C5\u5831', style: { font: 'italic bold 50px/30px Georgia, serif' } }),
@@ -114667,8 +114667,8 @@ var PostCreate = exports.PostCreate = function PostCreate(props) {
                 { dependsOn: 'display_area', resolve: checkNew },
                 _react2.default.createElement(
                     _adminOnRest.ReferenceInput,
-                    { source: 'parent_id', reference: 'categories', label: '\u30AB\u30C6\u30B4\u30EA', allowEmpty: true },
-                    _react2.default.createElement(_adminOnRest.SelectInput, { source: 'name' })
+                    { source: 'parent_id', reference: 'categories', label: '\u30AB\u30C6\u30B4\u30EA', defaultValue: 3 },
+                    _react2.default.createElement(_adminOnRest.SelectInput, { optionText: 'name' })
                 )
             ),
             _react2.default.createElement(_adminOnRest.LongTextInput, { source: 'sub_title', label: '\u30BF\u30A4\u30C8\u30EB', validate: _adminOnRest.required }),
@@ -114677,32 +114677,34 @@ var PostCreate = exports.PostCreate = function PostCreate(props) {
                 { source: 'pictures', label: '\u753B\u50CF', accept: 'image/*', placeholder: _react2.default.createElement(
                         'p',
                         null,
-                        'Drop your file here'
+                        '\u3053\u3061\u3089\u306B\u30D5\u30A1\u30A4\u30EB\u3092\u5165\u308C\u3066\u304F\u3060\u3055\u3044\u3002'
                     ) },
                 _react2.default.createElement(_adminOnRest.ImageField, { source: 'src', title: 'title' })
             ),
             _react2.default.createElement(_adminOnRest.ImageField, { source: 'image_url', title: 'old image' }),
             _react2.default.createElement(_adminOnRest.LongTextInput, { source: 'content', label: '\u672C\u6587', validate: _adminOnRest.required }),
-            _react2.default.createElement(_adminOnRest.LongTextInput, { source: 'url', label: '\u30EA\u30F3\u30AF URL' }),
+            _react2.default.createElement(_adminOnRest.LongTextInput, { source: 'url', label: '\u30EA\u30F3\u30AF URL', validate: [_adminOnRest.required, validateUrl] }),
             _react2.default.createElement(
                 _aorDependentInput.DependentInput,
                 { dependsOn: 'display_area', resolve: checkPopup },
-                _react2.default.createElement(_adminOnRest.SelectInput, { source: 'limit', label: '\u8868\u793A\u56DE\u6570', choices: [{ id: 1, name: '1 回' }, { id: 2, name: '2 回' }, { id: 3, name: '3 回' }, { id: 4, name: '4 回' }, { id: 5, name: '5 回' }] })
+                _react2.default.createElement(_adminOnRest.SelectInput, { source: 'limit', label: '\u8868\u793A\u56DE\u6570', defaultValue: 3, choices: choicesLimit })
             )
         )
     );
 };
+var choicesLimit = [{ id: 1, name: '1 回' }, { id: 2, name: '2 回' }, { id: 3, name: '3 回' }, { id: 4, name: '4 回' }, { id: 5, name: '5 回' }, { id: 6, name: '6 回' }, { id: 7, name: '7 回' }, { id: 8, name: '8 回' }, { id: 9, name: '9 回' }, { id: 10, name: '10 回' }];
 var cardActionStyle = {
     zIndex: 2,
     display: 'inline-block',
     float: 'right'
 };
-
+var re = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
+var validateUrl = (0, _adminOnRest.regex)(re, 'URLでなければなりません。');
 var checkPopup = function checkPopup(value) {
-    return value === 2 ? true : false;
+    return value === 3 ? true : false;
 };
 var checkNew = function checkNew(value) {
-    return value === 0 || value === 1 ? true : false;
+    return value === 1 || value === 2 ? true : false;
 };
 var PostCreateEditActions = function PostCreateEditActions(_ref2) {
     var basePath = _ref2.basePath,
@@ -114741,7 +114743,7 @@ var PostEdit = exports.PostEdit = function PostEdit(props) {
             _react2.default.createElement(_adminOnRest.BooleanInput, { source: 'is_bind10T', label: 'BiND10 \u4F53\u9A13\u7248' }),
             _react2.default.createElement(_adminOnRest.BooleanInput, { source: 'is_bind9', label: 'BiND9' }),
             _react2.default.createElement(_adminOnRest.BooleanInput, { source: 'is_bind9T', label: 'BiND9 \u4F53\u9A13\u7248' }),
-            _react2.default.createElement(_adminOnRest.SelectInput, { source: 'display_area', label: '\u901A\u77E5\u30A8\u30EA\u30A2', choices: [{ id: 0, name: 'サイド' }, { id: 1, name: 'モーダル' }, { id: 2, name: 'ポップアップ' }],
+            _react2.default.createElement(_adminOnRest.SelectInput, { source: 'display_area', label: '\u901A\u77E5\u30A8\u30EA\u30A2', choices: [{ id: 1, name: 'サイド' }, { id: 2, name: 'モーダル' }, { id: 3, name: 'ポップアップ' }],
                 validate: _adminOnRest.required
             }),
             _react2.default.createElement(_adminOnRest.TextField, { source: 'xxxxxx', label: '\u63B2\u8F09\u60C5\u5831', style: { font: 'italic bold 50px/30px Georgia, serif' } }),
@@ -114761,17 +114763,17 @@ var PostEdit = exports.PostEdit = function PostEdit(props) {
                 { source: 'pictures', label: '\u753B\u50CF', accept: 'image/*', placeholder: _react2.default.createElement(
                         'p',
                         null,
-                        'Drop your file here'
+                        '\u3053\u3061\u3089\u306B\u30D5\u30A1\u30A4\u30EB\u3092\u5165\u308C\u3066\u304F\u3060\u3055\u3044\u3002'
                     ) },
                 _react2.default.createElement(_adminOnRest.ImageField, { source: 'src', title: 'title' })
             ),
             _react2.default.createElement(_adminOnRest.ImageField, { source: 'image_url', title: 'old image' }),
             _react2.default.createElement(_adminOnRest.LongTextInput, { source: 'content', label: '\u672C\u6587', validate: _adminOnRest.required }),
-            _react2.default.createElement(_adminOnRest.LongTextInput, { source: 'url', label: '\u30EA\u30F3\u30AF URL' }),
+            _react2.default.createElement(_adminOnRest.LongTextInput, { source: 'url', label: '\u30EA\u30F3\u30AF URL', validate: [_adminOnRest.required, validateUrl] }),
             _react2.default.createElement(
                 _aorDependentInput.DependentInput,
                 { dependsOn: 'display_area', resolve: checkPopup },
-                _react2.default.createElement(_adminOnRest.SelectInput, { source: 'limit', label: '\u8868\u793A\u56DE\u6570', choices: [{ id: 1, name: '1 回' }, { id: 2, name: '2 回' }, { id: 3, name: '3 回' }, { id: 4, name: '4 回' }, { id: 5, name: '5 回' }] })
+                _react2.default.createElement(_adminOnRest.SelectInput, { source: 'limit', label: '\u8868\u793A\u56DE\u6570', defaultValue: 3, choices: choicesLimit })
             )
         )
     );
@@ -115920,7 +115922,7 @@ var UploadCreate = exports.UploadCreate = function UploadCreate(props) {
                 { source: 'files', label: 'Related files', placeholder: _React2.default.createElement(
                         'p',
                         null,
-                        'Drop your file here'
+                        '\u3053\u3061\u3089\u306B\u30D5\u30A1\u30A4\u30EB\u3092\u5165\u308C\u3066\u304F\u3060\u3055\u3044\u3002'
                     ) },
                 _React2.default.createElement(_adminOnRest.FileField, { source: 'src', title: 'title' })
             )

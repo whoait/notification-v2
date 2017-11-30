@@ -65,7 +65,7 @@ export const UploadCreate = (props) => (
                 {id: 'is_bind9T', name: 'BiND9 体験版'},
             ]}/>
 
-            <FileInput source="files" label="Related files"  placeholder={<p>Drop your file here</p>}>
+            <FileInput source="files" label="Related files"  placeholder={<p>こちらにファイルを入れてください。</p>}>
                 <FileField source="src" title="title" />
             </FileInput>
         </SimpleForm>
