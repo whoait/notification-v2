@@ -34495,17 +34495,17 @@ var _adminOnRest = __webpack_require__(40);
 
 var _posts = __webpack_require__(954);
 
-var _uploadNotificationFile = __webpack_require__(967);
+var _uploadNotificationFile = __webpack_require__(966);
 
-var _aorLanguageJapanese = __webpack_require__(971);
+var _aorLanguageJapanese = __webpack_require__(970);
 
 var _aorLanguageJapanese2 = _interopRequireDefault(_aorLanguageJapanese);
 
-var _restClient = __webpack_require__(972);
+var _restClient = __webpack_require__(971);
 
 var _restClient2 = _interopRequireDefault(_restClient);
 
-var _addUploadFeature = __webpack_require__(973);
+var _addUploadFeature = __webpack_require__(972);
 
 var _addUploadFeature2 = _interopRequireDefault(_addUploadFeature);
 
@@ -114686,7 +114686,7 @@ var PostCreate = exports.PostCreate = function PostCreate(props) {
                 _react2.default.createElement(_adminOnRest.ImageField, { source: 'src', title: 'title' })
             ),
             _react2.default.createElement(_adminOnRest.ImageField, { source: 'image_url', title: 'old image' }),
-            _react2.default.createElement(_adminOnRest.LongTextInput, { source: 'content', label: '\u672C\u6587', validate: _adminOnRest.required }),
+            _react2.default.createElement(_adminOnRest.LongTextInput, { source: 'content', label: '\u672C\u6587' }),
             _react2.default.createElement(_adminOnRest.LongTextInput, { source: 'url', label: '\u30EA\u30F3\u30AF URL', validate: [_adminOnRest.required, validateUrl] }),
             _react2.default.createElement(
                 _aorDependentInput.DependentInput,
@@ -114772,7 +114772,7 @@ var PostEdit = exports.PostEdit = function PostEdit(props) {
                 _react2.default.createElement(_adminOnRest.ImageField, { source: 'src', title: 'title' })
             ),
             _react2.default.createElement(_adminOnRest.ImageField, { source: 'image_url', title: 'old image' }),
-            _react2.default.createElement(_adminOnRest.LongTextInput, { source: 'content', label: '\u672C\u6587', validate: _adminOnRest.required }),
+            _react2.default.createElement(_adminOnRest.LongTextInput, { source: 'content', label: '\u672C\u6587' }),
             _react2.default.createElement(_adminOnRest.LongTextInput, { source: 'url', label: '\u30EA\u30F3\u30AF URL', validate: [_adminOnRest.required, validateUrl] }),
             _react2.default.createElement(
                 _aorDependentInput.DependentInput,
@@ -115928,8 +115928,7 @@ var mapStateToProps = exports.mapStateToProps = function mapStateToProps(state, 
 exports.default = (0, _reactRedux.connect)(mapStateToProps)(DependentFieldComponent);
 
 /***/ }),
-/* 966 */,
-/* 967 */
+/* 966 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -115942,7 +115941,7 @@ exports.UploadCreate = exports.UploadList = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _React = __webpack_require__(968);
+var _React = __webpack_require__(967);
 
 var _React2 = _interopRequireDefault(_React);
 
@@ -116000,22 +115999,22 @@ var UploadCreate = exports.UploadCreate = function UploadCreate(props) {
 };
 
 /***/ }),
-/* 968 */
+/* 967 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
 if (process.env.NODE_ENV === 'production') {
-  module.exports = __webpack_require__(969);
+  module.exports = __webpack_require__(968);
 } else {
-  module.exports = __webpack_require__(970);
+  module.exports = __webpack_require__(969);
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 969 */
+/* 968 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -116045,7 +116044,7 @@ module.exports={Children:{map:S.map,forEach:S.forEach,count:S.count,toArray:S.to
 
 
 /***/ }),
-/* 970 */
+/* 969 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -117751,7 +117750,7 @@ module.exports = ReactEntry;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 971 */
+/* 970 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -117822,7 +117821,7 @@ module.exports = {
 
 
 /***/ }),
-/* 972 */
+/* 971 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -117985,7 +117984,7 @@ exports.default = function (apiUrl) {
 };
 
 /***/ }),
-/* 973 */
+/* 972 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
