@@ -109,24 +109,29 @@ class StatusButton extends Component {
             />,
         ];
 
-        return (
-            <div>
-                <RaisedButton primary={true} basepath={basePath}
-                              record={record} label={nameStatusButton} onClick={this.handleOpen}/>
-                <Dialog
-                    title="ステータス変更"
-                    actions={actions}
-                    modal={false}
-                    open={this.state.open}
-                    onRequestClose={this.handleClose}
-                    autoScrollBodyContent={true}
-                >
-                    <RadioButtonGroup name="valueStatus" ref="valueStatus" onChange={this.handleChooseStatus}>
-                        {radios}
-                    </RadioButtonGroup>
-                </Dialog>
-            </div>
-        );
+        if (record.status === 2) {
+            return (<div></div>);
+        }
+        else {
+            return (
+                <div>
+                    <RaisedButton primary={true} basepath={basePath}
+                                  record={record} label={nameStatusButton} onClick={this.handleOpen}/>
+                    <Dialog
+                        title="ステータス変更"
+                        actions={actions}
+                        modal={false}
+                        open={this.state.open}
+                        onRequestClose={this.handleClose}
+                        autoScrollBodyContent={true}
+                    >
+                        <RadioButtonGroup name="valueStatus" ref="valueStatus" onChange={this.handleChooseStatus}>
+                            {radios}
+                        </RadioButtonGroup>
+                    </Dialog>
+                </div>
+            );
+        }
 
     }
 }

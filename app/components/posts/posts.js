@@ -36,6 +36,7 @@ import {
 import {CardActions} from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
 import DeleteCustomButton from './DeleteCustomButton';
+import EditCustomButton from './EditCustomButton';
 import rowStyle from './rowStyle';
 import StatusButton from './StatusButton';
 import ConfirmComponent from './ConfirmComponent';
@@ -82,7 +83,7 @@ export const PostList = (props) => (
             <DateField source="updated_at" showTime label="編集日時を"/>
             <DateField source="start_date" showTime label="公開日時"/>
             <DateField source="end_date" showTime label="終了日時"/>
-            <EditButton style={{padding: 0}} label="編集"/>
+            <EditCustomButton style={{padding: 0}} label="編集" />
             <DeleteCustomButton style={{padding: 0}} label="削除"/>
 
         </Datagrid>
