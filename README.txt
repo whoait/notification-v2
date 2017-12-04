@@ -24,3 +24,9 @@ Project structure:
 after npm install,
 download zip follow link and rewrite node_modules/aor-language-japanese/index.js.
 https://github.com/kuma-guy/aor-language-japanese
+
+//fix issue 342- (bundle.js:781 Warning: Missing translation for key)
+copy and overwrite file index.js from:
+bind_notification_server\aor_language
+to:
+bind_notification_server \ node_modules \ aor-language-japanese \ index.js
