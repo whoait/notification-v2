@@ -86,6 +86,14 @@ router.post('/createNotificationFile', (req, res) => {
     });
 });
 
+//get list uploadNotificationFile
+router.get('/uploadNotificationFile', (req, res) => {
+    res.set({
+        'x-total-count': 0
+    });
+    res.send(data);
+});
+
 router.put('/changeStatus/:id', (req, res) => {
     const notificationId = req.params.id;
     const newStatus = req.body.status;
