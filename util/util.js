@@ -75,3 +75,18 @@ exports.removeUndefinedObjectInArray = (arr) => {
         resolve(newArr);
     });
 };
+
+exports.imageToBase64 = (aPath, imageFileType) => {
+    const data = fs.readFileSync(aPath);
+    return 'data:image/' + imageFileType + ';base64,' + new Buffer(data).toString('base64');
+};
+
+exports.getImageFileNameFromURL = (imageURL) => {
+    const arrayList = imageURL.split('/');
+    return arrayList[arrayList.length - 1]
+};
+
+exports.getImageFileType = (imageFileName) => {
+    const arrayList = imageFileName.split('.');
+    return arrayList[arrayList.length - 1]
+};
