@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+    translate,
     AutocompleteInput,
     Datagrid,
     DateField,
@@ -83,8 +84,8 @@ export const PostList = (props) => (
             <DateField source="updated_at" showTime label="編集日時を"/>
             <DateField source="start_date" showTime label="公開日時"/>
             <DateField source="end_date" showTime label="終了日時"/>
-            <EditCustomButton style={{padding: 0}} label="編集" />
-            <DeleteCustomButton style={{padding: 0}} label="削除"/>
+            <EditCustomButton style={{padding: 0}} label={'customNotification.button.edit'} />
+            <DeleteCustomButton style={{padding: 0}} label={'customNotification.button.delete'} />
 
         </Datagrid>
     </List>
@@ -148,8 +149,8 @@ const cardActionStyle = {
     display: 'inline-block',
     float: 'right',
 };
-const re = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
-const validateUrl = regex(re, 'URLでなければなりません。');
+const regexURL = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
+const validateUrl = regex(regexURL, 'URLでなければなりません。');
 const checkPopup = (value) => value === 3 ? true : false;
 const checkNew = (value) => (value === 1 || value === 2) ? true : false;
 const PostCreateEditActions = ({basePath, data}) => (
@@ -158,14 +159,14 @@ const PostCreateEditActions = ({basePath, data}) => (
     </CardActions>
 );
 
-const PostCreateEditToolbar = ({handleSubmitWithRedirect, upload = false}) =>
-    <Toolbar handleSubmitWithRedirect={handleSubmitWithRedirect} upload={upload}>
-        <ToolBarCreateEditComponent upload={upload}/>
+const PostCreateEditToolbar = ({handleSubmitWithRedirect, record, upload = false}) =>
+    <Toolbar handleSubmitWithRedirect={handleSubmitWithRedirect} record = {record} upload={upload}>
+        <ToolBarCreateEditComponent upload={upload} record = {record}/>
     </Toolbar>;
 
 export const PostEdit = (props) => (
-    <Edit actions={<PostCreateEditActions/>} {...props}>
-        <SimpleForm toolbar={<PostCreateEditToolbar upload={true}/>}>
+    <Edit actions={<PostCreateEditActions/>} {...props} record = {props} >
+        <SimpleForm toolbar={<PostCreateEditToolbar upload={true} record = {props}/>}>
             <LongTextInput source="display_title" label="管理タイトル" validate={required}/>
             <BooleanInput source="is_cld" label="クラウド"/>
             <BooleanInput source="is_clt" label="クライアント"/>

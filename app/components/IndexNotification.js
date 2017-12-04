@@ -6,6 +6,7 @@ import {UploadCreate, UploadList} from './uploadNotificationFile/uploadNotificat
 import japaneseMessages from 'aor-language-japanese';
 import myApiRestClient from './restClient';
 import addUploadFeature from './addUploadFeature';
+import Menu from './menu/Menu'
 // import sagas from './sagas';
 
 const restClient = myApiRestClient('');
@@ -27,7 +28,7 @@ class IndexNotification extends Component {
 
     render() {
         return (
-            <Admin locale="ja" messages={messages} title="通知エリア管理システム"  restClient={delayedRestClient}>
+            <Admin menu = {Menu} locale="ja" messages={messages} title="通知エリア管理システム"  restClient={delayedRestClient}>
                 <Resource name="posts" options={{label: 'トップページ'}} list={PostList} create={PostCreate} edit={PostEdit}
                           remove={Delete} show = {PostShow} />
                 <Resource name="uploadNotificationFile" options={{label: 'アップロードファイルjson'}} list={UploadList}

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {SaveButton, ListButton} from 'admin-on-rest';
+import {SaveButton, ListButton,translate} from 'admin-on-rest';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -14,7 +14,7 @@ class ToolBarCreateEditComponent extends Component {
 
     handleOpenConfirmLSave = () => {
         this.setState({openConfirmSave: true});
-        console.log(this.props);
+        //console.log(this.props);
     };
 
     handleCloseConfirmSave = () => {
@@ -34,14 +34,16 @@ class ToolBarCreateEditComponent extends Component {
         const style = {
             margin: 12,
         };
-        const nameButtonSave = this.props.upload === false ? "確認する" : "保存して、公開します。"
+        //console.log(this.props);
+        const nameButtonSave = this.props.upload === false ? "確認する" : "保存して、公開します。";
+        const nameButtonSaveTranslate = this.props.upload === false ? 'customNotification.button.save' : 'customNotification.button.save_and_public';
         const actionsConfirmList = [
             <FlatButton
                 label="キャンセル"
                 primary={true}
                 onClick={this.handleCloseConfirmList}
             />,
-            <ListButton label="OK" redirect={false} submitOnEnter={false} raised={false}/>,
+            <ListButton label={'customNotification.button.ok'} redirect={false} submitOnEnter={false} raised={false}/>,
         ];
 
 
@@ -51,7 +53,7 @@ class ToolBarCreateEditComponent extends Component {
                 primary={true}
                 onClick={this.handleCloseConfirmSave}
             />,
-            <SaveButton label={nameButtonSave} handleSubmitWithRedirect={this.props.handleSubmitWithRedirect}
+            <SaveButton label={nameButtonSaveTranslate} handleSubmitWithRedirect={this.props.handleSubmitWithRedirect}
                         submitOnEnter={true} redirect = "list"/>,
         ];
 

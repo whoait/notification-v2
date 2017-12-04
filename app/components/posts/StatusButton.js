@@ -5,7 +5,7 @@ import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import {connect} from 'react-redux';
-import { showNotification as showNotificationAction } from 'admin-on-rest';
+import { showNotification as showNotificationAction, translate } from 'admin-on-rest';
 import { push as pushAction } from 'react-router-redux';
 import {TextField, DeleteButton} from 'admin-on-rest';
 // import { ChangeStatusSubmit as changeStatusSubmitAction } from './ChangeStatusAction';
@@ -35,15 +35,15 @@ class StatusButton extends Component {
         }) })
             .then(() => {
                 $('#loading').toggleClass('loading_popup');
-                showNotification('ステータスが変更されました。');
+                showNotification('customNotification.message.status_has_change');
                 this.setState({ disable: !this.state.disable, open: false});
                 push('/uploadNotificationFile');
                 push('/posts');
             })
             .catch((e) => {
-                $('#loading').toggleClass(loading_popup);
+                $('#loading').toggleClass('loading_popup');
                 console.error(e);
-                showNotification('エラー：ステータスは変更されていません。')
+                showNotification('customNotification.message.has_error');
             });
 
     }
