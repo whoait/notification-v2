@@ -19,3 +19,8 @@ Project structure:
 + All components is stored in bind_notification_server/app folder.
 + All api specifications is stored in bind_notification_server/routers/index.js file.
 + All business code in server side is stored in bind_notification_server/services folder.
+
+// Fix text garbling（文字化け）
+after npm install,
+download zip follow link and rewrite node_modules/aor-language-japanese/index.js.
+https://github.com/kuma-guy/aor-language-japanese

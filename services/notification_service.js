@@ -9,6 +9,7 @@ const sftp = require('./sftp');
 const ftp = require('./ftp');
 const env = process.env.NODE_ENV || 'development';
 const config = require(`${__dirname}/../config/bind_version_config.json`)[env];
+const fs = require('fs');
 
 const tmpFolderPath = path.join(__dirname, '../tmp/');
 
@@ -780,7 +781,13 @@ function buildNotificationItem(bind_notification_detail) {
     }
     else {
         const imageWithHTMLTag = bind_notification_detail.content.split(/(<img src='[\S]*'>){1}/g)[1];
-        item.image_url = imageWithHTMLTag.split(/<img[^>]+src='?([^\s]+)?\s*'>/g)[1];
+        const imageURL = imageWithHTMLTag.split(/<img[^>]+src='?([^\s]+)?\s*'>/g)[1];
+        const imageFileName = util.getImageFileNameFromURL(imageURL);
+        const imageFileType = util.getImageFileType(imageFileName);
+        const imagePath = tmpFolderPath + /images/ + bind_notification_detail.id + '/' + imageFileName;
+        if (fs.existsSync(imagePath)) {
+            item.image_url = util.imageToBase64(imagePath, imageFileType);
+        }
         item.content = bind_notification_detail.content;
     }
     return item;
@@ -835,7 +842,7 @@ exports.uploadImage = (notificationId, imageURL) => {
 
 function uploadImageWithSFTP(notificationId, imageURL) {
     return new Promise((resolve, reject) => {
-        const imageFileName = getImageFileNameFromURL(imageURL);
+        const imageFileName = util.getImageFileNameFromURL(imageURL);
         const imagePath = tmpFolderPath + /images/ + notificationId + '/' + imageFileName;
         console.log(`upload image using sftp`);
         const destPath = config.imagePath + imageFileName;
@@ -847,11 +854,6 @@ function uploadImageWithSFTP(notificationId, imageURL) {
             reject();
         });
     });
-}
-
-function getImageFileNameFromURL(imageURL) {
-    const arrayList = imageURL.split('/');
-    return arrayList[arrayList.length - 1]
 }
 
 exports.updateStatus = (notificationId, newStatus) => {
@@ -1175,7 +1177,7 @@ function updateNotificationWithTypeSide(notificationId, item) {
 function saveUpdateImage(pictures, content, notificationId) {
     const imageWithHTMLTag = content.split(/(<img src='[\S]*'>){1}/g)[1];
     const imageURL = imageWithHTMLTag.split(/<img[^>]+src='?([^\s]+)?\s*'>/g)[1];
-    const imageFileName = getImageFileNameFromURL(imageURL);
+    const imageFileName = util.getImageFileNameFromURL(imageURL);
     const encodedString = pictures[0].src.split(',')[1];
     util.makeDirIfNotExisted(tmpFolderPath);
     util.makeDirIfNotExisted(tmpFolderPath + /images/);
